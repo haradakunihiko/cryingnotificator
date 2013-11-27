@@ -7,9 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MultipeerConnectivity/MultipeerConnectivity.h>
+#import "CryPickingController.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+extern NSString *const kServiceType;
+extern NSString *const DataReceivedNotification;
+
+@interface AppDelegate : UIResponder <UIApplicationDelegate,BLCryPickingDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+
+
+@property (strong,nonatomic)MCSession *session;
+@property (strong,nonatomic)MCPeerID *peerId;
+
+-(BOOL) sendDeviceTokenToPeer;
 
 @end

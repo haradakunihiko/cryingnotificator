@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		735D166218439CF300DC27EE /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D166118439CF300DC27EE /* Parse.framework */; };
+		735D166418439D7600DC27EE /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D166318439D7600DC27EE /* AudioToolbox.framework */; };
+		735D166618439D8300DC27EE /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D166518439D8300DC27EE /* CFNetwork.framework */; };
+		735D166818439D9600DC27EE /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D166718439D9600DC27EE /* CoreLocation.framework */; };
+		735D166A18439DA400DC27EE /* libz.1.1.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D166918439DA400DC27EE /* libz.1.1.3.dylib */; };
+		735D166C18439DB000DC27EE /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D166B18439DB000DC27EE /* MobileCoreServices.framework */; };
+		735D166E18439DBA00DC27EE /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D166D18439DBA00DC27EE /* QuartzCore.framework */; };
+		735D167018439DC400DC27EE /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D166F18439DC400DC27EE /* Security.framework */; };
+		735D167218439DC900DC27EE /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D167118439DC900DC27EE /* StoreKit.framework */; };
+		735D167418439DD400DC27EE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D167318439DD400DC27EE /* SystemConfiguration.framework */; };
+		735D16771844554A00DC27EE /* ListeningViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D16761844554A00DC27EE /* ListeningViewController.m */; };
 		7386DA80184067D40037A8A3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7386DA7F184067D40037A8A3 /* Foundation.framework */; };
 		7386DA82184067D40037A8A3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7386DA81184067D40037A8A3 /* CoreGraphics.framework */; };
 		7386DA84184067D40037A8A3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7386DA83184067D40037A8A3 /* UIKit.framework */; };
@@ -21,6 +32,7 @@
 		7386DAA1184067D40037A8A3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7386DA83184067D40037A8A3 /* UIKit.framework */; };
 		7386DAA9184067D40037A8A3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7386DAA7184067D40037A8A3 /* InfoPlist.strings */; };
 		7386DAAB184067D40037A8A3 /* BabyAlermTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386DAAA184067D40037A8A3 /* BabyAlermTests.m */; };
+		7386DAB61840704E0037A8A3 /* CryPickingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386DAB51840704E0037A8A3 /* CryPickingController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +46,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		735D166118439CF300DC27EE /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
+		735D166318439D7600DC27EE /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		735D166518439D8300DC27EE /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		735D166718439D9600DC27EE /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		735D166918439DA400DC27EE /* libz.1.1.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.1.3.dylib; path = usr/lib/libz.1.1.3.dylib; sourceTree = SDKROOT; };
+		735D166B18439DB000DC27EE /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		735D166D18439DBA00DC27EE /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		735D166F18439DC400DC27EE /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		735D167118439DC900DC27EE /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		735D167318439DD400DC27EE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		735D16751844554A00DC27EE /* ListeningViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListeningViewController.h; sourceTree = "<group>"; };
+		735D16761844554A00DC27EE /* ListeningViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListeningViewController.m; sourceTree = "<group>"; };
 		7386DA7C184067D40037A8A3 /* BabyAlerm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BabyAlerm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7386DA7F184067D40037A8A3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7386DA81184067D40037A8A3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -53,6 +77,8 @@
 		7386DAA6184067D40037A8A3 /* BabyAlermTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BabyAlermTests-Info.plist"; sourceTree = "<group>"; };
 		7386DAA8184067D40037A8A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7386DAAA184067D40037A8A3 /* BabyAlermTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BabyAlermTests.m; sourceTree = "<group>"; };
+		7386DAB41840704E0037A8A3 /* CryPickingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CryPickingController.h; sourceTree = "<group>"; };
+		7386DAB51840704E0037A8A3 /* CryPickingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CryPickingController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,8 +86,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				735D167418439DD400DC27EE /* SystemConfiguration.framework in Frameworks */,
+				735D167218439DC900DC27EE /* StoreKit.framework in Frameworks */,
+				735D167018439DC400DC27EE /* Security.framework in Frameworks */,
+				735D166E18439DBA00DC27EE /* QuartzCore.framework in Frameworks */,
+				735D166C18439DB000DC27EE /* MobileCoreServices.framework in Frameworks */,
+				735D166A18439DA400DC27EE /* libz.1.1.3.dylib in Frameworks */,
+				735D166818439D9600DC27EE /* CoreLocation.framework in Frameworks */,
 				7386DA82184067D40037A8A3 /* CoreGraphics.framework in Frameworks */,
+				735D166618439D8300DC27EE /* CFNetwork.framework in Frameworks */,
+				735D166418439D7600DC27EE /* AudioToolbox.framework in Frameworks */,
 				7386DA84184067D40037A8A3 /* UIKit.framework in Frameworks */,
+				735D166218439CF300DC27EE /* Parse.framework in Frameworks */,
 				7386DA80184067D40037A8A3 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -79,6 +115,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		735D167818456B8F00DC27EE /* Login */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Login;
+			sourceTree = "<group>";
+		};
+		735D1679184586D100DC27EE /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "New Group";
+			sourceTree = "<group>";
+		};
 		7386DA73184067D40037A8A3 = {
 			isa = PBXGroup;
 			children = (
@@ -101,6 +151,16 @@
 		7386DA7E184067D40037A8A3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				735D167318439DD400DC27EE /* SystemConfiguration.framework */,
+				735D167118439DC900DC27EE /* StoreKit.framework */,
+				735D166F18439DC400DC27EE /* Security.framework */,
+				735D166D18439DBA00DC27EE /* QuartzCore.framework */,
+				735D166B18439DB000DC27EE /* MobileCoreServices.framework */,
+				735D166918439DA400DC27EE /* libz.1.1.3.dylib */,
+				735D166718439D9600DC27EE /* CoreLocation.framework */,
+				735D166518439D8300DC27EE /* CFNetwork.framework */,
+				735D166318439D7600DC27EE /* AudioToolbox.framework */,
+				735D166118439CF300DC27EE /* Parse.framework */,
 				7386DA7F184067D40037A8A3 /* Foundation.framework */,
 				7386DA81184067D40037A8A3 /* CoreGraphics.framework */,
 				7386DA83184067D40037A8A3 /* UIKit.framework */,
@@ -112,6 +172,8 @@
 		7386DA85184067D40037A8A3 /* BabyAlerm */ = {
 			isa = PBXGroup;
 			children = (
+				735D1679184586D100DC27EE /* New Group */,
+				735D167818456B8F00DC27EE /* Login */,
 				7386DA8E184067D40037A8A3 /* AppDelegate.h */,
 				7386DA8F184067D40037A8A3 /* AppDelegate.m */,
 				7386DA91184067D40037A8A3 /* Main.storyboard */,
@@ -119,6 +181,10 @@
 				7386DA95184067D40037A8A3 /* ViewController.m */,
 				7386DA97184067D40037A8A3 /* Images.xcassets */,
 				7386DA86184067D40037A8A3 /* Supporting Files */,
+				7386DAB41840704E0037A8A3 /* CryPickingController.h */,
+				7386DAB51840704E0037A8A3 /* CryPickingController.m */,
+				735D16751844554A00DC27EE /* ListeningViewController.h */,
+				735D16761844554A00DC27EE /* ListeningViewController.m */,
 			);
 			path = BabyAlerm;
 			sourceTree = "<group>";
@@ -199,6 +265,13 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = harada;
 				TargetAttributes = {
+					7386DA7B184067D40037A8A3 = {
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
+					};
 					7386DA9C184067D40037A8A3 = {
 						TestTargetID = 7386DA7B184067D40037A8A3;
 					};
@@ -249,7 +322,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7386DAB61840704E0037A8A3 /* CryPickingController.m in Sources */,
 				7386DA96184067D40037A8A3 /* ViewController.m in Sources */,
+				735D16771844554A00DC27EE /* ListeningViewController.m in Sources */,
 				7386DA90184067D40037A8A3 /* AppDelegate.m in Sources */,
 				7386DA8C184067D40037A8A3 /* main.m in Sources */,
 			);
@@ -318,7 +393,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: kunihiko harada (3Y9A8LWC2X)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -336,6 +411,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "6EEB7B2B-239A-45EE-8C5B-0B2E3E41D2A2";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -378,10 +454,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/Harada/Documents/iphonedev/BabyAlerm,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BabyAlerm/BabyAlerm-Prefix.pch";
 				INFOPLIST_FILE = "BabyAlerm/BabyAlerm-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "6EEB7B2B-239A-45EE-8C5B-0B2E3E41D2A2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -391,6 +472,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/Harada/Documents/iphonedev/BabyAlerm,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BabyAlerm/BabyAlerm-Prefix.pch";
 				INFOPLIST_FILE = "BabyAlerm/BabyAlerm-Info.plist";
@@ -460,6 +545,7 @@
 				7386DAB0184067D40037A8A3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7386DAB1184067D40037A8A3 /* Build configuration list for PBXNativeTarget "BabyAlermTests" */ = {
 			isa = XCConfigurationList;
@@ -468,6 +554,7 @@
 				7386DAB3184067D40037A8A3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
