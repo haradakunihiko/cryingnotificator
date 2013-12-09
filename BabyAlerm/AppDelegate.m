@@ -8,16 +8,21 @@
 
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
+#import "Device.h"
+#import "Result.h"
+#import <MBProgressHUD/MBProgressHUD.h>
 
 
 NSString *const kServiceType = @"tz-babyalerm";
-NSString *const DataReceivedNotifiction = @"tz.babyalerm:DataReceivedNotification";
+NSString *const RelationDataSavingCompleteNotifiction = @"tz.babyalerm:RelationDataSavingCompleteNotifiction";
+NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationDataSavingStartNotifiction";
 
 @interface AppDelegate()<MCSessionDelegate>
 
 @property (nonatomic,strong) MCAdvertiserAssistant *advertiserAssistant;
 @property (nonatomic,strong) NSData *deviceToken;
-@property (nonatomic,strong) NSString *installationId;
+@property (nonatomic,strong,readwrite) NSString *installationId;
+
 
 @end
 
@@ -26,10 +31,14 @@ NSString *const DataReceivedNotifiction = @"tz.babyalerm:DataReceivedNotificatio
 -(NSString *)installationId{
     if(!_installationId){
         PFInstallation *currentInstallation =[PFInstallation currentInstallation];
-        _installationId =[[currentInstallation.installationId stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]]stringByReplacingOccurrencesOfString:@" " withString:@""];
+        
+        NSMutableString *channel = [NSMutableString stringWithString:@""];
+        [channel appendString:[[currentInstallation.installationId stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]]stringByReplacingOccurrencesOfString:@" " withString:@""]];
+        _installationId = [channel description];
     }
     return _installationId;
 }
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -53,8 +62,9 @@ NSString *const DataReceivedNotifiction = @"tz.babyalerm:DataReceivedNotificatio
     self.peerId = [[MCPeerID alloc]initWithDisplayName:peerName];
     self.session = [[MCSession alloc]initWithPeer:self.peerId securityIdentity:nil encryptionPreference:MCEncryptionNone];
     self.session.delegate = self;
-    self.advertiserAssistant = [[MCAdvertiserAssistant alloc]initWithServiceType:kServiceType discoveryInfo:nil session:self.session];
+    self.advertiserAssistant = [[MCAdvertiserAssistant alloc]initWithServiceType:kServiceType discoveryInfo:@{@"displayName":[[UIDevice currentDevice] name],@"installationId":self.installationId} session:self.session];
     [self.advertiserAssistant start];
+    self.peerDiscoveryInfo = [NSMutableDictionary new];
     
     return YES;
 }
@@ -112,12 +122,37 @@ NSString *const DataReceivedNotifiction = @"tz.babyalerm:DataReceivedNotificatio
 
 
 -(void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID{
-    NSString *targetInstallationId =[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-    NSMutableString *channel = [NSMutableString stringWithString:@"BC_"];
-    [channel appendString:targetInstallationId];
-    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    [currentInstallation addUniqueObject:[channel description] forKey:@"channels"];
-    [currentInstallation saveInBackground];
+//    id unarchived  =[NSKeyedUnarchiver unarchiveObjectWithData:data];
+//    if ([unarchived isKindOfClass:[Device class]]) {
+//        // 登録を行っていますの画面を出す。
+//        
+//        Device *device = (Device *)unarchived;
+//        NSLog(@" received  id : %@, name: %@",[device installationIdentifier],[device deviceName]);
+//        
+//        PFQuery *query = [PFQuery queryWithClassName:@"Relation"];
+//        [query whereKey:@"senderId" equalTo:device.installationIdentifier];
+//        [query whereKey:@"receiverId" equalTo:self.installationId];
+//        
+//        if([query countObjects] == 0){
+//            PFObject *obj = [[PFObject alloc]initWithClassName:@"Relation"];
+//            obj[@"senderId"] = device.installationIdentifier;
+//            obj[@"senderDeviceName"] =device.deviceName;
+//            obj[@"receiverId"] = self.installationId;
+//            obj[@"receiverDeviceName"] = [[UIDevice currentDevice]name];
+//            [obj saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+//                // localnotificationで、完了を表示。receiverに受け取りを伝える。
+//            }];
+//        }
+//    }else if([unarchived isKindOfClass:[Result class]]){
+//        Result *result = (Result *)unarchived;
+//        if(result.result){
+//            
+//        }else{
+//            
+//        }
+//    }else{
+//        
+//    }
 }
 
 -(void)session:(MCSession *)session didReceiveStream:(NSInputStream *)stream withName:(NSString *)streamName fromPeer:(MCPeerID *)peerID{
@@ -127,6 +162,16 @@ NSString *const DataReceivedNotifiction = @"tz.babyalerm:DataReceivedNotificatio
     
 }
 -(void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state{
+    if(state == MCSessionStateConnected){
+        NSLog(@" state connected %@",peerID.displayName);
+    }else if(state == MCSessionStateConnecting){
+        NSLog(@" state connecting %@",peerID.displayName);
+    }else if(state == MCSessionStateNotConnected){
+        NSLog(@" state not connected %@",peerID.displayName);
+    }else{
+        NSLog(@" state else");
+    }
+    
     
 }
 -(void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error{
@@ -134,27 +179,78 @@ NSString *const DataReceivedNotifiction = @"tz.babyalerm:DataReceivedNotificatio
 }
 
 -(BOOL)sendDeviceTokenToPeer{
-    NSLog(@"try to send installation id to peer");
-    if([self.session.connectedPeers count] > 0){
-        NSError *error;
-        NSLog(@" found %d" , [self.session.connectedPeers count]);
-        NSLog(@"send installationid:  %@",self.installationId);
+    NSLog(@"try to regsiter");
+    NSMutableArray *pfObjectArray = [NSMutableArray new];
+    [self.session.connectedPeers enumerateObjectsUsingBlock:^(MCPeerID* peerID, NSUInteger idx, BOOL *stop) {
+        NSDictionary *discoveryInfo = self.peerDiscoveryInfo[peerID];
+        NSLog(@"saving relation data. sender id:%@ name:%@ / receiver id:%@ name:%@",self.installationId,[[UIDevice currentDevice]name],discoveryInfo[@"installationId"],discoveryInfo[@"displayName"]);
         
-        [self.session sendData:[self.installationId dataUsingEncoding:NSUTF8StringEncoding ]  toPeers:self.session.connectedPeers withMode:MCSessionSendDataReliable error:&error];
-        return YES;
-    }else{
-        return NO;
-    }
+        PFQuery *query = [PFQuery queryWithClassName:@"Relation"];
+        [query whereKey:@"senderId" equalTo:self.installationId];
+        [query whereKey:@"receiverId" equalTo:discoveryInfo[@"installationId"]];
+        
+        if([query countObjects] == 0){
+            PFObject *obj = [[PFObject alloc]initWithClassName:@"Relation"];
+            obj[@"senderId"] = self.installationId;
+            obj[@"senderDeviceName"] =[[UIDevice currentDevice]name];
+            obj[@"receiverId"] = discoveryInfo[@"installationId"];
+            obj[@"receiverDeviceName"] = discoveryInfo[@"displayName"];
+            [pfObjectArray addObject:obj];
+        }
+
+    }];
+    // 画面にロード中を表示する。
+    //　アプリを消されたときに、ゴミデータが残る。どれかゴミかを検知したい。
+    
+    [PFObject saveAllInBackground:pfObjectArray block:^(BOOL succeeded, NSError *error) {
+        if(!error){
+            //Local Notificationで完了通知。テーブルを再描画！
+            [[NSNotificationCenter defaultCenter]postNotificationName:RelationDataSavingCompleteNotifiction object:nil userInfo:@{@"peers":pfObjectArray}];
+            NSLog(@"save data completed ");
+        }else{
+            NSLog(@"Error: %@ %@", error, [error userInfo]);
+        }
+        
+    }];
+    
+    return YES;
+//    if([self.session.connectedPeers count] > 0){
+//        NSError *error;
+//        Device *device = [[Device alloc]init];
+//        device.deviceName = [[UIDevice currentDevice] name];
+//        device.installationIdentifier = self.installationId;
+//        
+//        NSData *data =[NSKeyedArchiver archivedDataWithRootObject:device];
+//        
+//        [self.session sendData:data toPeers:self.session.connectedPeers withMode:MCSessionSendDataReliable error:&error];
+//        return YES;
+//    }else{
+//        return NO;
+//    }
 }
 
 - (void)cryPickingController:(CryPickingController *)cryPickingController notify:(BOOL)notify{
     if(notify){
+        NSLog(@" push to channel:%@",self.installationId);
+        PFQuery *query = [PFQuery queryWithClassName:@"Relation"];
+        [query whereKey:@"senderId" equalTo:self.installationId];
+        NSMutableArray *array = [NSMutableArray new];
+        NSArray *objects = [query findObjects];
+        [objects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            [array addObject:obj[@"receiverId"]];
+
+        }];
+        
+        PFQuery *pushQuery = [PFInstallation query];
+        [pushQuery whereKey:@"installationId" containedIn:array];
+        
         PFPush *push = [[PFPush alloc]init];
-        NSMutableString *channel = [NSMutableString stringWithString:@"BC_"];
-        [channel appendString:self.installationId];
-        NSLog(@" push to channel:%@",[channel description]);
-        [push setChannel:[ channel  description]];
-        [push setMessage:@"crying"];
+        [push setQuery:pushQuery];
+//        [push setMessage:@"crying"];
+        [push setData:[NSDictionary dictionaryWithObjectsAndKeys:
+                      @"Baby is crying", @"alert",
+                      @"default", @"sound",
+                       nil]];
         [push sendPushInBackground];
     }
 }

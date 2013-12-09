@@ -11,7 +11,8 @@
 #import "CryPickingController.h"
 
 extern NSString *const kServiceType;
-extern NSString *const DataReceivedNotification;
+extern NSString *const RelationDataSavingCompleteNotifiction;
+extern NSString *const RelationDataSavingStartNotifiction;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate,BLCryPickingDelegate>
 
@@ -20,6 +21,11 @@ extern NSString *const DataReceivedNotification;
 
 @property (strong,nonatomic)MCSession *session;
 @property (strong,nonatomic)MCPeerID *peerId;
+
+@property (nonatomic,strong,readonly) NSString *installationId;
+
+@property (nonatomic,strong) NSMutableDictionary *peerDiscoveryInfo;
+
 
 -(BOOL) sendDeviceTokenToPeer;
 

@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CryPickingController.h"
 
-@interface ListeningViewController : UIViewController
+@interface ListeningViewController : UIViewController{
+}
 
+-(void)setCryingVCDelegate :(id<BLCryPickingDelegate>) delegate;
 @end

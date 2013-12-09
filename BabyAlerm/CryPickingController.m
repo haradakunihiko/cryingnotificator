@@ -17,7 +17,6 @@
 @end
 
 @implementation CryPickingController{
-    AudioQueueRef _queue;
     BOOL _checkingInProgress;
     NSInteger _times;
 }
@@ -33,7 +32,9 @@ static void AudioInputCallback(  void* inUserData,
 -(id)init{
     if(self = [super init]){
         [self preparePicking];
-        self.delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+        self.maxAverage = -1.0f;
+        self.maxPeak = -1.0f;
+        self.maxTimes = 5;
     }
     return self;
 }
@@ -74,8 +75,10 @@ static void AudioInputCallback(  void* inUserData,
     
     NSLog(@"mPeakPower=%0.9f", levelMeter.mPeakPower);
     NSLog(@"mAveragePower=%0.9f", levelMeter.mAveragePower);
+    [self.showDelegate cryPickingController:self meterState:levelMeter];
     
-    if ( levelMeter.mPeakPower >= -1.0f) {
+    
+    if ( levelMeter.mPeakPower >= self.maxPeak || levelMeter.mAveragePower >= self.maxAverage) {
         _times++;
     }else{
         _times--;
@@ -84,8 +87,9 @@ static void AudioInputCallback(  void* inUserData,
         }
     }
     NSLog(@"times=%d",(int)_times);
-    if(_times > 5){
+    if(_times >= self.maxTimes){
         [self notify];
+        _times = 0;
     }
 }
 
