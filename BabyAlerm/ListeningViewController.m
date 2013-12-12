@@ -20,6 +20,7 @@
 
 @implementation ListeningViewController{
     
+    IBOutlet UISwitch *scrollSwitch;
     CryPickingController *_pickingController;
     NSMutableArray *_volumes;
 }
@@ -28,9 +29,10 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        _pickingController = [CryPickingController new];
         _volumes = [NSMutableArray new];
-
+        
+        _pickingController = [CryPickingController new];
+        _pickingController.showDelegate = self;
     }
     return self;
 }
@@ -38,6 +40,9 @@
 -(id)init{
     if(self = [super init]){
         _volumes = [NSMutableArray new];
+        
+        _pickingController = [CryPickingController new];
+        _pickingController.showDelegate = self;
     }
     return self;
 }
@@ -45,6 +50,9 @@
 -(id)initWithCoder:(NSCoder *)aDecoder{
     if(self = [super initWithCoder:aDecoder]){
         _volumes = [NSMutableArray new];
+        
+        _pickingController = [CryPickingController new];
+        _pickingController.showDelegate = self;
     }
     return self;
 }
@@ -53,8 +61,6 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    _pickingController.showDelegate = self;
-    [_pickingController startListening];
 
 }
 -(void)viewWillAppear:(BOOL)animated{
@@ -69,6 +75,9 @@
 }
 - (IBAction)done:(UIBarButtonItem *)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+- (IBAction)start:(UIBarButtonItem *)sender {
+    [_pickingController startListening];
 }
 
 -(void) initPlot{
@@ -90,7 +99,7 @@
     self.hostView.hostedGraph = graph;
     // 2 - Set graph title
     NSString *title = @"Crying Volmes";
-    graph.title = title;
+//    graph.title = title;
     // 3 - Create and set text style
     CPTMutableTextStyle *titleStyle = [CPTMutableTextStyle textStyle];
     titleStyle.color = [CPTColor whiteColor];
@@ -103,7 +112,7 @@
     [graph.plotAreaFrame setPaddingLeft:30.0f];
     [graph.plotAreaFrame setPaddingBottom:30.0f];
     // 5 - Enable user interactions for plot space
-
+    [self configurePlotSpace];
 //    plotSpace.allowsUserInteraction = YES;
 }
 -(void)configurePlotSpace{
@@ -184,7 +193,7 @@
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *) self.hostView.hostedGraph.axisSet;
     // 3 - Configure x-axis
     CPTAxis *x = axisSet.xAxis;
-    x.title = @"Time";
+//    x.title = @"Time";
     x.titleTextStyle = axisTitleStyle;
     x.titleOffset = 15.0f;
     x.axisLineStyle = axisLineStyle;
@@ -277,8 +286,11 @@
     if([_volumes count] == 1){
         [self configureAxes];
     }
+    if (scrollSwitch.on) {
+        [self configurePlotSpace];
+    }
     
-    [self configurePlotSpace];
+
     [[self.hostView hostedGraph] reloadData];
 
     self.meterLavel.text =meterText;
@@ -287,6 +299,7 @@
 -(void)setCryingVCDelegate:(id<BLCryPickingDelegate>)delegate{
     if(!_pickingController){
         _pickingController = [CryPickingController new];
+        _pickingController.showDelegate = self;
     }
     _pickingController.delegate = delegate;
 }
