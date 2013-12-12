@@ -35,6 +35,20 @@
     return self;
 }
 
+-(id)init{
+    if(self = [super init]){
+        _volumes = [NSMutableArray new];
+    }
+    return self;
+}
+
+-(id)initWithCoder:(NSCoder *)aDecoder{
+    if(self = [super initWithCoder:aDecoder]){
+        _volumes = [NSMutableArray new];
+    }
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -60,11 +74,13 @@
 -(void) initPlot{
     [self configureHosts];
     [self configureGraph];
+    [self configurePlotSpace];
     [self configurePlots];
     [self configureAxes];
 }
 
 -(void)configureHosts{
+    
     
 }
 -(void)configureGraph{
@@ -87,9 +103,25 @@
     [graph.plotAreaFrame setPaddingLeft:30.0f];
     [graph.plotAreaFrame setPaddingBottom:30.0f];
     // 5 - Enable user interactions for plot space
-//    CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *) graph.defaultPlotSpace;
+
 //    plotSpace.allowsUserInteraction = YES;
 }
+-(void)configurePlotSpace{
+    CPTGraph *graph = [self.hostView hostedGraph];
+    // 5 - Set up plot space
+    CGFloat xMin = [[[_volumes lastObject]time] timeIntervalSinceDate:[self baseTime]] - 50.0f;
+    xMin = MAX(xMin, 0);
+    CGFloat xMax = 60.0f;
+//    CGFloat xMax = 60.0f;
+    CGFloat yMin = -70.0f;
+    CGFloat yMax = 90.0f;  // should determine dynamically based on max price
+    CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *) graph.defaultPlotSpace;
+    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(xMin) length:CPTDecimalFromFloat(xMax)];
+    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(yMin) length:CPTDecimalFromFloat(yMax)];
+    plotSpace.allowsUserInteraction = YES;
+
+}
+
 -(void)configurePlots{
     
     // 1 - Get graph and plot space
@@ -111,16 +143,7 @@
     [graph addPlot:averagePlot toPlotSpace:plotSpace];
     
     
-    // 3 - Set up plot space
-    [plotSpace scaleToFitPlots:[NSArray arrayWithObjects:peakPlot, averagePlot,nil]];
-    CPTMutablePlotRange *xRange = [plotSpace.xRange mutableCopy];
-    [xRange expandRangeByFactor:CPTDecimalFromCGFloat(1.1f)];
-    plotSpace.xRange = xRange;
-    CPTMutablePlotRange *yRange = [plotSpace.yRange mutableCopy];
-    [yRange expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
-    plotSpace.yRange = yRange;
-    
-    
+
     // 4 - Create styles and symbols
     CPTMutableLineStyle *peakLineStyle = [peakPlot.dataLineStyle mutableCopy];
     peakLineStyle.lineWidth = 2.5;
@@ -139,6 +162,91 @@
 }
 -(void)configureAxes{
     
+    // 1 - Create styles
+    CPTMutableTextStyle *axisTitleStyle = [CPTMutableTextStyle textStyle];
+    axisTitleStyle.color = [CPTColor whiteColor];
+    axisTitleStyle.fontName = @"Helvetica-Bold";
+    axisTitleStyle.fontSize = 12.0f;
+    CPTMutableLineStyle *axisLineStyle = [CPTMutableLineStyle lineStyle];
+    axisLineStyle.lineWidth = 2.0f;
+    axisLineStyle.lineColor = [CPTColor whiteColor];
+    CPTMutableTextStyle *axisTextStyle = [[CPTMutableTextStyle alloc] init];
+    axisTextStyle.color = [CPTColor whiteColor];
+    axisTextStyle.fontName = @"Helvetica-Bold";
+    axisTextStyle.fontSize = 11.0f;
+    CPTMutableLineStyle *tickLineStyle = [CPTMutableLineStyle lineStyle];
+    tickLineStyle.lineColor = [CPTColor whiteColor];
+    tickLineStyle.lineWidth = 2.0f;
+    CPTMutableLineStyle *gridLineStyle = [CPTMutableLineStyle lineStyle];
+    tickLineStyle.lineColor = [CPTColor blackColor];
+    tickLineStyle.lineWidth = 1.0f;
+    // 2 - Get axis set
+    CPTXYAxisSet *axisSet = (CPTXYAxisSet *) self.hostView.hostedGraph.axisSet;
+    // 3 - Configure x-axis
+    CPTAxis *x = axisSet.xAxis;
+    x.title = @"Time";
+    x.titleTextStyle = axisTitleStyle;
+    x.titleOffset = 15.0f;
+    x.axisLineStyle = axisLineStyle;
+    x.labelingPolicy = CPTAxisLabelingPolicyFixedInterval;
+    x.labelTextStyle = axisTextStyle;
+    x.majorTickLineStyle = axisLineStyle;
+//    x.majorTickLength = 4.0f;
+    x.tickDirection = CPTSignNegative;
+    
+    // Graph data prepare
+	NSDate *refDate = [self baseTime];
+
+    //per 5s
+	x.majorIntervalLength = CPTDecimalFromFloat(60.0f);
+	x.minorTicksPerInterval = 1;
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setDateFormat:@"HH:mm:ss"];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"JST"]];
+
+	CPTTimeFormatter *timeFormatter = [[CPTTimeFormatter alloc] initWithDateFormatter:dateFormatter];
+    timeFormatter.referenceDate = refDate;
+    x.labelFormatter = timeFormatter;
+
+    // 4 - Configure y-axis
+    CPTAxis *y = axisSet.yAxis;
+    y.title = @"Price";
+    y.titleTextStyle = axisTitleStyle;
+    y.titleOffset = -40.0f;
+    y.axisLineStyle = axisLineStyle;
+    y.majorGridLineStyle = gridLineStyle;
+    y.labelingPolicy = CPTAxisLabelingPolicyAutomatic;
+    y.labelTextStyle = axisTextStyle;
+    y.labelOffset = 16.0f;
+    y.majorTickLineStyle = axisLineStyle;
+    y.majorTickLength = 4.0f;
+    y.minorTickLength = 2.0f;
+    y.tickDirection = CPTSignPositive;
+    NSInteger majorIncrement = 100;
+    NSInteger minorIncrement = 50;
+    CGFloat yMax = 700.0f;  // should determine dynamically based on max price
+    NSMutableSet *yLabels = [NSMutableSet set];
+    NSMutableSet *yMajorLocations = [NSMutableSet set];
+    NSMutableSet *yMinorLocations = [NSMutableSet set];
+    for (NSInteger j = minorIncrement; j <= yMax; j += minorIncrement) {
+        NSUInteger mod = j % majorIncrement;
+        if (mod == 0) {
+            CPTAxisLabel *label = [[CPTAxisLabel alloc] initWithText:[NSString stringWithFormat:@"%i", j] textStyle:y.labelTextStyle];
+            NSDecimal location = CPTDecimalFromInteger(j);
+            label.tickLocation = location;
+            label.offset = -y.majorTickLength - y.labelOffset;
+            if (label) {
+                [yLabels addObject:label];
+            }
+            [yMajorLocations addObject:[NSDecimalNumber decimalNumberWithDecimal:location]];
+        } else {
+            [yMinorLocations addObject:[NSDecimalNumber decimalNumberWithDecimal:CPTDecimalFromInteger(j)]];
+        }
+    }
+    y.axisLabels = yLabels;
+    y.majorTickLocations = yMajorLocations;
+    y.minorTickLocations = yMinorLocations;
 }
 
 - (void) showMessage:(NSString *)message
@@ -165,7 +273,14 @@
     volume.average = (float)roundf(meterState.mAveragePower);
     volume.time = [NSDate date];
     [_volumes addObject:volume];
+    
+    if([_volumes count] == 1){
+        [self configureAxes];
+    }
+    
+    [self configurePlotSpace];
     [[self.hostView hostedGraph] reloadData];
+
     self.meterLavel.text =meterText;
 }
 
@@ -182,7 +297,10 @@
     switch (fieldEnum) {
         case CPTScatterPlotFieldX:
             if (idx < valueCount) {
-                return [NSNumber numberWithUnsignedInteger:idx];
+                NSDate *baseTime = [self baseTime];
+                NSDate *time = [[_volumes objectAtIndex:idx] time];
+//                NSLog(@"plot for index:%d, x:%f " ,idx, [time timeIntervalSinceDate:baseTime]);
+                return [NSNumber numberWithDouble:[time timeIntervalSinceDate:baseTime]];
             }
             break;
         case CPTScatterPlotFieldY:
@@ -198,6 +316,14 @@
 
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot{
     return [_volumes count];
+}
+
+-(NSDate *)baseTime{
+    if([_volumes count] >0){
+        NSDate *base = [[_volumes firstObject] time];
+        return base;
+    }
+    return nil;
 }
 
 @end

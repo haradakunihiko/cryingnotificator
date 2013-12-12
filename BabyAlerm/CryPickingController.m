@@ -61,7 +61,12 @@ static void AudioInputCallback(  void* inUserData,
 }
 
 -(void) startListening {
-    [NSTimer scheduledTimerWithTimeInterval:1.0
+    //231928 0 12.0
+    //232328 2 14.9
+    //232528 2 15.0
+    //234028 3 15.5
+    //234828 4 15.6
+    [NSTimer scheduledTimerWithTimeInterval:1
                                      target:self
                                    selector:@selector(updateVolume:)
                                    userInfo:nil
@@ -72,9 +77,6 @@ static void AudioInputCallback(  void* inUserData,
     AudioQueueLevelMeterState levelMeter;
     UInt32 levelMeterSize = sizeof(AudioQueueLevelMeterState);
     AudioQueueGetProperty(_queue,kAudioQueueProperty_CurrentLevelMeterDB,&levelMeter,&levelMeterSize);
-    
-    NSLog(@"mPeakPower=%0.9f", levelMeter.mPeakPower);
-    NSLog(@"mAveragePower=%0.9f", levelMeter.mAveragePower);
     [self.showDelegate cryPickingController:self meterState:levelMeter];
     
     
@@ -86,7 +88,6 @@ static void AudioInputCallback(  void* inUserData,
             _times = 0;
         }
     }
-    NSLog(@"times=%d",(int)_times);
     if(_times >= self.maxTimes){
         [self notify];
         _times = 0;
