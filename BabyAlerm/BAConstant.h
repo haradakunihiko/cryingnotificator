@@ -13,4 +13,13 @@
 
 extern NSString * const TickerSymbolPeak;
 extern NSString * const TickerSymbolAverage;
+
+
+extern float const DisplayXRange;
+extern float const DisplayXRightMergin;
+extern float const GlobalXRange;
+
+extern float const DisplayYLocation;
+extern float const DisplayYRange;
+
 @end

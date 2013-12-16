@@ -8,6 +8,10 @@
 
 #import "AppDelegate.h"
 #import "CryPickingController.h"
+#import "Person.h"
+#import <Parse/Parse.h>
+#import "History.h"
+#import "HistoryDetail.h"
 
 @interface CryPickingController()
 
@@ -19,6 +23,7 @@
 @implementation CryPickingController{
     BOOL _checkingInProgress;
     NSInteger _times;
+    NSTimer *timer;
 }
 static void AudioInputCallback(  void* inUserData,
                                AudioQueueRef inAQ,
@@ -34,7 +39,7 @@ static void AudioInputCallback(  void* inUserData,
         [self preparePicking];
         self.maxAverage = -1.0f;
         self.maxPeak = -1.0f;
-        self.maxTimes = 5;
+        self.maxTimes = 1;
     }
     return self;
 }
@@ -66,18 +71,39 @@ static void AudioInputCallback(  void* inUserData,
     //232528 2 15.0
     //234028 3 15.5
     //234828 4 15.6
-    [NSTimer scheduledTimerWithTimeInterval:1
+    if(timer){
+        [timer invalidate];
+    }
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSMutableArray *histData = delegate.histData;
+    History *history = [History new];
+    history.startTime = [NSDate date];
+    [histData addObject:history];
+    
+    timer = [NSTimer scheduledTimerWithTimeInterval:1
                                      target:self
                                    selector:@selector(updateVolume:)
                                    userInfo:nil
                                     repeats:YES];
 }
 
+-(void)stopListening{
+    if(timer){
+        [timer invalidate];
+    }
+}
+
 -(void)updateVolume :(NSTimer *)timer{
     AudioQueueLevelMeterState levelMeter;
     UInt32 levelMeterSize = sizeof(AudioQueueLevelMeterState);
     AudioQueueGetProperty(_queue,kAudioQueueProperty_CurrentLevelMeterDB,&levelMeter,&levelMeterSize);
-    [self.showDelegate cryPickingController:self meterState:levelMeter];
+    
+    Volume *volume = [Volume new ];
+    volume.peak = (float)roundf(levelMeter.mPeakPower);
+    volume.average = (float)roundf(levelMeter.mAveragePower);
+    volume.time = [NSDate date];
+    
+    [self.showDelegate cryPickingController:self volume:volume];
     
     
     if ( levelMeter.mPeakPower >= self.maxPeak || levelMeter.mAveragePower >= self.maxAverage) {
@@ -89,14 +115,38 @@ static void AudioInputCallback(  void* inUserData,
         }
     }
     if(_times >= self.maxTimes){
-        [self notify];
+        [self notify:volume];
         _times = 0;
     }
 }
 
--(void)notify{
+-(void)notify :(Volume *)volume{
     NSLog(@"fire!");
-    [self.delegate cryPickingController:self notify:YES];
+    
+    AppDelegate *delegate =(AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSArray *notifyContacts = delegate.contacts;
+    
+    NSArray *histData = delegate.histData;
+    History *histoy = [histData lastObject];
+    HistoryDetail *detail = [HistoryDetail new];
+    detail.volume = volume;
+    [histoy addObject:detail];
+    
+    NSMutableArray *addresses = [NSMutableArray new];
+    [notifyContacts enumerateObjectsUsingBlock:^(Person *person, NSUInteger idx, BOOL *stop) {
+        [addresses addObject:person.email];
+    }];
+    
+    [PFCloud callFunctionInBackground:@"sendMail" withParameters:@{@"addresses":addresses} block:^(id object, NSError *error) {
+        NSMutableString *notice = [NSMutableString stringWithString:@"mail sent to :"];
+        [notifyContacts enumerateObjectsUsingBlock:^(Person *obj, NSUInteger idx, BOOL *stop) {
+            
+            [notice appendString:obj.email];
+            [notice appendString:@"/"];
+        }];
+        NSLog(@"%@",[notice description]);
+    }];
+//    [self.delegate cryPickingController:self notify:YES];
 }
 
 

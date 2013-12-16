@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AudioToolbox/AudioToolbox.h>
+#import "Volume.h"
 
 @class CryPickingController;
 
@@ -18,12 +19,13 @@
 
 @protocol BLCryPickingShowDelegate <NSObject>
 
--(void)cryPickingController:(CryPickingController *)cryPickingController meterState:(AudioQueueLevelMeterState )meterState;
+-(void)cryPickingController:(CryPickingController *)cryPickingController volume:(Volume * )volume;
 @end
 
 @interface CryPickingController : NSObject
 
 -(void)startListening;
+-(void)stopListening;
 -(void) notify;
 
 @property  (nonatomic, assign) id<BLCryPickingDelegate> delegate;

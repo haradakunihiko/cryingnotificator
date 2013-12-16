@@ -43,6 +43,11 @@
 		73B2F1C01853648700655748 /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73B2F1BF1853648700655748 /* libCorePlot-CocoaTouch.a */; };
 		73B2F2651855F62000655748 /* Volume.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F2641855F62000655748 /* Volume.m */; };
 		73B2F2691855F88700655748 /* BAConstant.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F2681855F88700655748 /* BAConstant.m */; };
+		73B2F26C185C9B0800655748 /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F26B185C9B0800655748 /* HistoryViewController.m */; };
+		73B2F26F185C9B1D00655748 /* HistoryDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F26E185C9B1D00655748 /* HistoryDetailViewController.m */; };
+		73B2F272185C9CC900655748 /* History.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F271185C9CC900655748 /* History.m */; };
+		73B2F275185C9CD900655748 /* HistoryDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F274185C9CD900655748 /* HistoryDetail.m */; };
+		73B2F277185F33A600655748 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73B2F276185F33A600655748 /* CoreData.framework */; };
 		CB94C5F385CF451E81F84D2E /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 952DEAEA20EF485FA0C9880E /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -186,6 +191,15 @@
 		73B2F2641855F62000655748 /* Volume.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Volume.m; sourceTree = "<group>"; };
 		73B2F2671855F88700655748 /* BAConstant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAConstant.h; sourceTree = "<group>"; };
 		73B2F2681855F88700655748 /* BAConstant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAConstant.m; sourceTree = "<group>"; };
+		73B2F26A185C9B0800655748 /* HistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryViewController.h; sourceTree = "<group>"; };
+		73B2F26B185C9B0800655748 /* HistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
+		73B2F26D185C9B1D00655748 /* HistoryDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryDetailViewController.h; sourceTree = "<group>"; };
+		73B2F26E185C9B1D00655748 /* HistoryDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryDetailViewController.m; sourceTree = "<group>"; };
+		73B2F270185C9CC900655748 /* History.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = History.h; sourceTree = "<group>"; };
+		73B2F271185C9CC900655748 /* History.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = History.m; sourceTree = "<group>"; };
+		73B2F273185C9CD900655748 /* HistoryDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryDetail.h; sourceTree = "<group>"; };
+		73B2F274185C9CD900655748 /* HistoryDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryDetail.m; sourceTree = "<group>"; };
+		73B2F276185F33A600655748 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		8C5C44959992410FBF6877AC /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		952DEAEA20EF485FA0C9880E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -195,6 +209,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73B2F277185F33A600655748 /* CoreData.framework in Frameworks */,
 				735D167418439DD400DC27EE /* SystemConfiguration.framework in Frameworks */,
 				735D167218439DC900DC27EE /* StoreKit.framework in Frameworks */,
 				735D167018439DC400DC27EE /* Security.framework in Frameworks */,
@@ -244,6 +259,10 @@
 				73B2F16E18504B6A00655748 /* Person.m */,
 				73B2F2631855F62000655748 /* Volume.h */,
 				73B2F2641855F62000655748 /* Volume.m */,
+				73B2F270185C9CC900655748 /* History.h */,
+				73B2F271185C9CC900655748 /* History.m */,
+				73B2F273185C9CD900655748 /* HistoryDetail.h */,
+				73B2F274185C9CD900655748 /* HistoryDetail.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -273,6 +292,7 @@
 		7386DA7E184067D40037A8A3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				73B2F276185F33A600655748 /* CoreData.framework */,
 				735D167318439DD400DC27EE /* SystemConfiguration.framework */,
 				735D167118439DC900DC27EE /* StoreKit.framework */,
 				735D166F18439DC400DC27EE /* Security.framework */,
@@ -316,6 +336,10 @@
 				736BB3FA184789DE004D334C /* SenderTableViewController.m */,
 				73B2F16A18503EA800655748 /* ContactViewController.h */,
 				73B2F16B18503EA800655748 /* ContactViewController.m */,
+				73B2F26A185C9B0800655748 /* HistoryViewController.h */,
+				73B2F26B185C9B0800655748 /* HistoryViewController.m */,
+				73B2F26D185C9B1D00655748 /* HistoryDetailViewController.h */,
+				73B2F26E185C9B1D00655748 /* HistoryDetailViewController.m */,
 			);
 			path = BabyAlerm;
 			sourceTree = "<group>";
@@ -587,7 +611,11 @@
 				7386DA96184067D40037A8A3 /* ViewController.m in Sources */,
 				73B2F16F18504B6A00655748 /* Person.m in Sources */,
 				735D168318464A0D00DC27EE /* Result.m in Sources */,
+				73B2F26F185C9B1D00655748 /* HistoryDetailViewController.m in Sources */,
 				735D16771844554A00DC27EE /* ListeningViewController.m in Sources */,
+				73B2F272185C9CC900655748 /* History.m in Sources */,
+				73B2F26C185C9B0800655748 /* HistoryViewController.m in Sources */,
+				73B2F275185C9CD900655748 /* HistoryDetail.m in Sources */,
 				73B2F2691855F88700655748 /* BAConstant.m in Sources */,
 				7386DA90184067D40037A8A3 /* AppDelegate.m in Sources */,
 				73B2F16C18503EA800655748 /* ContactViewController.m in Sources */,

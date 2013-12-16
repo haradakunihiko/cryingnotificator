@@ -13,9 +13,10 @@
 #import "ListeningViewController.h"
 #import "CryPickingController.h"
 #import <Parse/Parse.h>
+#import "AppDelegate.h"
 
 @interface ContactViewController ()<ABPeoplePickerNavigationControllerDelegate,BLCryPickingDelegate>{
-    NSMutableArray* _contacts;
+//    NSMutableArray* _contacts;
 }
 
 @end
@@ -35,7 +36,7 @@
 {
     [super viewDidLoad];
     
-    _contacts = [NSMutableArray new];
+//    _contacts = [NSMutableArray new];
 
     
     // Uncomment the following line to preserve selection between presentations.
@@ -66,7 +67,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return [_contacts count];
+    return [[self contact] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -74,8 +75,8 @@
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", ((Person *)_contacts[indexPath.row]).firstname, ((Person *)_contacts[indexPath.row]).lastname];
-    cell.detailTextLabel.text = ((Person *)_contacts[indexPath.row]).email;
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", ((Person *)[self contact][indexPath.row]).firstname, ((Person *)[self contact][indexPath.row]).lastname];
+    cell.detailTextLabel.text = ((Person *)[self contact][indexPath.row]).email;
     
     return cell;
 }
@@ -94,7 +95,7 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [_contacts removeObjectAtIndex:indexPath.row];
+        [[self contact] removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
@@ -152,7 +153,7 @@
         person.firstname = firstName;
         person.lastname = lastName;
         person.email = emailAddress;
-        [_contacts addObject:person];
+        [[self contact] addObject:person];
         [self dismissViewControllerAnimated:YES completion:nil];
         return NO;
     }else{
@@ -175,7 +176,7 @@
     personObj.firstname = firstName;
     personObj.lastname = lastName;
     personObj.email  = email;
-    [_contacts addObject:personObj];
+    [[self contact] addObject:personObj];
     [self dismissViewControllerAnimated:YES completion:nil];
     return NO;
 }
@@ -190,29 +191,26 @@
      show];
 }
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-    if([segue.identifier isEqualToString:@"ContactToListening"]){
-        ListeningViewController *listeningVC=  segue.destinationViewController;
-        [listeningVC setCryingVCDelegate:self];
-    }
-}
-
 -(void)cryPickingController:(CryPickingController *)cryPickingController notify:(BOOL)notify{
     NSMutableArray *addresses = [NSMutableArray new];
-    [_contacts enumerateObjectsUsingBlock:^(Person *person, NSUInteger idx, BOOL *stop) {
+    [[self contact] enumerateObjectsUsingBlock:^(Person *person, NSUInteger idx, BOOL *stop) {
         [addresses addObject:person.email];
     }];
     
     [PFCloud callFunctionInBackground:@"sendMail" withParameters:@{@"addresses":addresses} block:^(id object, NSError *error) {
         NSMutableString *notice = [NSMutableString stringWithString:@"mail sent to :"];
-        [_contacts enumerateObjectsUsingBlock:^(Person *obj, NSUInteger idx, BOOL *stop) {
+        [[self contact] enumerateObjectsUsingBlock:^(Person *obj, NSUInteger idx, BOOL *stop) {
 
             [notice appendString:obj.email];
             [notice appendString:@"/"];
         }];
         NSLog(@"%@",[notice description]);
     }];
-    
+}
+
+-(NSMutableArray*) contact{
+    AppDelegate *delegate =[[UIApplication sharedApplication] delegate];
+    return [delegate contacts];
 }
 
 @end

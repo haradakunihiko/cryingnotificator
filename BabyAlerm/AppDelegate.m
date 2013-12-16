@@ -65,7 +65,8 @@ NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationData
     self.advertiserAssistant = [[MCAdvertiserAssistant alloc]initWithServiceType:kServiceType discoveryInfo:@{@"displayName":[[UIDevice currentDevice] name],@"installationId":self.installationId} session:self.session];
     [self.advertiserAssistant start];
     self.peerDiscoveryInfo = [NSMutableDictionary new];
-    
+    self.contacts = [NSMutableArray new];
+    self.histData = [NSMutableArray new];
     return YES;
 }
 

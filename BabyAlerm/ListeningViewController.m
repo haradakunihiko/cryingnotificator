@@ -4,7 +4,8 @@
 //
 //  Created by harada on 2013/11/26.
 //  Copyright (c) 2013年 harada. All rights reserved.
-//
+//001021 1 19
+//002821 4 28.3
 
 #import "ListeningViewController.h"
 #import "AppDelegate.h"
@@ -12,9 +13,10 @@
 #import "Volume.h"
 #import "BAConstant.h"
 
-@interface ListeningViewController ()<BLCryPickingShowDelegate,CPTPlotDataSource>
+@interface ListeningViewController ()<BLCryPickingShowDelegate,CPTPlotDataSource,CPTPlotSpaceDelegate>
 @property (strong, nonatomic) IBOutlet UILabel *meterLavel;
 @property (strong, nonatomic) IBOutlet CPTGraphHostingView *hostView;
+
 
 @end
 
@@ -23,6 +25,9 @@
     IBOutlet UISwitch *scrollSwitch;
     CryPickingController *_pickingController;
     NSMutableArray *_volumes;
+    BOOL playing;
+//    NSInteger rateOfMagnification;
+    CPTPlotRange *yRange;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -33,6 +38,7 @@
         
         _pickingController = [CryPickingController new];
         _pickingController.showDelegate = self;
+    
     }
     return self;
 }
@@ -52,8 +58,7 @@
         _volumes = [NSMutableArray new];
         
         _pickingController = [CryPickingController new];
-        _pickingController.showDelegate = self;
-    }
+        _pickingController.showDelegate = self;    }
     return self;
 }
 
@@ -77,8 +82,18 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 - (IBAction)start:(UIBarButtonItem *)sender {
+    [_volumes removeAllObjects];
     [_pickingController startListening];
+    [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop:)] animated:YES];
 }
+
+-(void) stop:(id)sender{
+    [_pickingController stopListening];
+    [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(start:)] animated:YES];
+}
+
+
+
 
 -(void) initPlot{
     [self configureHosts];
@@ -98,7 +113,7 @@
     [graph applyTheme:[CPTTheme themeNamed:kCPTDarkGradientTheme]];
     self.hostView.hostedGraph = graph;
     // 2 - Set graph title
-    NSString *title = @"Crying Volmes";
+//    NSString *title = @"Crying Volmes";
 //    graph.title = title;
     // 3 - Create and set text style
     CPTMutableTextStyle *titleStyle = [CPTMutableTextStyle textStyle];
@@ -112,23 +127,34 @@
     [graph.plotAreaFrame setPaddingLeft:30.0f];
     [graph.plotAreaFrame setPaddingBottom:30.0f];
     // 5 - Enable user interactions for plot space
+    
+    CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *) graph.defaultPlotSpace;
+    plotSpace.delegate = self;
+    
     [self configurePlotSpace];
-//    plotSpace.allowsUserInteraction = YES;
 }
 -(void)configurePlotSpace{
     CPTGraph *graph = [self.hostView hostedGraph];
-    // 5 - Set up plot space
-    CGFloat xMin = [[[_volumes lastObject]time] timeIntervalSinceDate:[self baseTime]] - 50.0f;
-    xMin = MAX(xMin, 0);
-    CGFloat xMax = 60.0f;
-//    CGFloat xMax = 60.0f;
-    CGFloat yMin = -70.0f;
-    CGFloat yMax = 90.0f;  // should determine dynamically based on max price
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *) graph.defaultPlotSpace;
-    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(xMin) length:CPTDecimalFromFloat(xMax)];
-    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(yMin) length:CPTDecimalFromFloat(yMax)];
-    plotSpace.allowsUserInteraction = YES;
-
+    
+    // 5 - Set up plot space
+    CGFloat xLocation = [[[_volumes lastObject]time] timeIntervalSinceDate:[self baseTime]] - (DisplayXRange -DisplayXRightMergin);
+    xLocation = MAX(xLocation, 0);
+    
+    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(xLocation) length:CPTDecimalFromFloat(DisplayXRange)];
+    yRange =[CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(DisplayYLocation) length:CPTDecimalFromFloat(DisplayYRange)];
+    plotSpace.yRange = yRange;
+    [self configureGlobalPlotSpace];
+}
+-(void)configureGlobalPlotSpace{
+    CPTGraph *graph = [self.hostView hostedGraph];
+    CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *) graph.defaultPlotSpace;
+    
+    CGFloat xGlobalRangeLocation= [[[_volumes lastObject]time] timeIntervalSinceDate:[self baseTime]] - (GlobalXRange);
+    xGlobalRangeLocation = MAX(xGlobalRangeLocation, 0.0f);
+    plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(xGlobalRangeLocation) length:CPTDecimalFromFloat(GlobalXRange+DisplayXRightMergin) ];
+    plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(DisplayYLocation) length:CPTDecimalFromFloat(DisplayYRange)];
+    
 }
 
 -(void)configurePlots{
@@ -275,12 +301,9 @@
     
 }
 
--(void)cryPickingController:(CryPickingController *)cryPickingController meterState:(AudioQueueLevelMeterState )meterState{
-    NSString *meterText =[ NSString stringWithFormat: @"peak:%d average:%d",(int)roundf(meterState.mPeakPower),(int)roundf(meterState.mAveragePower)];
-    Volume *volume = [Volume new ];
-    volume.peak = (float)roundf(meterState.mPeakPower);
-    volume.average = (float)roundf(meterState.mAveragePower);
-    volume.time = [NSDate date];
+-(void)cryPickingController:(CryPickingController *)cryPickingController volume:(Volume * )volume{
+    NSString *meterText =[ NSString stringWithFormat: @"peak:%d average:%d",(int)roundf(volume.peak),(int)roundf(volume.average)];
+
     [_volumes addObject:volume];
     
     if([_volumes count] == 1){
@@ -288,6 +311,8 @@
     }
     if (scrollSwitch.on) {
         [self configurePlotSpace];
+    }else{
+        [self configureGlobalPlotSpace];
     }
     
 
@@ -307,20 +332,34 @@
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)idx{
     NSInteger valueCount = [_volumes count];
+    int rateOfMagnification = [self rateOfMagnification];
+    NSInteger theIndex = idx * rateOfMagnification;
+    NSInteger lastIndex = MAX(0, (idx + 1) * rateOfMagnification -1) ;
+
+    float maxAverage = -100.0f;
+    float maxPeak = -100.0f;
     switch (fieldEnum) {
         case CPTScatterPlotFieldX:
-            if (idx < valueCount) {
+            if (theIndex < valueCount) {
                 NSDate *baseTime = [self baseTime];
-                NSDate *time = [[_volumes objectAtIndex:idx] time];
+                NSDate *time = [[_volumes objectAtIndex:theIndex] time];
 //                NSLog(@"plot for index:%d, x:%f " ,idx, [time timeIntervalSinceDate:baseTime]);
                 return [NSNumber numberWithDouble:[time timeIntervalSinceDate:baseTime]];
             }
             break;
         case CPTScatterPlotFieldY:
+//            float *maxAverage = 0.0f;
+//            float maxPeak = 0.0f;
+            for (NSInteger i = theIndex; i <= lastIndex && i < valueCount; i++) {
+                Volume *theVolume = [_volumes objectAtIndex:i];
+                maxAverage = MAX(maxAverage, theVolume.average);
+                maxPeak = MAX(maxPeak,theVolume.peak);
+            }
+            
             if ([plot.identifier isEqual:TickerSymbolAverage] == YES) {
-                return [NSNumber numberWithFloat: [(Volume *) [_volumes objectAtIndex:idx] average]];
+                return [NSNumber numberWithFloat: maxAverage];
             } else if ([plot.identifier isEqual:TickerSymbolPeak] == YES) {
-                return [NSNumber numberWithFloat: [(Volume *) [_volumes objectAtIndex:idx] peak]];
+                return [NSNumber numberWithFloat: maxPeak];
             }
             break;
     }
@@ -328,7 +367,7 @@
 }
 
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot{
-    return [_volumes count];
+    return [_volumes count]/[self rateOfMagnification];
 }
 
 -(NSDate *)baseTime{
@@ -337,6 +376,46 @@
         return base;
     }
     return nil;
+}
+- (IBAction)switchChanged:(UISwitch *)sender {
+    CPTGraph *graph = [self.hostView hostedGraph];
+    CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *) graph.defaultPlotSpace;
+    if(sender.on){
+        plotSpace.allowsUserInteraction = NO;
+    }else{
+        plotSpace.allowsUserInteraction = YES;
+    }
+}
+
+-(CPTPlotRange *)plotSpace:(CPTPlotSpace *)space willChangePlotRangeTo:(CPTPlotRange *)newRange forCoordinate:(CPTCoordinate)coordinate{
+    if(coordinate == CPTCoordinateY){
+        return yRange;
+    }else if(coordinate == CPTCoordinateX){
+        int rateOfMagnification =  [self rateOfMagnification:newRange];
+        if(rateOfMagnification<1){
+            return ((CPTXYPlotSpace *)space).xRange;
+        }
+    }
+    return newRange;
+}
+
+-(void)plotSpace:(CPTPlotSpace *)space didChangePlotRangeForCoordinate:(CPTCoordinate)coordinate{
+//    CPTPlotRange * xRange =((CPTXYPlotSpace *)space).xRange;
+//    float mag=  [[NSDecimalNumber decimalNumberWithDecimal:xRange.length] intValue]/DisplayXRange;
+//    rateOfMagnification =  (int)mag;
+//    NSLog(@"realMag:%f intMag:%d ",mag,rateOfMagnification );
+}
+-(int)rateOfMagnification :(CPTPlotRange*)range{
+    float mag=  [[NSDecimalNumber decimalNumberWithDecimal:range.length] intValue]/DisplayXRange;
+    
+//    NSLog(@"realMag:%f intMag:%d ",mag,(int)mag );
+    return (int )mag;
+}
+
+-(int)rateOfMagnification{
+    CPTGraph *graph = [self.hostView hostedGraph];
+    CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *) graph.defaultPlotSpace;
+    return [self rateOfMagnification:plotSpace.xRange];
 }
 
 @end

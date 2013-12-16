@@ -26,6 +26,9 @@ extern NSString *const RelationDataSavingStartNotifiction;
 
 @property (nonatomic,strong) NSMutableDictionary *peerDiscoveryInfo;
 
+@property (nonatomic,strong) NSMutableArray *contacts;
+@property (nonatomic,strong) NSMutableArray *histData;
+
 
 -(BOOL) sendDeviceTokenToPeer;
 
