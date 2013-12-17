@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13A603" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="HistoryModel" representedClassName="HistoryModel" syncable="YES">
+        <attribute name="startTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="volumes" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="VolumeModel" syncable="YES"/>
+    </entity>
+    <entity name="VolumeModel" representedClassName="VolumeModel" syncable="YES">
+        <attribute name="average" optional="YES" attributeType="Float" defaultValueString="-100" syncable="YES"/>
+        <attribute name="isOverThreashold" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="peak" optional="YES" attributeType="Float" defaultValueString="-100" syncable="YES"/>
+        <attribute name="time" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="history" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HistoryModel" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="VolumeModel" positionX="9702" positionY="-6696" width="128" height="118"/>
+        <element name="HistoryModel" positionX="9432" positionY="-6768" width="128" height="73"/>
+    </elements>
+</model>

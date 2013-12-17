@@ -12,8 +12,9 @@
 #import "CorePlot-CocoaTouch.h"
 #import "Volume.h"
 #import "BAConstant.h"
+#import "VolumeModel.h"
 
-@interface ListeningViewController ()<BLCryPickingShowDelegate,CPTPlotDataSource,CPTPlotSpaceDelegate>
+@interface ListeningViewController ()<BLCryPickingShowDelegate,CPTPlotDataSource,CPTPlotSpaceDelegate,NSFetchedResultsControllerDelegate>
 @property (strong, nonatomic) IBOutlet UILabel *meterLavel;
 @property (strong, nonatomic) IBOutlet CPTGraphHostingView *hostView;
 
@@ -65,6 +66,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSError *error;
+	if (![[self fetchedResultsController] performFetch:&error]) {
+		// Update to handle the error appropriately.
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		exit(-1);  // Fail
+	}
+    
 	// Do any additional setup after loading the view.
 
 }
@@ -84,7 +92,19 @@
 - (IBAction)start:(UIBarButtonItem *)sender {
     [_volumes removeAllObjects];
     [_pickingController startListening];
+    NSPredicate *predicate =[NSPredicate predicateWithFormat:@"history == %@", _pickingController.historyModel];
+    NSLog(@"history:%@",_pickingController.historyModel.startTime);
+    [self.fetchedResultsController.fetchRequest setPredicate:predicate];
+    
+    NSError *error;
+	if (![[self fetchedResultsController] performFetch:&error]) {
+		// Update to handle the error appropriately.
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		exit(-1);  // Fail
+	}
+    
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop:)] animated:YES];
+    
 }
 
 -(void) stop:(id)sender{
@@ -336,6 +356,14 @@
     NSInteger theIndex = idx * rateOfMagnification;
     NSInteger lastIndex = MAX(0, (idx + 1) * rateOfMagnification -1) ;
 
+    
+    
+    id  sectionInfo =
+    [[_fetchedResultsController sections] objectAtIndex:0];
+//    NSLog(@"sectionInfo : num = %d", [sectionInfo numberOfObjects]);
+    NSInteger count = [sectionInfo numberOfObjects];
+    
+    
     float maxAverage = -100.0f;
     float maxPeak = -100.0f;
     switch (fieldEnum) {
@@ -356,6 +384,13 @@
                 maxPeak = MAX(maxPeak,theVolume.peak);
             }
             
+            if(idx < count){
+                
+            VolumeModel *model =[_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];
+            NSLog(@"volume idx:%d ave:%@ peak:%@",idx,model.average,model.peak);
+                
+            }
+            
             if ([plot.identifier isEqual:TickerSymbolAverage] == YES) {
                 return [NSNumber numberWithFloat: maxAverage];
             } else if ([plot.identifier isEqual:TickerSymbolPeak] == YES) {
@@ -367,6 +402,11 @@
 }
 
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot{
+    
+    id  sectionInfo =
+    [[_fetchedResultsController sections] objectAtIndex:0];
+    NSLog(@"sectionInfo : num = %d", [sectionInfo numberOfObjects]);
+
     return [_volumes count]/[self rateOfMagnification];
 }
 
@@ -416,6 +456,39 @@
     CPTGraph *graph = [self.hostView hostedGraph];
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *) graph.defaultPlotSpace;
     return [self rateOfMagnification:plotSpace.xRange];
+}
+
+- (NSFetchedResultsController *)fetchedResultsController {
+    
+    if (_fetchedResultsController != nil) {
+        return _fetchedResultsController;
+    }
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    NSManagedObjectContext *context = delegate.managedObjectContext;
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"VolumeModel" inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    
+    
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
+                              initWithKey:@"time" ascending:NO];
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
+    NSPredicate *predicate =[NSPredicate predicateWithFormat:@"history == %@", _pickingController.historyModel];
+    NSLog(@"history:%@",_pickingController.historyModel.startTime);
+    [fetchRequest setPredicate:predicate];
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSFetchedResultsController *theFetchedResultsController =
+    [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                        managedObjectContext:context sectionNameKeyPath:nil
+                                                   cacheName:nil];
+    self.fetchedResultsController = theFetchedResultsController;
+    _fetchedResultsController.delegate = self;
+    
+    return _fetchedResultsController;
+    
 }
 
 @end

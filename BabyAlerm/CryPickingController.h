@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 #import "Volume.h"
+#import "HistoryModel.h"
 
 @class CryPickingController;
 
@@ -20,6 +21,7 @@
 @protocol BLCryPickingShowDelegate <NSObject>
 
 -(void)cryPickingController:(CryPickingController *)cryPickingController volume:(Volume * )volume;
+
 @end
 
 @interface CryPickingController : NSObject
@@ -34,5 +36,7 @@
 @property (nonatomic) float maxPeak;
 @property (nonatomic) int maxTimes;
 @property (nonatomic) AudioQueueRef queue;
+
+@property(nonatomic,strong) HistoryModel *historyModel;
 
 @end

@@ -12,6 +12,8 @@
 #import <Parse/Parse.h>
 #import "History.h"
 #import "HistoryDetail.h"
+#import "HistoryModel.h"
+#import "VolumeModel.h"
 
 @interface CryPickingController()
 
@@ -24,6 +26,7 @@
     BOOL _checkingInProgress;
     NSInteger _times;
     NSTimer *timer;
+    
 }
 static void AudioInputCallback(  void* inUserData,
                                AudioQueueRef inAQ,
@@ -40,6 +43,8 @@ static void AudioInputCallback(  void* inUserData,
         self.maxAverage = -1.0f;
         self.maxPeak = -1.0f;
         self.maxTimes = 1;
+        AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+        
     }
     return self;
 }
@@ -78,12 +83,23 @@ static void AudioInputCallback(  void* inUserData,
     NSMutableArray *histData = delegate.histData;
     History *history = [History new];
     history.startTime = [NSDate date];
+    
+    NSManagedObjectContext *context = delegate.managedObjectContext;
+    self.historyModel = [NSEntityDescription insertNewObjectForEntityForName:@"HistoryModel" inManagedObjectContext:context];
+    self.historyModel.startTime = [NSDate date];
+    
+    NSError *error;
+    if (![context save:&error]) {
+        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
+    }
+    
     [histData addObject:history];
+    
     
     timer = [NSTimer scheduledTimerWithTimeInterval:1
                                      target:self
                                    selector:@selector(updateVolume:)
-                                   userInfo:nil
+                                           userInfo:nil
                                     repeats:YES];
 }
 
@@ -94,6 +110,7 @@ static void AudioInputCallback(  void* inUserData,
 }
 
 -(void)updateVolume :(NSTimer *)timer{
+    
     AudioQueueLevelMeterState levelMeter;
     UInt32 levelMeterSize = sizeof(AudioQueueLevelMeterState);
     AudioQueueGetProperty(_queue,kAudioQueueProperty_CurrentLevelMeterDB,&levelMeter,&levelMeterSize);
@@ -102,6 +119,36 @@ static void AudioInputCallback(  void* inUserData,
     volume.peak = (float)roundf(levelMeter.mPeakPower);
     volume.average = (float)roundf(levelMeter.mAveragePower);
     volume.time = [NSDate date];
+    
+    
+//    HistoryModel *historyModel =  timer.userInfo[@"historyModel"];
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSManagedObjectContext *context = delegate.managedObjectContext;
+    VolumeModel *volumeModel = [NSEntityDescription insertNewObjectForEntityForName:@"VolumeModel" inManagedObjectContext:context];
+    volumeModel.peak =[NSNumber numberWithFloat:roundf(levelMeter.mPeakPower)] ;
+    volumeModel.average =[NSNumber numberWithFloat:(float)roundf(levelMeter.mAveragePower)];
+    volumeModel.time = [NSDate date];
+    [self.historyModel addVolumesObject:volumeModel ];
+    NSError *error;
+    if (![context save:&error]) {
+        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
+    }
+    
+//    // Test listing all FailedBankInfos from the store
+//    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+//    NSEntityDescription *entity = [NSEntityDescription entityForName:@"HistoryModel"
+//                                              inManagedObjectContext:context];
+//    [fetchRequest setEntity:entity];
+//    NSArray *fetchedObjects = [context executeFetchRequest:fetchRequest error:&error];
+//    for (HistoryModel *model in fetchedObjects) {
+//        NSLog(@"starttime: %@", model.startTime);
+//        NSOrderedSet *details = model.volumes;
+//        [details enumerateObjectsUsingBlock:^(VolumeModel *obj, NSUInteger idx, BOOL *stop) {
+//            NSLog(@"ave: %@",obj.average);
+//            NSLog(@"peak: %@",obj.peak);
+//        }];
+//    }
+    
     
     [self.showDelegate cryPickingController:self volume:volume];
     

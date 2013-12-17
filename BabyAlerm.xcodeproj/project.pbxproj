@@ -48,6 +48,9 @@
 		73B2F272185C9CC900655748 /* History.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F271185C9CC900655748 /* History.m */; };
 		73B2F275185C9CD900655748 /* HistoryDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F274185C9CD900655748 /* HistoryDetail.m */; };
 		73B2F277185F33A600655748 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73B2F276185F33A600655748 /* CoreData.framework */; };
+		73B2F27A185F340E00655748 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F278185F340E00655748 /* Model.xcdatamodeld */; };
+		73B2F2CA185F3CDD00655748 /* VolumeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F2C9185F3CDD00655748 /* VolumeModel.m */; };
+		73B2F2CD185F3D8F00655748 /* HistoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F2CC185F3D8F00655748 /* HistoryModel.m */; };
 		CB94C5F385CF451E81F84D2E /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 952DEAEA20EF485FA0C9880E /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -200,6 +203,11 @@
 		73B2F273185C9CD900655748 /* HistoryDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryDetail.h; sourceTree = "<group>"; };
 		73B2F274185C9CD900655748 /* HistoryDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryDetail.m; sourceTree = "<group>"; };
 		73B2F276185F33A600655748 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		73B2F279185F340E00655748 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		73B2F2C8185F3CDD00655748 /* VolumeModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VolumeModel.h; sourceTree = "<group>"; };
+		73B2F2C9185F3CDD00655748 /* VolumeModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VolumeModel.m; sourceTree = "<group>"; };
+		73B2F2CB185F3D8F00655748 /* HistoryModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryModel.h; sourceTree = "<group>"; };
+		73B2F2CC185F3D8F00655748 /* HistoryModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryModel.m; sourceTree = "<group>"; };
 		8C5C44959992410FBF6877AC /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		952DEAEA20EF485FA0C9880E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -340,6 +348,11 @@
 				73B2F26B185C9B0800655748 /* HistoryViewController.m */,
 				73B2F26D185C9B1D00655748 /* HistoryDetailViewController.h */,
 				73B2F26E185C9B1D00655748 /* HistoryDetailViewController.m */,
+				73B2F278185F340E00655748 /* Model.xcdatamodeld */,
+				73B2F2CB185F3D8F00655748 /* HistoryModel.h */,
+				73B2F2CC185F3D8F00655748 /* HistoryModel.m */,
+				73B2F2C8185F3CDD00655748 /* VolumeModel.h */,
+				73B2F2C9185F3CDD00655748 /* VolumeModel.m */,
 			);
 			path = BabyAlerm;
 			sourceTree = "<group>";
@@ -612,6 +625,7 @@
 				73B2F16F18504B6A00655748 /* Person.m in Sources */,
 				735D168318464A0D00DC27EE /* Result.m in Sources */,
 				73B2F26F185C9B1D00655748 /* HistoryDetailViewController.m in Sources */,
+				73B2F27A185F340E00655748 /* Model.xcdatamodeld in Sources */,
 				735D16771844554A00DC27EE /* ListeningViewController.m in Sources */,
 				73B2F272185C9CC900655748 /* History.m in Sources */,
 				73B2F26C185C9B0800655748 /* HistoryViewController.m in Sources */,
@@ -619,8 +633,10 @@
 				73B2F2691855F88700655748 /* BAConstant.m in Sources */,
 				7386DA90184067D40037A8A3 /* AppDelegate.m in Sources */,
 				73B2F16C18503EA800655748 /* ContactViewController.m in Sources */,
+				73B2F2CA185F3CDD00655748 /* VolumeModel.m in Sources */,
 				73B2F2651855F62000655748 /* Volume.m in Sources */,
 				735D167C1845A1CF00DC27EE /* ReceiverTableViewController.m in Sources */,
+				73B2F2CD185F3D8F00655748 /* HistoryModel.m in Sources */,
 				736BB3FB184789DE004D334C /* SenderTableViewController.m in Sources */,
 				735D16801845C42500DC27EE /* Device.m in Sources */,
 				7386DA8C184067D40037A8A3 /* main.m in Sources */,
@@ -866,6 +882,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		73B2F278185F340E00655748 /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				73B2F279185F340E00655748 /* Model.xcdatamodel */,
+			);
+			currentVersion = 73B2F279185F340E00655748 /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 7386DA74184067D40037A8A3 /* Project object */;
 }

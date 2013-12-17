@@ -8,9 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "CryPickingController.h"
+#import "HistoryModel.h"
 
 @interface ListeningViewController : UIViewController{
 }
+
+@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
+//@property(nonatomic,strong) HistoryModel *historyModel;
 
 -(void)setCryingVCDelegate :(id<BLCryPickingDelegate>) delegate;
 @end
