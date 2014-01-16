@@ -28,12 +28,9 @@
 
 -(void)startListening;
 -(void)stopListening;
--(void) notify;
 
 @property  (nonatomic, assign) id<BLCryPickingDelegate> delegate;
 @property (nonatomic,assign)id<BLCryPickingShowDelegate> showDelegate;
-@property (nonatomic) float maxAverage;
-@property (nonatomic) float maxPeak;
 @property (nonatomic) int maxTimes;
 @property (nonatomic) AudioQueueRef queue;
 

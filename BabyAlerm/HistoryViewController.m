@@ -10,8 +10,11 @@
 #import "AppDelegate.h"
 #import "History.h"
 #import "HistoryDetailViewController.h"
+#import "ListeningViewController.h"
 
-@interface HistoryViewController ()
+@interface HistoryViewController ()<NSFetchedResultsControllerDelegate>
+
+@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
 @end
 
@@ -29,6 +32,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    
+    NSError *error;
+	if (![[self fetchedResultsController] performFetch:&error]) {
+		// Update to handle the error appropriately.
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		exit(-1);  // Fail
+	}
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -52,21 +63,24 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [[self historyData] count];
+    id sectionInfo = [[self.fetchedResultsController sections]objectAtIndex:0];
+    return [sectionInfo numberOfObjects];
+//    return [[self historyData] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    History *history =[[self historyData] objectAtIndex:[indexPath row]];
+    
+    HistoryModel *historyModel = [self.fetchedResultsController objectAtIndexPath:indexPath];
+//    History *history =[[self historyData] objectAtIndex:[indexPath row]];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 	[dateFormatter setDateFormat:@"YYYY/MM/dd HH:mm:ss"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"JST"]];
-    NSString *timeString =[dateFormatter stringFromDate:[history startTime]];
+    NSString *timeString =[dateFormatter stringFromDate:[historyModel startTime]];
     cell.textLabel.text = timeString;
     // Configure the cell...
-    
     return cell;
 }
 
@@ -116,17 +130,61 @@
 {
     if([segue.identifier isEqualToString:@"ToHistoryDetail"]){
         HistoryDetailViewController *toVC = segue.destinationViewController;
-        toVC.historyIndex = [[self.tableView indexPathForSelectedRow] row];
+        toVC.historyModel = [self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
+    }else if([segue.identifier isEqualToString:@"ToHistoryGraph"]){
+        __weak ListeningViewController *toVC = segue.destinationViewController;
+        toVC.historyModel =[self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
+        toVC.showHistory = YES;
+        toVC.displayType = BAGraphDisplayTypeShowAllInView;
+        toVC.completionBlock = ^(){
+            toVC.showHistory = NO;
+            toVC.historyModel = nil;
+            toVC.fetchedResultsController = nil;
+            [self dismissViewControllerAnimated:YES completion:nil];
+        };
     }
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }
 
 
-
 -(NSMutableArray *)historyData{
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     return appDelegate.histData;
 }
+
+
+
+- (NSFetchedResultsController *)fetchedResultsController {
+    
+    if (_fetchedResultsController != nil) {
+        return _fetchedResultsController;
+    }
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    NSManagedObjectContext *context = delegate.managedObjectContext;
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"HistoryModel" inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    
+    
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
+                              initWithKey:@"startTime" ascending:YES];
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
+    
+    //    [fetchRequest setPredicate:predicate];
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSFetchedResultsController *theFetchedResultsController =
+    [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                        managedObjectContext:context sectionNameKeyPath:nil
+                                                   cacheName:nil];
+    self.fetchedResultsController = theFetchedResultsController;
+    _fetchedResultsController.delegate = self;
+    return _fetchedResultsController;
+    
+}
+
 
 @end

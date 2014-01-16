@@ -10,11 +10,29 @@
 #import "CryPickingController.h"
 #import "HistoryModel.h"
 
+/**
+ *  @brief Enumeration of labeling policies
+ **/
+typedef enum _BAGraphDisplayType {
+    BAGraphDisplayTypeShowAllInView,
+    BAGraphDisplayTypeShowRecentInViewAndAllInGlobal,
+    BAGraphDisplayTypeShowAnyInViewAndAllInGlobal,
+    BAGraphDisplayTypeShowRecentInViewAndGlobal
+}
+BAGraphDisplayType;
+
 @interface ListeningViewController : UIViewController{
 }
 
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 //@property(nonatomic,strong) HistoryModel *historyModel;
+
+@property (nonatomic) BOOL showHistory;
+@property (nonatomic,strong) HistoryModel *historyModel;
+@property (nonatomic) BAGraphDisplayType displayType;
+
+@property (nonatomic, copy) void (^completionBlock)();
+
 
 -(void)setCryingVCDelegate :(id<BLCryPickingDelegate>) delegate;
 @end

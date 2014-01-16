@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HistoryModel.h"
 
 @interface HistoryDetailViewController : UITableViewController
 
 @property (nonatomic) NSInteger historyIndex;
+@property (nonatomic) HistoryModel *historyModel;
 
 @end

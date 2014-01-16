@@ -10,9 +10,11 @@
 #import "AppDelegate.h"
 #import "History.h"
 #import "HistoryDetail.h"
+#import "VolumeModel.h"
 
-@interface HistoryDetailViewController ()
+@interface HistoryDetailViewController ()<NSFetchedResultsControllerDelegate>
 
+@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @end
 
 @implementation HistoryDetailViewController
@@ -30,6 +32,12 @@
 {
     [super viewDidLoad];
 
+    NSError *error;
+	if (![[self fetchedResultsController] performFetch:&error]) {
+		// Update to handle the error appropriately.
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		exit(-1);  // Fail
+	}
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
@@ -52,22 +60,27 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [[self history] count];
+    
+    id sectionInfo = [[self.fetchedResultsController sections]objectAtIndex:0];
+    return [sectionInfo numberOfObjects];
+//    return [[self history] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    HistoryDetail *detail =[[self history] objectAtIndex:[indexPath row]];
-    Volume *volume = detail.volume;
+//    HistoryDetail *detail =[[self history] objectAtIndex:[indexPath row]];
+//    Volume *volume = detail.volume;
+    
+    VolumeModel *volumeModel = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 	[dateFormatter setDateFormat:@"YYYY/MM/dd HH:mm:ss"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"JST"]];
-    NSString *timeString =[dateFormatter stringFromDate:volume.time];
+    NSString *timeString =[dateFormatter stringFromDate:volumeModel.time];
     
-    NSString *subText =[ NSString stringWithFormat: @"peak:%d average:%d",(int)roundf(volume.peak),(int)roundf(volume.average)];
+    NSString *subText =[ NSString stringWithFormat: @"peak:%d average:%d",(int)roundf([volumeModel.peak floatValue]),(int)roundf([volumeModel.average floatValue])];
     
     
     cell.textLabel.text = timeString;
@@ -139,5 +152,38 @@
     return [[self historyData] objectAtIndex:self.historyIndex];
 }
 
+
+- (NSFetchedResultsController *)fetchedResultsController {
+    
+    if (_fetchedResultsController != nil) {
+        return _fetchedResultsController;
+    }
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    NSManagedObjectContext *context = delegate.managedObjectContext;
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"VolumeModel" inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    
+    
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
+                              initWithKey:@"time" ascending:YES];
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
+    NSPredicate *predicate =[NSPredicate predicateWithFormat:@"history == %@ and isOverThreashold = 1", self.historyModel];
+    
+    [fetchRequest setPredicate:predicate];
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSFetchedResultsController *theFetchedResultsController =
+    [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                        managedObjectContext:context sectionNameKeyPath:nil
+                                                   cacheName:nil];
+    self.fetchedResultsController = theFetchedResultsController;
+    _fetchedResultsController.delegate = self;
+    
+    return _fetchedResultsController;
+    
+}
 
 @end

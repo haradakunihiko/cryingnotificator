@@ -11,6 +11,8 @@
 #import "Device.h"
 #import "Result.h"
 #import <MBProgressHUD/MBProgressHUD.h>
+#import "HistoryModel.h"
+#import "VolumeModel.h"
 
 
 NSString *const kServiceType = @"tz-babyalerm";
@@ -72,12 +74,59 @@ NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationData
     self.peerDiscoveryInfo = [NSMutableDictionary new];
     self.contacts = [NSMutableArray new];
     self.histData = [NSMutableArray new];
+    
+    NSUserDefaults *defaults =[NSUserDefaults standardUserDefaults];
+    NSDictionary *settingDefaultDictionary = @{SettingKeyThreshold: @-10};
+    
+    [defaults registerDefaults:settingDefaultDictionary];
+    
+    // Test listing all FailedBankInfos from the store
+//    NSError *error;
+//    
+//    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+//    NSEntityDescription *entity = [NSEntityDescription entityForName:@"HistoryModel"
+//                                              inManagedObjectContext:self.managedObjectContext];
+//    
+//    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
+//                              initWithKey:@"startTime" ascending:NO];
+//    
+//    [fetchRequest setEntity:entity];
+//    [fetchRequest setSortDescriptors:@[sort]];
+//    NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+//    for (HistoryModel *history in fetchedObjects) {
+//        NSLog(@"Time: %@", history.startTime);
+//        NSOrderedSet *volumeSet = history.volumes;
+//        NSLog(@"1");
+//        NSLog(@"Volumes count: %d", volumeSet.count);
+//        [volumeSet enumerateObjectsUsingBlock:^(VolumeModel *obj, NSUInteger idx, BOOL *stop) {
+//            NSLog(@"volume:time:%@ peak:%f, ave:%f",obj.time,[obj.peak floatValue],[obj.average floatValue]);
+//        }];
+//        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+//        NSEntityDescription *entity = [NSEntityDescription
+//                                       entityForName:@"VolumeModel" inManagedObjectContext:self.managedObjectContext];
+//        [fetchRequest setEntity:entity];
+//        
+//        
+//        NSSortDescriptor *sort = [[NSSortDescriptor alloc]
+//                                  initWithKey:@"time" ascending:NO];
+//        [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
+//        NSPredicate *predicate =[NSPredicate predicateWithFormat:@"history == %@", history];
+//        [fetchRequest setPredicate:predicate];
+//        NSArray *volumeFetched = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+//        NSLog(@"2");
+//        NSLog(@"Volumescount:%d",volumeFetched.count);
+//        [volumeFetched enumerateObjectsUsingBlock:^(VolumeModel *obj, NSUInteger idx, BOOL *stop) {
+//            NSLog(@"volume:time:%@ peak:%f, ave:%f",obj.time,[obj.peak floatValue],[obj.average floatValue]);
+//        }];
+//    }
+    
     return YES;
 }
 
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
@@ -95,6 +144,7 @@ NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationData
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
@@ -355,5 +405,6 @@ NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationData
 {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
+
 
 @end

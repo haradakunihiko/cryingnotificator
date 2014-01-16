@@ -22,4 +22,7 @@ extern float const GlobalXRange;
 extern float const DisplayYLocation;
 extern float const DisplayYRange;
 
+
+extern NSString * const SettingKeyThreshold;
+
 @end

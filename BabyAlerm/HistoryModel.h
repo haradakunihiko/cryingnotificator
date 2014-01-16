@@ -2,7 +2,7 @@
 //  HistoryModel.h
 //  BabyAlerm
 //
-//  Created by harada on 2013/12/16.
+//  Created by harada on 2013/12/18.
 //  Copyright (c) 2013年 harada. All rights reserved.
 //
 
@@ -15,6 +15,7 @@
 
 @property (nonatomic, retain) NSDate * startTime;
 @property (nonatomic, retain) NSOrderedSet *volumes;
+
 @end
 
 @interface HistoryModel (CoreDataGeneratedAccessors)

@@ -26,6 +26,7 @@
     BOOL _checkingInProgress;
     NSInteger _times;
     NSTimer *timer;
+    BOOL notifying;
     
 }
 static void AudioInputCallback(  void* inUserData,
@@ -40,10 +41,7 @@ static void AudioInputCallback(  void* inUserData,
 -(id)init{
     if(self = [super init]){
         [self preparePicking];
-        self.maxAverage = -1.0f;
-        self.maxPeak = -1.0f;
         self.maxTimes = 1;
-        AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
         
     }
     return self;
@@ -95,7 +93,8 @@ static void AudioInputCallback(  void* inUserData,
     
     [histData addObject:history];
     
-    
+    notifying = NO;
+    _times =0;
     timer = [NSTimer scheduledTimerWithTimeInterval:1
                                      target:self
                                    selector:@selector(updateVolume:)
@@ -125,59 +124,47 @@ static void AudioInputCallback(  void* inUserData,
     AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSManagedObjectContext *context = delegate.managedObjectContext;
     VolumeModel *volumeModel = [NSEntityDescription insertNewObjectForEntityForName:@"VolumeModel" inManagedObjectContext:context];
+
     volumeModel.peak =[NSNumber numberWithFloat:roundf(levelMeter.mPeakPower)] ;
     volumeModel.average =[NSNumber numberWithFloat:(float)roundf(levelMeter.mAveragePower)];
     volumeModel.time = [NSDate date];
-    [self.historyModel addVolumesObject:volumeModel ];
+//    [self.historyModel addVolumesObject:volumeModel ];
+    volumeModel.history = self.historyModel;
     NSError *error;
     if (![context save:&error]) {
         NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
     }
     
-//    // Test listing all FailedBankInfos from the store
-//    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-//    NSEntityDescription *entity = [NSEntityDescription entityForName:@"HistoryModel"
-//                                              inManagedObjectContext:context];
-//    [fetchRequest setEntity:entity];
-//    NSArray *fetchedObjects = [context executeFetchRequest:fetchRequest error:&error];
-//    for (HistoryModel *model in fetchedObjects) {
-//        NSLog(@"starttime: %@", model.startTime);
-//        NSOrderedSet *details = model.volumes;
-//        [details enumerateObjectsUsingBlock:^(VolumeModel *obj, NSUInteger idx, BOOL *stop) {
-//            NSLog(@"ave: %@",obj.average);
-//            NSLog(@"peak: %@",obj.peak);
-//        }];
-//    }
-    
-    
     [self.showDelegate cryPickingController:self volume:volume];
-    
-    
-    if ( levelMeter.mPeakPower >= self.maxPeak || levelMeter.mAveragePower >= self.maxAverage) {
-        _times++;
-    }else{
-        _times--;
-        if(_times <0){
-            _times = 0;
+    float threshold =[[NSUserDefaults standardUserDefaults] floatForKey:SettingKeyThreshold];
+    if ( levelMeter.mPeakPower >= threshold || levelMeter.mAveragePower >= threshold) {
+        if(!notifying){
+            [self notify:volumeModel];
+            notifying = YES;
         }
-    }
-    if(_times >= self.maxTimes){
-        [self notify:volume];
         _times = 0;
+    }else{
+        if(notifying){
+            _times++;
+            if(_times >=10){
+                notifying = NO;
+            }
+        }
     }
 }
 
--(void)notify :(Volume *)volume{
+-(void)notify :(VolumeModel *)volumeModel{
     NSLog(@"fire!");
     
     AppDelegate *delegate =(AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSArray *notifyContacts = delegate.contacts;
+    volumeModel.isOverThreashold = @1;
     
-    NSArray *histData = delegate.histData;
-    History *histoy = [histData lastObject];
-    HistoryDetail *detail = [HistoryDetail new];
-    detail.volume = volume;
-    [histoy addObject:detail];
+    NSManagedObjectContext *context = delegate.managedObjectContext;
+    NSError *error;
+    if (![context save:&error]) {
+        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
+    }
     
     NSMutableArray *addresses = [NSMutableArray new];
     [notifyContacts enumerateObjectsUsingBlock:^(Person *person, NSUInteger idx, BOOL *stop) {

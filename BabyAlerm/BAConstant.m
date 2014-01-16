@@ -19,4 +19,6 @@ float const GlobalXRange = 60.0f * 60 * 24;
 
 float const DisplayYLocation = -70.0f;
 float const DisplayYRange = 90.0f;
+
+NSString  * const SettingKeyThreshold = @"Threshold";
 @end
