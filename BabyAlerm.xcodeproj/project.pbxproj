@@ -17,11 +17,7 @@
 		735D167018439DC400DC27EE /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D166F18439DC400DC27EE /* Security.framework */; };
 		735D167218439DC900DC27EE /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D167118439DC900DC27EE /* StoreKit.framework */; };
 		735D167418439DD400DC27EE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D167318439DD400DC27EE /* SystemConfiguration.framework */; };
-		735D16771844554A00DC27EE /* ListeningViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D16761844554A00DC27EE /* ListeningViewController.m */; };
-		735D167C1845A1CF00DC27EE /* ReceiverTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D167B1845A1CE00DC27EE /* ReceiverTableViewController.m */; };
-		735D16801845C42500DC27EE /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D167F1845C42500DC27EE /* Device.m */; };
-		735D168318464A0D00DC27EE /* Result.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D168218464A0D00DC27EE /* Result.m */; };
-		736BB3FB184789DE004D334C /* SenderTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736BB3FA184789DE004D334C /* SenderTableViewController.m */; };
+		735D16771844554A00DC27EE /* GraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D16761844554A00DC27EE /* GraphViewController.m */; };
 		7386DA80184067D40037A8A3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7386DA7F184067D40037A8A3 /* Foundation.framework */; };
 		7386DA82184067D40037A8A3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7386DA81184067D40037A8A3 /* CoreGraphics.framework */; };
 		7386DA84184067D40037A8A3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7386DA83184067D40037A8A3 /* UIKit.framework */; };
@@ -37,21 +33,22 @@
 		7386DAA9184067D40037A8A3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7386DAA7184067D40037A8A3 /* InfoPlist.strings */; };
 		7386DAAB184067D40037A8A3 /* BabyAlermTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386DAAA184067D40037A8A3 /* BabyAlermTests.m */; };
 		7386DAB61840704E0037A8A3 /* CryPickingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386DAB51840704E0037A8A3 /* CryPickingController.m */; };
+		73968A791892914100F059F6 /* NotificateTargetModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73968A781892914100F059F6 /* NotificateTargetModel.m */; };
 		73A18B481872884C004B87E2 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A18B471872884C004B87E2 /* SettingViewController.m */; };
-		73B0970F1861D0A500E953A6 /* VolumeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B0970E1861D0A500E953A6 /* VolumeModel.m */; };
-		73B097121861D0A600E953A6 /* HistoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B097111861D0A600E953A6 /* HistoryModel.m */; };
-		73B2F15C184B809F00655748 /* soundbar_plate_mono.png in Resources */ = {isa = PBXBuildFile; fileRef = 73B2F15B184B809F00655748 /* soundbar_plate_mono.png */; };
+		73ABFD6E188EC26D00BD48C6 /* MyTabBarControllerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ABFD6D188EC26D00BD48C6 /* MyTabBarControllerViewController.m */; };
+		73AC4110188F6B6C00A5EAD2 /* ConvinedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AC410F188F6B6C00A5EAD2 /* ConvinedViewController.m */; };
+		73AE2E7E18910AC30010D0F1 /* VolumeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AE2E7D18910AC30010D0F1 /* VolumeModel.m */; };
+		73AE2E8118910AC30010D0F1 /* HistoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AE2E8018910AC30010D0F1 /* HistoryModel.m */; };
 		73B2F16C18503EA800655748 /* ContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F16B18503EA800655748 /* ContactViewController.m */; };
 		73B2F16F18504B6A00655748 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F16E18504B6A00655748 /* Person.m */; };
 		73B2F1C01853648700655748 /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73B2F1BF1853648700655748 /* libCorePlot-CocoaTouch.a */; };
-		73B2F2651855F62000655748 /* Volume.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F2641855F62000655748 /* Volume.m */; };
 		73B2F2691855F88700655748 /* BAConstant.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F2681855F88700655748 /* BAConstant.m */; };
 		73B2F26C185C9B0800655748 /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F26B185C9B0800655748 /* HistoryViewController.m */; };
 		73B2F26F185C9B1D00655748 /* HistoryDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F26E185C9B1D00655748 /* HistoryDetailViewController.m */; };
-		73B2F272185C9CC900655748 /* History.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F271185C9CC900655748 /* History.m */; };
-		73B2F275185C9CD900655748 /* HistoryDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F274185C9CD900655748 /* HistoryDetail.m */; };
 		73B2F277185F33A600655748 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73B2F276185F33A600655748 /* CoreData.framework */; };
 		73B2F27A185F340E00655748 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F278185F340E00655748 /* Model.xcdatamodeld */; };
+		73BD137D188D234300A78A3A /* HistoryGraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BD137C188D234300A78A3A /* HistoryGraphViewController.m */; };
+		73F55DFB188914A500A13054 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F55DFA188914A500A13054 /* MainViewController.m */; };
 		CB94C5F385CF451E81F84D2E /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 952DEAEA20EF485FA0C9880E /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -76,16 +73,8 @@
 		735D166F18439DC400DC27EE /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		735D167118439DC900DC27EE /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		735D167318439DD400DC27EE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		735D16751844554A00DC27EE /* ListeningViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListeningViewController.h; sourceTree = "<group>"; };
-		735D16761844554A00DC27EE /* ListeningViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListeningViewController.m; sourceTree = "<group>"; };
-		735D167A1845A1CE00DC27EE /* ReceiverTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReceiverTableViewController.h; sourceTree = "<group>"; };
-		735D167B1845A1CE00DC27EE /* ReceiverTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReceiverTableViewController.m; sourceTree = "<group>"; };
-		735D167E1845C42500DC27EE /* Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Device.h; sourceTree = "<group>"; };
-		735D167F1845C42500DC27EE /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Device.m; sourceTree = "<group>"; };
-		735D168118464A0D00DC27EE /* Result.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Result.h; sourceTree = "<group>"; };
-		735D168218464A0D00DC27EE /* Result.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Result.m; sourceTree = "<group>"; };
-		736BB3F9184789DE004D334C /* SenderTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SenderTableViewController.h; sourceTree = "<group>"; };
-		736BB3FA184789DE004D334C /* SenderTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SenderTableViewController.m; sourceTree = "<group>"; };
+		735D16751844554A00DC27EE /* GraphViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphViewController.h; sourceTree = "<group>"; };
+		735D16761844554A00DC27EE /* GraphViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphViewController.m; sourceTree = "<group>"; };
 		7386DA7C184067D40037A8A3 /* BabyAlerm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BabyAlerm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7386DA7F184067D40037A8A3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7386DA81184067D40037A8A3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -107,13 +96,18 @@
 		7386DAAA184067D40037A8A3 /* BabyAlermTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BabyAlermTests.m; sourceTree = "<group>"; };
 		7386DAB41840704E0037A8A3 /* CryPickingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CryPickingController.h; sourceTree = "<group>"; };
 		7386DAB51840704E0037A8A3 /* CryPickingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CryPickingController.m; sourceTree = "<group>"; };
+		73968A771892914100F059F6 /* NotificateTargetModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificateTargetModel.h; sourceTree = "<group>"; };
+		73968A781892914100F059F6 /* NotificateTargetModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificateTargetModel.m; sourceTree = "<group>"; };
 		73A18B461872884C004B87E2 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		73A18B471872884C004B87E2 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
-		73B0970D1861D0A500E953A6 /* VolumeModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VolumeModel.h; sourceTree = "<group>"; };
-		73B0970E1861D0A500E953A6 /* VolumeModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VolumeModel.m; sourceTree = "<group>"; };
-		73B097101861D0A600E953A6 /* HistoryModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryModel.h; sourceTree = "<group>"; };
-		73B097111861D0A600E953A6 /* HistoryModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryModel.m; sourceTree = "<group>"; };
-		73B2F15B184B809F00655748 /* soundbar_plate_mono.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = soundbar_plate_mono.png; sourceTree = "<group>"; };
+		73ABFD6C188EC26D00BD48C6 /* MyTabBarControllerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyTabBarControllerViewController.h; sourceTree = "<group>"; };
+		73ABFD6D188EC26D00BD48C6 /* MyTabBarControllerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyTabBarControllerViewController.m; sourceTree = "<group>"; };
+		73AC410E188F6B6C00A5EAD2 /* ConvinedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvinedViewController.h; sourceTree = "<group>"; };
+		73AC410F188F6B6C00A5EAD2 /* ConvinedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConvinedViewController.m; sourceTree = "<group>"; };
+		73AE2E7C18910AC30010D0F1 /* VolumeModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VolumeModel.h; sourceTree = "<group>"; };
+		73AE2E7D18910AC30010D0F1 /* VolumeModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VolumeModel.m; sourceTree = "<group>"; };
+		73AE2E7F18910AC30010D0F1 /* HistoryModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryModel.h; sourceTree = "<group>"; };
+		73AE2E8018910AC30010D0F1 /* HistoryModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryModel.m; sourceTree = "<group>"; };
 		73B2F16A18503EA800655748 /* ContactViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactViewController.h; sourceTree = "<group>"; };
 		73B2F16B18503EA800655748 /* ContactViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactViewController.m; sourceTree = "<group>"; };
 		73B2F16D18504B6A00655748 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
@@ -197,20 +191,18 @@
 		73B2F1BD1853648700655748 /* NSDecimalNumberExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDecimalNumberExtensions.h; sourceTree = "<group>"; };
 		73B2F1BE1853648700655748 /* NSNumberExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSNumberExtensions.h; sourceTree = "<group>"; };
 		73B2F1BF1853648700655748 /* libCorePlot-CocoaTouch.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libCorePlot-CocoaTouch.a"; sourceTree = "<group>"; };
-		73B2F2631855F62000655748 /* Volume.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Volume.h; sourceTree = "<group>"; };
-		73B2F2641855F62000655748 /* Volume.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Volume.m; sourceTree = "<group>"; };
 		73B2F2671855F88700655748 /* BAConstant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAConstant.h; sourceTree = "<group>"; };
 		73B2F2681855F88700655748 /* BAConstant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAConstant.m; sourceTree = "<group>"; };
 		73B2F26A185C9B0800655748 /* HistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryViewController.h; sourceTree = "<group>"; };
 		73B2F26B185C9B0800655748 /* HistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
 		73B2F26D185C9B1D00655748 /* HistoryDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryDetailViewController.h; sourceTree = "<group>"; };
 		73B2F26E185C9B1D00655748 /* HistoryDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryDetailViewController.m; sourceTree = "<group>"; };
-		73B2F270185C9CC900655748 /* History.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = History.h; sourceTree = "<group>"; };
-		73B2F271185C9CC900655748 /* History.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = History.m; sourceTree = "<group>"; };
-		73B2F273185C9CD900655748 /* HistoryDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryDetail.h; sourceTree = "<group>"; };
-		73B2F274185C9CD900655748 /* HistoryDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryDetail.m; sourceTree = "<group>"; };
 		73B2F276185F33A600655748 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		73B2F279185F340E00655748 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		73BD137B188D234300A78A3A /* HistoryGraphViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryGraphViewController.h; sourceTree = "<group>"; };
+		73BD137C188D234300A78A3A /* HistoryGraphViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryGraphViewController.m; sourceTree = "<group>"; };
+		73F55DF9188914A500A13054 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		73F55DFA188914A500A13054 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		8C5C44959992410FBF6877AC /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		952DEAEA20EF485FA0C9880E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -252,28 +244,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		735D167818456B8F00DC27EE /* Login */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Login;
-			sourceTree = "<group>";
-		};
 		735D167D1845C40800DC27EE /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				735D167E1845C42500DC27EE /* Device.h */,
-				735D167F1845C42500DC27EE /* Device.m */,
-				735D168118464A0D00DC27EE /* Result.h */,
-				735D168218464A0D00DC27EE /* Result.m */,
+				73968A771892914100F059F6 /* NotificateTargetModel.h */,
+				73968A781892914100F059F6 /* NotificateTargetModel.m */,
+				73B2F278185F340E00655748 /* Model.xcdatamodeld */,
+				73AE2E7F18910AC30010D0F1 /* HistoryModel.h */,
+				73AE2E8018910AC30010D0F1 /* HistoryModel.m */,
+				73AE2E7C18910AC30010D0F1 /* VolumeModel.h */,
+				73AE2E7D18910AC30010D0F1 /* VolumeModel.m */,
 				73B2F16D18504B6A00655748 /* Person.h */,
 				73B2F16E18504B6A00655748 /* Person.m */,
-				73B2F2631855F62000655748 /* Volume.h */,
-				73B2F2641855F62000655748 /* Volume.m */,
-				73B2F270185C9CC900655748 /* History.h */,
-				73B2F271185C9CC900655748 /* History.m */,
-				73B2F273185C9CD900655748 /* HistoryDetail.h */,
-				73B2F274185C9CD900655748 /* HistoryDetail.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -326,38 +308,34 @@
 		7386DA85184067D40037A8A3 /* BabyAlerm */ = {
 			isa = PBXGroup;
 			children = (
+				73AC410D188F6B3900A5EAD2 /* Singleview */,
 				73B2F2661855F86000655748 /* Util */,
-				73B2F15B184B809F00655748 /* soundbar_plate_mono.png */,
 				735D167D1845C40800DC27EE /* Model */,
-				735D167818456B8F00DC27EE /* Login */,
 				7386DA8E184067D40037A8A3 /* AppDelegate.h */,
 				7386DA8F184067D40037A8A3 /* AppDelegate.m */,
 				7386DA91184067D40037A8A3 /* Main.storyboard */,
 				7386DA94184067D40037A8A3 /* ViewController.h */,
 				7386DA95184067D40037A8A3 /* ViewController.m */,
 				7386DA97184067D40037A8A3 /* Images.xcassets */,
-				7386DA86184067D40037A8A3 /* Supporting Files */,
 				7386DAB41840704E0037A8A3 /* CryPickingController.h */,
 				7386DAB51840704E0037A8A3 /* CryPickingController.m */,
-				735D16751844554A00DC27EE /* ListeningViewController.h */,
-				735D16761844554A00DC27EE /* ListeningViewController.m */,
-				735D167A1845A1CE00DC27EE /* ReceiverTableViewController.h */,
-				735D167B1845A1CE00DC27EE /* ReceiverTableViewController.m */,
-				736BB3F9184789DE004D334C /* SenderTableViewController.h */,
-				736BB3FA184789DE004D334C /* SenderTableViewController.m */,
+				735D16751844554A00DC27EE /* GraphViewController.h */,
+				735D16761844554A00DC27EE /* GraphViewController.m */,
 				73B2F16A18503EA800655748 /* ContactViewController.h */,
 				73B2F16B18503EA800655748 /* ContactViewController.m */,
 				73B2F26A185C9B0800655748 /* HistoryViewController.h */,
 				73B2F26B185C9B0800655748 /* HistoryViewController.m */,
 				73B2F26D185C9B1D00655748 /* HistoryDetailViewController.h */,
 				73B2F26E185C9B1D00655748 /* HistoryDetailViewController.m */,
-				73B2F278185F340E00655748 /* Model.xcdatamodeld */,
-				73B097101861D0A600E953A6 /* HistoryModel.h */,
-				73B097111861D0A600E953A6 /* HistoryModel.m */,
-				73B0970D1861D0A500E953A6 /* VolumeModel.h */,
-				73B0970E1861D0A500E953A6 /* VolumeModel.m */,
 				73A18B461872884C004B87E2 /* SettingViewController.h */,
 				73A18B471872884C004B87E2 /* SettingViewController.m */,
+				7386DA86184067D40037A8A3 /* Supporting Files */,
+				73F55DF9188914A500A13054 /* MainViewController.h */,
+				73F55DFA188914A500A13054 /* MainViewController.m */,
+				73BD137B188D234300A78A3A /* HistoryGraphViewController.h */,
+				73BD137C188D234300A78A3A /* HistoryGraphViewController.m */,
+				73ABFD6C188EC26D00BD48C6 /* MyTabBarControllerViewController.h */,
+				73ABFD6D188EC26D00BD48C6 /* MyTabBarControllerViewController.m */,
 			);
 			path = BabyAlerm;
 			sourceTree = "<group>";
@@ -389,6 +367,15 @@
 				7386DAA7184067D40037A8A3 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		73AC410D188F6B3900A5EAD2 /* Singleview */ = {
+			isa = PBXGroup;
+			children = (
+				73AC410E188F6B6C00A5EAD2 /* ConvinedViewController.h */,
+				73AC410F188F6B6C00A5EAD2 /* ConvinedViewController.m */,
+			);
+			name = Singleview;
 			sourceTree = "<group>";
 		};
 		73B2F1701853648700655748 /* CorePlotHeaders */ = {
@@ -571,7 +558,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7386DA98184067D40037A8A3 /* Images.xcassets in Resources */,
-				73B2F15C184B809F00655748 /* soundbar_plate_mono.png in Resources */,
 				7386DA8A184067D40037A8A3 /* InfoPlist.strings in Resources */,
 				7386DA93184067D40037A8A3 /* Main.storyboard in Resources */,
 			);
@@ -627,25 +613,23 @@
 			files = (
 				7386DAB61840704E0037A8A3 /* CryPickingController.m in Sources */,
 				7386DA96184067D40037A8A3 /* ViewController.m in Sources */,
+				73968A791892914100F059F6 /* NotificateTargetModel.m in Sources */,
 				73B2F16F18504B6A00655748 /* Person.m in Sources */,
-				735D168318464A0D00DC27EE /* Result.m in Sources */,
 				73B2F26F185C9B1D00655748 /* HistoryDetailViewController.m in Sources */,
 				73B2F27A185F340E00655748 /* Model.xcdatamodeld in Sources */,
-				735D16771844554A00DC27EE /* ListeningViewController.m in Sources */,
-				73B2F272185C9CC900655748 /* History.m in Sources */,
+				735D16771844554A00DC27EE /* GraphViewController.m in Sources */,
+				73BD137D188D234300A78A3A /* HistoryGraphViewController.m in Sources */,
+				73AE2E7E18910AC30010D0F1 /* VolumeModel.m in Sources */,
 				73B2F26C185C9B0800655748 /* HistoryViewController.m in Sources */,
-				73B2F275185C9CD900655748 /* HistoryDetail.m in Sources */,
+				73AC4110188F6B6C00A5EAD2 /* ConvinedViewController.m in Sources */,
 				73B2F2691855F88700655748 /* BAConstant.m in Sources */,
 				7386DA90184067D40037A8A3 /* AppDelegate.m in Sources */,
 				73B2F16C18503EA800655748 /* ContactViewController.m in Sources */,
-				73B0970F1861D0A500E953A6 /* VolumeModel.m in Sources */,
-				73B2F2651855F62000655748 /* Volume.m in Sources */,
-				735D167C1845A1CF00DC27EE /* ReceiverTableViewController.m in Sources */,
-				73B097121861D0A600E953A6 /* HistoryModel.m in Sources */,
 				73A18B481872884C004B87E2 /* SettingViewController.m in Sources */,
-				736BB3FB184789DE004D334C /* SenderTableViewController.m in Sources */,
-				735D16801845C42500DC27EE /* Device.m in Sources */,
+				73AE2E8118910AC30010D0F1 /* HistoryModel.m in Sources */,
+				73F55DFB188914A500A13054 /* MainViewController.m in Sources */,
 				7386DA8C184067D40037A8A3 /* main.m in Sources */,
+				73ABFD6E188EC26D00BD48C6 /* MyTabBarControllerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

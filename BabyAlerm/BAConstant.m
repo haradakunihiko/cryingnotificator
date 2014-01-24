@@ -12,8 +12,8 @@
 NSString * const TickerSymbolPeak = @"PEAK";
 NSString * const TickerSymbolAverage = @"AVERAGE";
 
-float const DisplayXRange = 60.0f;
-float const DisplayXRightMergin = 10.0f;
+float const DisplayXRange = 76.0f;
+float const DisplayXRightMergin = 8.0f;
 //float const GlobalRange = 60.0f * 60 * 10;
 float const GlobalXRange = 60.0f * 60 * 24;
 

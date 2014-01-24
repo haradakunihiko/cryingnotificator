@@ -2,8 +2,8 @@
 //  VolumeModel.h
 //  BabyAlerm
 //
-//  Created by harada on 2013/12/18.
-//  Copyright (c) 2013年 harada. All rights reserved.
+//  Created by harada on 2014/01/23.
+//  Copyright (c) 2014年 harada. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

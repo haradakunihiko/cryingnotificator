@@ -298,32 +298,6 @@ NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationData
 //    }
 }
 
-- (void)cryPickingController:(CryPickingController *)cryPickingController notify:(BOOL)notify{
-    if(notify){
-        NSLog(@" push to channel:%@",self.installationId);
-        PFQuery *query = [PFQuery queryWithClassName:@"Relation"];
-        [query whereKey:@"senderId" equalTo:self.installationId];
-        NSMutableArray *array = [NSMutableArray new];
-        NSArray *objects = [query findObjects];
-        [objects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            [array addObject:obj[@"receiverId"]];
-
-        }];
-        
-        PFQuery *pushQuery = [PFInstallation query];
-        [pushQuery whereKey:@"installationId" containedIn:array];
-        
-        PFPush *push = [[PFPush alloc]init];
-        [push setQuery:pushQuery];
-//        [push setMessage:@"crying"];
-        [push setData:[NSDictionary dictionaryWithObjectsAndKeys:
-                      @"Baby is crying", @"alert",
-                      @"default", @"sound",
-                       nil]];
-        [push sendPushInBackground];
-    }
-}
-
 
 #pragma mark - Core Data stack
 

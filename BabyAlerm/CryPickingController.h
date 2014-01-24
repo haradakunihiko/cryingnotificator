@@ -8,32 +8,24 @@
 
 #import <Foundation/Foundation.h>
 #import <AudioToolbox/AudioToolbox.h>
-#import "Volume.h"
 #import "HistoryModel.h"
-
+#import "GraphViewController.h"
 @class CryPickingController;
 
-@protocol BLCryPickingDelegate <NSObject>
-// Notifies the delegate, when the user taps the done button
-- (void)cryPickingController:(CryPickingController *)cryPickingController notify:(BOOL )notify;
-@end
-
-@protocol BLCryPickingShowDelegate <NSObject>
-
--(void)cryPickingController:(CryPickingController *)cryPickingController volume:(Volume * )volume;
-
-@end
-
-@interface CryPickingController : NSObject
+@interface CryPickingController : NSObject<GraphViewControllerDataSource>
 
 -(void)startListening;
 -(void)stopListening;
 
-@property  (nonatomic, assign) id<BLCryPickingDelegate> delegate;
-@property (nonatomic,assign)id<BLCryPickingShowDelegate> showDelegate;
 @property (nonatomic) int maxTimes;
 @property (nonatomic) AudioQueueRef queue;
 
 @property(nonatomic,strong) HistoryModel *historyModel;
+
+@property (nonatomic,strong) HistoryModel *history;
+//@property (nonatomic,strong )GraphViewController *graphViewController;
+//@property  (nonatomic,strong) GraphViewController *graphViewController;
+
+@property (nonatomic,strong)GraphViewController *graphVC;
 
 @end

@@ -7,7 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GraphViewController.h"
+#import "ConvinedViewController.h"
 
 @interface HistoryViewController : UITableViewController
+
+@property(nonatomic,strong) GraphViewController *graphViewController;
+@property(nonatomic,strong) ConvinedViewController *convinedViewController;
+
+-(void) refreshTable;
+-(void) reloadData;
+-(NSInteger) numberOfHistory;
 
 @end

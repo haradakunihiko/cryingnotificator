@@ -8,8 +8,6 @@
 
 #import "HistoryDetailViewController.h"
 #import "AppDelegate.h"
-#import "History.h"
-#import "HistoryDetail.h"
 #import "VolumeModel.h"
 
 @interface HistoryDetailViewController ()<NSFetchedResultsControllerDelegate>
@@ -146,10 +144,6 @@
 -(NSArray *)historyData{
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     return appDelegate.histData;
-}
-
--(History *)history{
-    return [[self historyData] objectAtIndex:self.historyIndex];
 }
 
 

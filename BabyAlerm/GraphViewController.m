@@ -4,72 +4,79 @@
 //
 //  Created by harada on 2013/11/26.
 //  Copyright (c) 2013年 harada. All rights reserved.
-#import "ListeningViewController.h"
 #import "AppDelegate.h"
 #import "CorePlot-CocoaTouch.h"
-#import "Volume.h"
 #import "BAConstant.h"
 #import "VolumeModel.h"
+
+//#import "CPTPlotAreaFrame.h"
 // 002003 3 276
 // 002403 3 279
 
+@interface UIWindow(AutoLayoutDebug)
++(UIWindow *) keyWindow;
+-(NSString *) _autolayoutTrace;
 
-@interface ListeningViewController ()<BLCryPickingShowDelegate,CPTPlotDataSource,CPTPlotSpaceDelegate,NSFetchedResultsControllerDelegate,UINavigationBarDelegate>
-@property (strong, nonatomic) IBOutlet UILabel *meterLavel;
-@property (strong, nonatomic) IBOutlet CPTGraphHostingView *hostView;
 @end
 
-@implementation ListeningViewController{
+
+@interface GraphViewController ()<CPTPlotDataSource,CPTPlotSpaceDelegate,NSFetchedResultsControllerDelegate,UINavigationBarDelegate>
+@property (strong, nonatomic) IBOutlet UILabel *meterLavel;
+@property (strong, nonatomic) IBOutlet CPTGraphHostingView *hostView;
+@property (strong, nonatomic) IBOutlet UIToolbar *toolBar;
+
+@property NSArray *listeningConstraints;
+@property NSArray *historyConstraints;
+
+@end
+
+@implementation GraphViewController{
     
     IBOutlet UISwitch *scrollSwitch;
-    CryPickingController *_pickingController;
     BOOL playing;
     CPTPlotRange *yRange;
     NSInteger prevMag;
+    CPTLineStyle *_defaultXAxisStyle;
 }
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        _pickingController = [CryPickingController new];
-        _pickingController.showDelegate = self;
-        self.displayType = BAGraphDisplayTypeShowRecentInViewAndGlobal;
-    }
-    return self;
-}
--(id)init{
-    if(self = [super init]){
-        _pickingController = [CryPickingController new];
-        _pickingController.showDelegate = self;
-        self.displayType = BAGraphDisplayTypeShowRecentInViewAndGlobal;
-    }
-    return self;
-}
-
--(id)initWithCoder:(NSCoder *)aDecoder{
-    if(self = [super initWithCoder:aDecoder]){
-        _pickingController = [CryPickingController new];
-        _pickingController.showDelegate = self;
-        self.displayType = BAGraphDisplayTypeShowRecentInViewAndGlobal;
-    }
-    return self;
-}
-
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
+-(void)viewDidLoad{
+    [super viewDidLoad];
     [self initPlot];
     
-    if(self.showHistory){
+    
+    if(self.datasource){
         
         NSError *error;
+        // does not need at the main view
         if (![[self fetchedResultsController] performFetch:&error]) {
             // Update to handle the error appropriately.
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             exit(-1);  // Fail
         }
         
-        [self updatePlotspaceToShowAll];
+        // this method should be called for history init;
+        //    [self updatePlotspaceToShowAll];
+        [self resetXAxes];
+        [self updatePlotSpace:self.displayType];
+        [[self.hostView hostedGraph] reloadData];
+    }
+    
+}
+
+-(void)redraw{
+    if(self.datasource){
+        
+        NSError *error;
+        // does not need at the main view
+        if (![[self fetchedResultsController] performFetch:&error]) {
+            // Update to handle the error appropriately.
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            exit(-1);  // Fail
+        }
+        
+        // this method should be called for history init;
+        //    [self updatePlotspaceToShowAll];
+        [self resetXAxes];
+        [self updatePlotSpace:self.displayType];
         [[self.hostView hostedGraph] reloadData];
     }
 }
@@ -79,33 +86,6 @@
         self.completionBlock();
     }
 }
-- (IBAction)start:(UIBarButtonItem *)sender {
-    [_pickingController startListening];
-    
-    [NSFetchedResultsController deleteCacheWithName:nil];
-    NSPredicate *predicate =[NSPredicate predicateWithFormat:@"history == %@", [self historyModel]];
-    NSLog(@"history:%@",[self historyModel].startTime);
-    [self.fetchedResultsController.fetchRequest setPredicate:predicate];
-    
-    self.displayType = BAGraphDisplayTypeShowRecentInViewAndGlobal;
-    
-    NSError *error;
-	if (![[self fetchedResultsController] performFetch:&error]) {
-		// Update to handle the error appropriately.
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-		exit(-1);  // Fail
-	}
-    
-    [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop:)] animated:YES];
-}
-
--(void) stop:(id)sender{
-    [_pickingController stopListening];
-    [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(start:)] animated:YES];
-}
-
-
-
 
 -(void) initPlot{
     [self configureHosts];
@@ -122,7 +102,7 @@
 -(void)configureGraph{
     // 1 - Create the graph
     CPTGraph *graph = [[CPTXYGraph alloc] initWithFrame:self.hostView.bounds];
-    [graph applyTheme:[CPTTheme themeNamed:kCPTDarkGradientTheme]];
+    [graph applyTheme:[CPTTheme themeNamed:kCPTPlainBlackTheme]];
     self.hostView.hostedGraph = graph;
     CPTMutableTextStyle *titleStyle = [CPTMutableTextStyle textStyle];
     titleStyle.color = [CPTColor whiteColor];
@@ -131,11 +111,17 @@
     graph.titleTextStyle = titleStyle;
     graph.titlePlotAreaFrameAnchor = CPTRectAnchorTop;
     graph.titleDisplacement = CGPointMake(0.0f, 10.0f);
-    // 4 - Set padding for plot area
-    [graph.plotAreaFrame setPaddingLeft:30.0f];
-    [graph.plotAreaFrame setPaddingBottom:30.0f];
-    [graph.plotAreaFrame setPaddingRight:30.0f];
+    graph.plotAreaFrame.borderLineStyle = nil;
     
+    // 4 - Set padding for plot area
+    graph.paddingBottom = 0.0f;
+    graph.paddingLeft = 0.0f;
+    graph.paddingRight = 0.0f;
+    graph.paddingTop = 0.0f;
+    
+//    [graph.plotAreaFrame setPaddingLeft:30.0f];
+    [graph.plotAreaFrame setPaddingBottom:15.0f];
+//    [graph.plotAreaFrame setPaddingRight:30.0f];
 }
 -(void)configurePlotSpace{
     CPTGraph *graph = self.hostView.hostedGraph;
@@ -190,23 +176,23 @@
 -(void)configureAxes{
     
     // 1 - Create styles
-    CPTMutableTextStyle *axisTitleStyle = [CPTMutableTextStyle textStyle];
-    axisTitleStyle.color = [CPTColor whiteColor];
-    axisTitleStyle.fontName = @"Helvetica-Bold";
-    axisTitleStyle.fontSize = 12.0f;
-    CPTMutableLineStyle *axisLineStyle = [CPTMutableLineStyle lineStyle];
-    axisLineStyle.lineWidth = 2.0f;
-    axisLineStyle.lineColor = [CPTColor whiteColor];
+//    CPTMutableTextStyle *axisTitleStyle = [CPTMutableTextStyle textStyle];
+//    axisTitleStyle.color = [CPTColor whiteColor];
+//    axisTitleStyle.fontName = @"Helvetica-Bold";
+//    axisTitleStyle.fontSize = 12.0f;
+//    CPTMutableLineStyle *axisLineStyle = [CPTMutableLineStyle lineStyle];
+//    axisLineStyle.lineWidth = 2.0f;
+//    axisLineStyle.lineColor = [CPTColor whiteColor];
     
     CPTMutableLineStyle *lineStyleClear = [CPTMutableLineStyle lineStyle];
     lineStyleClear.lineWidth = 0.0f;
     lineStyleClear.lineColor = [CPTColor clearColor];
     
     
-    CPTMutableTextStyle *axisTextStyle = [[CPTMutableTextStyle alloc] init];
-    axisTextStyle.color = [CPTColor whiteColor];
-    axisTextStyle.fontName = @"Helvetica-Bold";
-    axisTextStyle.fontSize = 11.0f;
+//    CPTMutableTextStyle *axisTextStyle = [[CPTMutableTextStyle alloc] init];
+//    axisTextStyle.color = [CPTColor whiteColor];
+//    axisTextStyle.fontName = @"Helvetica-Bold";
+//    axisTextStyle.fontSize = 11.0f;
     
     CPTMutableTextStyle *textStyleClear = [[CPTMutableTextStyle alloc] init];
     textStyleClear.color = [CPTColor clearColor];
@@ -215,49 +201,35 @@
     
     
     
-    CPTMutableLineStyle *tickLineStyle = [CPTMutableLineStyle lineStyle];
-    tickLineStyle.lineColor = [CPTColor whiteColor];
-    tickLineStyle.lineWidth = 2.0f;
+//    CPTMutableLineStyle *tickLineStyle = [CPTMutableLineStyle lineStyle];
+//    tickLineStyle.lineColor = [CPTColor whiteColor];
+//    tickLineStyle.lineWidth = 2.0f;
 
-    CPTMutableLineStyle *gridLineStyle = [CPTMutableLineStyle lineStyle];
-    tickLineStyle.lineColor = [CPTColor blackColor];
-    tickLineStyle.lineWidth = 1.0f;
+//    CPTMutableLineStyle *gridLineStyle = [CPTMutableLineStyle lineStyle];
+//    tickLineStyle.lineColor = [CPTColor blackColor];
+//    tickLineStyle.lineWidth = 1.0f;
     // 2 - Get axis set
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *) self.hostView.hostedGraph.axisSet;
     // 3 - Configure x-axis
-    CPTAxis *x = axisSet.xAxis;
-//    x.title = @"Time";
-    x.titleTextStyle = axisTitleStyle;
-    x.titleOffset = 15.0f;
-    x.axisLineStyle = axisLineStyle;
-    x.labelingPolicy = CPTAxisLabelingPolicyFixedInterval;
-    x.labelTextStyle = axisTextStyle;
-    x.majorTickLineStyle = axisLineStyle;
-//    x.majorTickLength = 4.0f;
+    CPTXYAxis *x = axisSet.xAxis;
+//    CPTXYAxis
+    _defaultXAxisStyle = x.axisLineStyle;
+    x.axisLineStyle = lineStyleClear;
+    
+//    x.axisLineStyle = axisLineStyle;
+    x.labelingPolicy = CPTAxisLabelingPolicyNone;
+//    x.labelTextStyle = axisTextStyle;
+//    x.majorTickLineStyle = axisLineStyle;
     x.tickDirection = CPTSignPositive;
     
-    // Graph data prepare
-	NSDate *refDate = [self baseTime];
-
-    //per 5s
-	x.majorIntervalLength = CPTDecimalFromFloat(30.0f);
-//	x.minorTicksPerInterval = 10;
+    x.orthogonalCoordinateDecimal = [[NSNumber numberWithFloat:DisplayYLocation] decimalValue];
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-	[dateFormatter setDateFormat:@"HH:mm:ss"];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"JST"]];
-
-	CPTTimeFormatter *timeFormatter = [[CPTTimeFormatter alloc] initWithDateFormatter:dateFormatter];
-    timeFormatter.referenceDate = refDate;
-    x.labelFormatter = timeFormatter;
-
     // 4 - Configure y-axis
-    CPTAxis *y = axisSet.yAxis;
-//    y.title = @"Price";
-//    y.titleTextStyle = axisTitleStyle;
-//    y.titleOffset = -40.0f;
+    CPTXYAxis *y = axisSet.yAxis;
+
+//    y.orthogonalCoordinateDecimal = [[NSNumber numberWithFloat:-30.0f] decimalValue];
     y.axisLineStyle = lineStyleClear;
-    y.majorGridLineStyle = gridLineStyle;
+//    y.majorGridLineStyle = gridLineStyle;
     y.labelingPolicy = CPTAxisLabelingPolicyAutomatic;
     y.labelTextStyle = textStyleClear;
     y.labelOffset = 10.0f;
@@ -269,10 +241,36 @@
     y.minorTicksPerInterval = 0;
     NSMutableSet *yLabels = [NSMutableSet set];
     NSMutableSet *yMajorLocations = [NSMutableSet set];
-    NSMutableSet *yMinorLocations = [NSMutableSet set];    y.axisLabels = yLabels;
+    NSMutableSet *yMinorLocations = [NSMutableSet set];
+    y.axisLabels = yLabels;
     y.majorTickLocations = yMajorLocations;
     y.minorTickLocations = yMinorLocations;
 }
+
+-(void) resetXAxes{
+    // 2 - Get axis set
+    CPTXYAxisSet *axisSet = (CPTXYAxisSet *) self.hostView.hostedGraph.axisSet;
+    // 3 - Configure x-axis
+    CPTAxis *x = axisSet.xAxis;
+    
+    x.axisLineStyle = _defaultXAxisStyle;
+    
+    x.labelingPolicy = CPTAxisLabelingPolicyFixedInterval;
+    // Graph data prepare
+	NSDate *refDate = [self baseTime];
+    
+    //per 5s
+	x.majorIntervalLength = CPTDecimalFromFloat(20.0f);
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setDateFormat:@"HH:mm:ss"];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"JST"]];
+    
+	CPTTimeFormatter *timeFormatter = [[CPTTimeFormatter alloc] initWithDateFormatter:dateFormatter];
+    timeFormatter.referenceDate = refDate;
+    x.labelFormatter = timeFormatter;
+}
+
 
 
 -(void)updatePlotSpace : (BAGraphDisplayType) showType{
@@ -304,7 +302,7 @@
             
             // 5 - Set up plot space
             CGFloat xLocation = [[self lastTime] timeIntervalSinceDate:[self baseTime]] - (DisplayXRange -DisplayXRightMergin);
-            xLocation = MAX(xLocation, 0);
+            xLocation = MAX(xLocation, -8.0f);
             plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(xLocation) length:CPTDecimalFromFloat(DisplayXRange)];
             
             // global x range
@@ -334,44 +332,8 @@
                       otherButtonTitles:nil]
      show];
 }
-- (IBAction)fireManually:(UIButton *)sender {
-//    [_pickingController notify];
-}
-
--(void)cryPickingController:(CryPickingController *)cryPickingController volume:(Volume * )volume{
-    NSString *meterText =[ NSString stringWithFormat: @"peak:%d average:%d",(int)roundf(volume.peak),(int)roundf(volume.average)];
-    
-//    [NSFetchedResultsController deleteCacheWithName:nil];
-    
-    NSError *error;
-	if (![[self fetchedResultsController] performFetch:&error]) {
-		// Update to handle the error appropriately.
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-		exit(-1);  // Fail
-	}
-    if([self volumeCount] == 1){
-        [self configureAxes];
-    }
-    
-    [self updatePlotSpace: self.displayType];
-   
-
-    [[self.hostView hostedGraph] reloadData];
-
-    self.meterLavel.text =meterText;
-}
-
--(void)setCryingVCDelegate:(id<BLCryPickingDelegate>)delegate{
-    if(!_pickingController){
-        _pickingController = [CryPickingController new];
-        _pickingController.showDelegate = self;
-    }
-    _pickingController.delegate = delegate;
-}
-
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)idx{
-//    NSLog(@"%d",idx);
     NSInteger valueCount =[self volumeCount];
     int rateOfMagnification = [self rateOfMagnification];
     NSInteger theIndex;
@@ -430,48 +392,37 @@
         return [NSDate date];
     }
 }
-- (IBAction)switchChanged:(UISwitch *)sender {
-    CPTGraph *graph = [self.hostView hostedGraph];
-    CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *) graph.defaultPlotSpace;
-    if(sender.on){
-        self.displayType = BAGraphDisplayTypeShowRecentInViewAndGlobal;
-        plotSpace.allowsUserInteraction = NO;
-    }else{
-        self.displayType = BAGraphDisplayTypeShowAnyInViewAndAllInGlobal;
-        plotSpace.allowsUserInteraction = YES;
-    }
-}
 
--(CPTPlotRange *)plotSpace:(CPTPlotSpace *)space willChangePlotRangeTo:(CPTPlotRange *)newRange forCoordinate:(CPTCoordinate)coordinate{
-    if(coordinate == CPTCoordinateY){
-        return yRange;
-    }else if(coordinate == CPTCoordinateX){
-        int rateOfMagnification =  [self rateOfMagnification:newRange];
-        if(rateOfMagnification<1){
-            return ((CPTXYPlotSpace *)space).xRange;
-        }
-    }
-    return newRange;
-}
+//-(CPTPlotRange *)plotSpace:(CPTPlotSpace *)space willChangePlotRangeTo:(CPTPlotRange *)newRange forCoordinate:(CPTCoordinate)coordinate{
+//    if(coordinate == CPTCoordinateY){
+//        return yRange;
+//    }else if(coordinate == CPTCoordinateX){
+//        int rateOfMagnification =  [self rateOfMagnification:newRange];
+//        if(rateOfMagnification<1){
+//            return ((CPTXYPlotSpace *)space).xRange;
+//        }
+//    }
+//    return newRange;
+//}
 
--(void)plotSpace:(CPTPlotSpace *)space didChangePlotRangeForCoordinate:(CPTCoordinate)coordinate{
-//    CPTPlotRange * xRange =((CPTXYPlotSpace *)space).xRange;
-//    float mag=  [[NSDecimalNumber decimalNumberWithDecimal:xRange.length] intValue]/DisplayXRange;
-//    rateOfMagnification =  (int)mag;
-//    NSLog(@"realMag:%f intMag:%d ",mag,rateOfMagnification );
-    
-    CPTXYAxisSet *axisSet = (CPTXYAxisSet *) self.hostView.hostedGraph.axisSet;
-    // 3 - Configure x-axis
-    CPTAxis *x = axisSet.xAxis;
-    //per 5s
-    NSInteger currentMag = [self rateOfMagnification];
-    if(prevMag !=currentMag){
-        x.majorIntervalLength = CPTDecimalFromFloat(30.0f * [self rateOfMagnification]);
-        [[self.hostView hostedGraph]reloadData];
-    }
-    prevMag = currentMag;
-    
-}
+//-(void)plotSpace:(CPTPlotSpace *)space didChangePlotRangeForCoordinate:(CPTCoordinate)coordinate{
+////    CPTPlotRange * xRange =((CPTXYPlotSpace *)space).xRange;
+////    float mag=  [[NSDecimalNumber decimalNumberWithDecimal:xRange.length] intValue]/DisplayXRange;
+////    rateOfMagnification =  (int)mag;
+////    NSLog(@"realMag:%f intMag:%d ",mag,rateOfMagnification );
+//    
+//    CPTXYAxisSet *axisSet = (CPTXYAxisSet *) self.hostView.hostedGraph.axisSet;
+//    // 3 - Configure x-axis
+//    CPTAxis *x = axisSet.xAxis;
+//    //per 5s
+//    NSInteger currentMag = [self rateOfMagnification];
+//    if(prevMag !=currentMag){
+//        x.majorIntervalLength = CPTDecimalFromFloat(30.0f * [self rateOfMagnification]);
+//        [[self.hostView hostedGraph]reloadData];
+//    }
+//    prevMag = currentMag;
+//    
+//}
 -(int)rateOfMagnification :(CPTPlotRange*)range{
     float mag=  [[NSDecimalNumber decimalNumberWithDecimal:range.length] intValue]/DisplayXRange;
     
@@ -502,7 +453,6 @@
                               initWithKey:@"time" ascending:YES];
     [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
     NSPredicate *predicate =[NSPredicate predicateWithFormat:@"history == %@", [self historyModel]];
-    NSLog(@"history:%@",[self historyModel].startTime);
     [fetchRequest setPredicate:predicate];
     [fetchRequest setFetchBatchSize:20];
     
@@ -534,15 +484,11 @@
 }
 
 -(HistoryModel *)historyModel{
-    if(self.showHistory){
-        return _historyModel;
+    if(self.datasource){
+        return [self.datasource graphViewControllerDataSource];
     }else{
-        return _pickingController.historyModel;
+        return _historyModel;
     }
-}
-
--(void)navigationBar:(UINavigationBar *)navigationBar didPopItem:(UINavigationItem *)item{
-    NSLog(@"pop!");
 }
 
 -(void)updatePlotspaceToShowAll{
@@ -557,15 +503,43 @@
     x.labelFormatter = timeFormatter;
     
     double interval =([[self lastTime] timeIntervalSince1970] - [[self baseTime] timeIntervalSince1970]);
-    interval = MAX(DisplayXRange, interval);
+    interval = MAX(DisplayXRange - DisplayXRightMergin * 2, interval);
     
-    x.majorIntervalLength = CPTDecimalFromFloat(interval / 2);
+    x.majorIntervalLength = CPTDecimalFromFloat(interval / 3);
     
     CPTGraph *graph = [self.hostView hostedGraph];
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *) graph.defaultPlotSpace;
-    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(0) length:CPTDecimalFromFloat(interval)];
+    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(-interval * 2/15) length:CPTDecimalFromFloat(interval + interval * 4 / 15)];
     
-    [[self.hostView hostedGraph]reloadData];
+//    [[self.hostView hostedGraph]reloadData];
+}
+
+-(void)updateView : (VolumeModel*)volume{
+    NSString *meterText =[ NSString stringWithFormat: @"peak:%d average:%d",(int)roundf([volume.peak intValue]),(int)roundf([volume.average intValue])];
+    
+    //    [NSFetchedResultsController deleteCacheWithName:nil];
+    
+    NSError *error;
+	if (![[self fetchedResultsController] performFetch:&error]) {
+		// Update to handle the error appropriately.
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		exit(-1);  // Fail
+	}
+    if([self volumeCount] == 1){
+        [self resetXAxes];
+    }
+    
+    [self updatePlotSpace: self.displayType];
+    
+    
+    [[self.hostView hostedGraph] reloadData];
+    
+    self.meterLavel.text =meterText;
+}
+
+-(void)initializeWithDisplaytype:(BAGraphDisplayType)displayType{
+    self.fetchedResultsController = nil;
+    self.displayType = displayType;
 }
 
 @end

@@ -10,18 +10,22 @@
 #import <AddressBook/AddressBook.h>
 #import <AddressBookUI/AddressBookUI.h>
 #import "Person.h"
-#import "ListeningViewController.h"
+#import "GraphViewController.h"
 #import "CryPickingController.h"
 #import <Parse/Parse.h>
+#import "NotificateTargetModel.h"
 #import "AppDelegate.h"
 
-@interface ContactViewController ()<ABPeoplePickerNavigationControllerDelegate,BLCryPickingDelegate>{
-//    NSMutableArray* _contacts;
+@interface ContactViewController ()<ABPeoplePickerNavigationControllerDelegate,UIActionSheetDelegate,UIAlertViewDelegate,NSFetchedResultsControllerDelegate>{
+
 }
+@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
 @end
 
-@implementation ContactViewController
+@implementation ContactViewController{
+    UIActionSheet *_acthionSheet;
+}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -36,6 +40,12 @@
 {
     [super viewDidLoad];
     
+    NSError *error;
+	if (![[self fetchedResultsController] performFetch:&error]) {
+		// Update to handle the error appropriately.
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		exit(-1);  // Fail
+	}
 //    _contacts = [NSMutableArray new];
 
     
@@ -44,6 +54,8 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
 //    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    
+ 
     
 }
 
@@ -66,17 +78,21 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
-    return [[self contact] count];
+    id sectionInfo = [[self.fetchedResultsController sections]objectAtIndex:0];
+    return [sectionInfo numberOfObjects];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+ 
+   NotificateTargetModel *target = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0]];
     
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", ((Person *)[self contact][indexPath.row]).firstname, ((Person *)[self contact][indexPath.row]).lastname];
-    cell.detailTextLabel.text = ((Person *)[self contact][indexPath.row]).email;
+//    cell.textLabel.text = ((Person *)[self contact][indexPath.row]).email;
+//    cell.detailTextLabel.text = ((Person *)[self contact][indexPath.row]).fullname;
+    cell.textLabel.text = target.email;
+    cell.detailTextLabel.text = target.fullname;
     
     return cell;
 }
@@ -94,10 +110,18 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+        NSManagedObjectContext *context = delegate.managedObjectContext;
         // Delete the row from the data source
-        [[self contact] removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
+        NotificateTargetModel *target = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        [context deleteObject:target];
+        
+        NSError *error;
+        if (![context save:&error]) {
+            NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
+        }
+    }
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
@@ -130,7 +154,7 @@
 }
 
  */
-- (IBAction)addPerson:(UIBarButtonItem *)sender {
+- (void)addPerson {
     ABPeoplePickerNavigationController *pickerController = [[ABPeoplePickerNavigationController alloc]init];
     pickerController.peoplePickerDelegate = self;
     [self presentViewController:pickerController animated:YES completion:nil];
@@ -172,13 +196,31 @@
     NSString *email = (__bridge NSString *)(ABMultiValueCopyValueAtIndex(multiValue, index));
     NSString *firstName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonFirstNameProperty));
     NSString *lastName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonLastNameProperty));
+    [self saveNewPerson:email firstName:firstName lastName:lastName];
+    return NO;
+}
+
+-(void) saveNewPerson:(NSString *)email firstName:(NSString *)firstName lastName:(NSString *)lastName{
     Person *personObj = [Person new];
     personObj.firstname = firstName;
     personObj.lastname = lastName;
     personObj.email  = email;
     [[self contact] addObject:personObj];
+    
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    
+    NSManagedObjectContext *context = delegate.managedObjectContext;
+    NotificateTargetModel *target = [NSEntityDescription insertNewObjectForEntityForName:@"NotificateTargetModel" inManagedObjectContext:context];
+    target.firstname = firstName;
+    target.lastname = lastName;
+    target.email = email;
+    
+    NSError *error;
+    if (![context save:&error]) {
+        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
+    }
+    
     [self dismissViewControllerAnimated:YES completion:nil];
-    return NO;
 }
 
 - (void) showMessage:(NSString *)message
@@ -191,26 +233,122 @@
      show];
 }
 
--(void)cryPickingController:(CryPickingController *)cryPickingController notify:(BOOL)notify{
-    NSMutableArray *addresses = [NSMutableArray new];
-    [[self contact] enumerateObjectsUsingBlock:^(Person *person, NSUInteger idx, BOOL *stop) {
-        [addresses addObject:person.email];
-    }];
-    
-    [PFCloud callFunctionInBackground:@"sendMail" withParameters:@{@"addresses":addresses} block:^(id object, NSError *error) {
-        NSMutableString *notice = [NSMutableString stringWithString:@"mail sent to :"];
-        [[self contact] enumerateObjectsUsingBlock:^(Person *obj, NSUInteger idx, BOOL *stop) {
-
-            [notice appendString:obj.email];
-            [notice appendString:@"/"];
-        }];
-        NSLog(@"%@",[notice description]);
-    }];
-}
-
 -(NSMutableArray*) contact{
     AppDelegate *delegate =[[UIApplication sharedApplication] delegate];
     return [delegate contacts];
 }
+
+-(IBAction)addPressed:(id)sender{
+    _acthionSheet = [[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Contacts",@"Input",nil];
+//    [_acthionSheet addButtonWithTitle:@"select from contact list"];
+//    [_acthionSheet addButtonWithTitle:@"input manually"];
+//    [_acthionSheet showFromTabBar:self.tabBarController.tabBar];
+//    [_acthionSheet showInView:self.view];
+    [_acthionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
+}
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    NSLog(@"%d",buttonIndex);
+    switch (buttonIndex) {
+        case 0:
+            [self addPerson];
+            break;
+        case 1:
+        {
+            UIAlertView *alertView =[[UIAlertView alloc]initWithTitle:nil message:@"Input email address to send notification." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+            alertView.delegate = self;
+            alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+            [alertView show];
+            
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    _acthionSheet = nil;
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    NSLog(@"%d",buttonIndex);
+    switch (buttonIndex) {
+        case 1:
+        {
+            NSString *text = [[alertView textFieldAtIndex:0] text];
+            [self saveNewPerson:text firstName:nil lastName:nil];
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    [self.tableView reloadData];
+}
+
+- (NSFetchedResultsController *)fetchedResultsController {
+    
+    if (_fetchedResultsController != nil) {
+        return _fetchedResultsController;
+    }
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    NSManagedObjectContext *context = delegate.managedObjectContext;
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"NotificateTargetModel" inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
+                              initWithKey:@"prcdate" ascending:YES];
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSFetchedResultsController *theFetchedResultsController =
+    [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                        managedObjectContext:context sectionNameKeyPath:nil
+                                                   cacheName:nil];
+    self.fetchedResultsController = theFetchedResultsController;
+    _fetchedResultsController.delegate = self;
+    return _fetchedResultsController;
+    
+}
+
+-(void)controllerWillChangeContent:(NSFetchedResultsController *)controller{
+    [self.tableView beginUpdates];
+}
+
+-(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath{
+    
+    UITableView *tableView = self.tableView;
+    switch(type) {
+        case NSFetchedResultsChangeInsert:
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+//            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+//            [tableView deleteRowsAtIndexPaths:[NSArray
+//                                               arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//            [tableView insertRowsAtIndexPaths:[NSArray
+//                                               arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
+-(void)controllerDidChangeContent:(NSFetchedResultsController *)controller{
+    [self.tableView endUpdates];
+}
+
+
 
 @end

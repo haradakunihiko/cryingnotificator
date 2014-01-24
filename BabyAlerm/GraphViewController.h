@@ -7,13 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CryPickingController.h"
 #import "HistoryModel.h"
+#import "VolumeModel.h"
+
+@class CryPickingController;
+@class GraphViewController;
+
+@protocol GraphViewControllerDataSource <NSObject>
+- (HistoryModel *)graphViewControllerDataSource;
+@end
 
 /**
  *  @brief Enumeration of labeling policies
  **/
 typedef enum _BAGraphDisplayType {
+    BAGraphDisplayTypeShowNothing,
     BAGraphDisplayTypeShowAllInView,
     BAGraphDisplayTypeShowRecentInViewAndAllInGlobal,
     BAGraphDisplayTypeShowAnyInViewAndAllInGlobal,
@@ -21,18 +29,24 @@ typedef enum _BAGraphDisplayType {
 }
 BAGraphDisplayType;
 
-@interface ListeningViewController : UIViewController{
-}
+@interface GraphViewController : UIViewController
 
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 //@property(nonatomic,strong) HistoryModel *historyModel;
 
 @property (nonatomic) BOOL showHistory;
+@property (nonatomic,assign) id<GraphViewControllerDataSource> datasource;
+
+
+
 @property (nonatomic,strong) HistoryModel *historyModel;
 @property (nonatomic) BAGraphDisplayType displayType;
 
 @property (nonatomic, copy) void (^completionBlock)();
 
+-(void) updateView: (VolumeModel *)volume;
+-(void) initializeWithDisplaytype : (BAGraphDisplayType) displayType;
 
--(void)setCryingVCDelegate :(id<BLCryPickingDelegate>) delegate;
+-(void) redraw;
+
 @end

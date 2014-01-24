@@ -10,15 +10,14 @@
 #import "CryPickingController.h"
 #import "Person.h"
 #import <Parse/Parse.h>
-#import "History.h"
-#import "HistoryDetail.h"
 #import "HistoryModel.h"
 #import "VolumeModel.h"
+#import "GraphViewController.h"
+#import "NotificateTargetModel.h"
 
 @interface CryPickingController()
 
 -(void)preparePicking;
--(void)notify;
 
 @end
 
@@ -78,9 +77,6 @@ static void AudioInputCallback(  void* inUserData,
         [timer invalidate];
     }
     AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    NSMutableArray *histData = delegate.histData;
-    History *history = [History new];
-    history.startTime = [NSDate date];
     
     NSManagedObjectContext *context = delegate.managedObjectContext;
     self.historyModel = [NSEntityDescription insertNewObjectForEntityForName:@"HistoryModel" inManagedObjectContext:context];
@@ -91,7 +87,6 @@ static void AudioInputCallback(  void* inUserData,
         NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
     }
     
-    [histData addObject:history];
     
     notifying = NO;
     _times =0;
@@ -106,36 +101,43 @@ static void AudioInputCallback(  void* inUserData,
     if(timer){
         [timer invalidate];
     }
+    self.historyModel.endTime = [NSDate date];
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSManagedObjectContext *context = delegate.managedObjectContext;
+    NSError *error;
+    if (![context save:&error]) {
+        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
+    }
+    
+    self.historyModel = nil;
 }
 
 -(void)updateVolume :(NSTimer *)timer{
     
+    // get sound meter.
     AudioQueueLevelMeterState levelMeter;
     UInt32 levelMeterSize = sizeof(AudioQueueLevelMeterState);
     AudioQueueGetProperty(_queue,kAudioQueueProperty_CurrentLevelMeterDB,&levelMeter,&levelMeterSize);
     
-    Volume *volume = [Volume new ];
-    volume.peak = (float)roundf(levelMeter.mPeakPower);
-    volume.average = (float)roundf(levelMeter.mAveragePower);
-    volume.time = [NSDate date];
-    
-    
-//    HistoryModel *historyModel =  timer.userInfo[@"historyModel"];
+    // save to DB
     AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSManagedObjectContext *context = delegate.managedObjectContext;
     VolumeModel *volumeModel = [NSEntityDescription insertNewObjectForEntityForName:@"VolumeModel" inManagedObjectContext:context];
-
     volumeModel.peak =[NSNumber numberWithFloat:roundf(levelMeter.mPeakPower)] ;
     volumeModel.average =[NSNumber numberWithFloat:(float)roundf(levelMeter.mAveragePower)];
     volumeModel.time = [NSDate date];
-//    [self.historyModel addVolumesObject:volumeModel ];
     volumeModel.history = self.historyModel;
     NSError *error;
     if (![context save:&error]) {
         NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
     }
     
-    [self.showDelegate cryPickingController:self volume:volume];
+    // notify to view.
+    [self.graphVC updateView:volumeModel];
+    
+//    [self.showDelegate cryPickingController:self volume:volumeModel];
+    
+    // fire if it is louder than the threshold.
     float threshold =[[NSUserDefaults standardUserDefaults] floatForKey:SettingKeyThreshold];
     if ( levelMeter.mPeakPower >= threshold || levelMeter.mAveragePower >= threshold) {
         if(!notifying){
@@ -157,30 +159,37 @@ static void AudioInputCallback(  void* inUserData,
     NSLog(@"fire!");
     
     AppDelegate *delegate =(AppDelegate *)[[UIApplication sharedApplication] delegate];
-    NSArray *notifyContacts = delegate.contacts;
-    volumeModel.isOverThreashold = @1;
     
     NSManagedObjectContext *context = delegate.managedObjectContext;
-    NSError *error;
-    if (![context save:&error]) {
-        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
-    }
+//    NSError *error;
+//    if (![context save:&error]) {
+//        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
+//    }
+//    
+    
+    NSFetchRequest *fetch = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"NotificateTargetModel" inManagedObjectContext:context];
+    [fetch setEntity:entity];
+
+    NSArray* targets =[context executeFetchRequest:fetch error:nil];
     
     NSMutableArray *addresses = [NSMutableArray new];
-    [notifyContacts enumerateObjectsUsingBlock:^(Person *person, NSUInteger idx, BOOL *stop) {
-        [addresses addObject:person.email];
+    NSMutableString *notice = [NSMutableString stringWithString:@"mail sent to :"];
+    [targets enumerateObjectsUsingBlock:^(NotificateTargetModel *target, NSUInteger idx, BOOL *stop) {
+        [addresses addObject:target.email];
+        [notice appendString:target.email];
+        [notice appendString:@"/"];
     }];
     
     [PFCloud callFunctionInBackground:@"sendMail" withParameters:@{@"addresses":addresses} block:^(id object, NSError *error) {
-        NSMutableString *notice = [NSMutableString stringWithString:@"mail sent to :"];
-        [notifyContacts enumerateObjectsUsingBlock:^(Person *obj, NSUInteger idx, BOOL *stop) {
-            
-            [notice appendString:obj.email];
-            [notice appendString:@"/"];
-        }];
+
         NSLog(@"%@",[notice description]);
     }];
-//    [self.delegate cryPickingController:self notify:YES];
+}
+
+-(HistoryModel *)graphViewControllerDataSource{
+    return self.historyModel;
 }
 
 
