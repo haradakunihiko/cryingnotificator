@@ -9,7 +9,6 @@
 #import "ContactViewController.h"
 #import <AddressBook/AddressBook.h>
 #import <AddressBookUI/AddressBookUI.h>
-#import "Person.h"
 #import "GraphViewController.h"
 #import "CryPickingController.h"
 #import <Parse/Parse.h>
@@ -173,11 +172,8 @@
         NSString *emailAddress = (__bridge NSString *)(ABMultiValueCopyValueAtIndex(addresses, 0));
         NSString *firstName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonFirstNameProperty));
         NSString *lastName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonLastNameProperty));
-        Person *person = [Person new];
-        person.firstname = firstName;
-        person.lastname = lastName;
-        person.email = emailAddress;
-        [[self contact] addObject:person];
+        [self saveNewPerson:emailAddress firstName:firstName lastName:lastName];
+
         [self dismissViewControllerAnimated:YES completion:nil];
         return NO;
     }else{
@@ -201,11 +197,6 @@
 }
 
 -(void) saveNewPerson:(NSString *)email firstName:(NSString *)firstName lastName:(NSString *)lastName{
-    Person *personObj = [Person new];
-    personObj.firstname = firstName;
-    personObj.lastname = lastName;
-    personObj.email  = email;
-    [[self contact] addObject:personObj];
     
     AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
@@ -233,10 +224,6 @@
      show];
 }
 
--(NSMutableArray*) contact{
-    AppDelegate *delegate =[[UIApplication sharedApplication] delegate];
-    return [delegate contacts];
-}
 
 -(IBAction)addPressed:(id)sender{
     _acthionSheet = [[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Contacts",@"Input",nil];
@@ -247,7 +234,6 @@
     [_acthionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
 }
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-    NSLog(@"%d",buttonIndex);
     switch (buttonIndex) {
         case 0:
             [self addPerson];
@@ -271,7 +257,6 @@
 }
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    NSLog(@"%d",buttonIndex);
     switch (buttonIndex) {
         case 1:
         {

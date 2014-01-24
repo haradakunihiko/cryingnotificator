@@ -34,17 +34,14 @@
 		7386DAAB184067D40037A8A3 /* BabyAlermTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386DAAA184067D40037A8A3 /* BabyAlermTests.m */; };
 		7386DAB61840704E0037A8A3 /* CryPickingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386DAB51840704E0037A8A3 /* CryPickingController.m */; };
 		73968A791892914100F059F6 /* NotificateTargetModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73968A781892914100F059F6 /* NotificateTargetModel.m */; };
-		73A18B481872884C004B87E2 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A18B471872884C004B87E2 /* SettingViewController.m */; };
 		73ABFD6E188EC26D00BD48C6 /* MyTabBarControllerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ABFD6D188EC26D00BD48C6 /* MyTabBarControllerViewController.m */; };
 		73AC4110188F6B6C00A5EAD2 /* ConvinedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AC410F188F6B6C00A5EAD2 /* ConvinedViewController.m */; };
 		73AE2E7E18910AC30010D0F1 /* VolumeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AE2E7D18910AC30010D0F1 /* VolumeModel.m */; };
 		73AE2E8118910AC30010D0F1 /* HistoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AE2E8018910AC30010D0F1 /* HistoryModel.m */; };
 		73B2F16C18503EA800655748 /* ContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F16B18503EA800655748 /* ContactViewController.m */; };
-		73B2F16F18504B6A00655748 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F16E18504B6A00655748 /* Person.m */; };
 		73B2F1C01853648700655748 /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73B2F1BF1853648700655748 /* libCorePlot-CocoaTouch.a */; };
 		73B2F2691855F88700655748 /* BAConstant.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F2681855F88700655748 /* BAConstant.m */; };
 		73B2F26C185C9B0800655748 /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F26B185C9B0800655748 /* HistoryViewController.m */; };
-		73B2F26F185C9B1D00655748 /* HistoryDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F26E185C9B1D00655748 /* HistoryDetailViewController.m */; };
 		73B2F277185F33A600655748 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73B2F276185F33A600655748 /* CoreData.framework */; };
 		73B2F27A185F340E00655748 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F278185F340E00655748 /* Model.xcdatamodeld */; };
 		73BD137D188D234300A78A3A /* HistoryGraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BD137C188D234300A78A3A /* HistoryGraphViewController.m */; };
@@ -98,8 +95,6 @@
 		7386DAB51840704E0037A8A3 /* CryPickingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CryPickingController.m; sourceTree = "<group>"; };
 		73968A771892914100F059F6 /* NotificateTargetModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificateTargetModel.h; sourceTree = "<group>"; };
 		73968A781892914100F059F6 /* NotificateTargetModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificateTargetModel.m; sourceTree = "<group>"; };
-		73A18B461872884C004B87E2 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
-		73A18B471872884C004B87E2 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		73ABFD6C188EC26D00BD48C6 /* MyTabBarControllerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyTabBarControllerViewController.h; sourceTree = "<group>"; };
 		73ABFD6D188EC26D00BD48C6 /* MyTabBarControllerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyTabBarControllerViewController.m; sourceTree = "<group>"; };
 		73AC410E188F6B6C00A5EAD2 /* ConvinedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvinedViewController.h; sourceTree = "<group>"; };
@@ -110,8 +105,6 @@
 		73AE2E8018910AC30010D0F1 /* HistoryModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryModel.m; sourceTree = "<group>"; };
 		73B2F16A18503EA800655748 /* ContactViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactViewController.h; sourceTree = "<group>"; };
 		73B2F16B18503EA800655748 /* ContactViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactViewController.m; sourceTree = "<group>"; };
-		73B2F16D18504B6A00655748 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
-		73B2F16E18504B6A00655748 /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
 		73B2F1711853648700655748 /* CorePlot-CocoaTouch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CorePlot-CocoaTouch.h"; sourceTree = "<group>"; };
 		73B2F1721853648700655748 /* CPTAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPTAnimation.h; sourceTree = "<group>"; };
 		73B2F1731853648700655748 /* CPTAnimationOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPTAnimationOperation.h; sourceTree = "<group>"; };
@@ -195,8 +188,6 @@
 		73B2F2681855F88700655748 /* BAConstant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAConstant.m; sourceTree = "<group>"; };
 		73B2F26A185C9B0800655748 /* HistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryViewController.h; sourceTree = "<group>"; };
 		73B2F26B185C9B0800655748 /* HistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
-		73B2F26D185C9B1D00655748 /* HistoryDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryDetailViewController.h; sourceTree = "<group>"; };
-		73B2F26E185C9B1D00655748 /* HistoryDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryDetailViewController.m; sourceTree = "<group>"; };
 		73B2F276185F33A600655748 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		73B2F279185F340E00655748 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		73BD137B188D234300A78A3A /* HistoryGraphViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryGraphViewController.h; sourceTree = "<group>"; };
@@ -254,8 +245,6 @@
 				73AE2E8018910AC30010D0F1 /* HistoryModel.m */,
 				73AE2E7C18910AC30010D0F1 /* VolumeModel.h */,
 				73AE2E7D18910AC30010D0F1 /* VolumeModel.m */,
-				73B2F16D18504B6A00655748 /* Person.h */,
-				73B2F16E18504B6A00655748 /* Person.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -325,10 +314,6 @@
 				73B2F16B18503EA800655748 /* ContactViewController.m */,
 				73B2F26A185C9B0800655748 /* HistoryViewController.h */,
 				73B2F26B185C9B0800655748 /* HistoryViewController.m */,
-				73B2F26D185C9B1D00655748 /* HistoryDetailViewController.h */,
-				73B2F26E185C9B1D00655748 /* HistoryDetailViewController.m */,
-				73A18B461872884C004B87E2 /* SettingViewController.h */,
-				73A18B471872884C004B87E2 /* SettingViewController.m */,
 				7386DA86184067D40037A8A3 /* Supporting Files */,
 				73F55DF9188914A500A13054 /* MainViewController.h */,
 				73F55DFA188914A500A13054 /* MainViewController.m */,
@@ -614,8 +599,6 @@
 				7386DAB61840704E0037A8A3 /* CryPickingController.m in Sources */,
 				7386DA96184067D40037A8A3 /* ViewController.m in Sources */,
 				73968A791892914100F059F6 /* NotificateTargetModel.m in Sources */,
-				73B2F16F18504B6A00655748 /* Person.m in Sources */,
-				73B2F26F185C9B1D00655748 /* HistoryDetailViewController.m in Sources */,
 				73B2F27A185F340E00655748 /* Model.xcdatamodeld in Sources */,
 				735D16771844554A00DC27EE /* GraphViewController.m in Sources */,
 				73BD137D188D234300A78A3A /* HistoryGraphViewController.m in Sources */,
@@ -625,7 +608,6 @@
 				73B2F2691855F88700655748 /* BAConstant.m in Sources */,
 				7386DA90184067D40037A8A3 /* AppDelegate.m in Sources */,
 				73B2F16C18503EA800655748 /* ContactViewController.m in Sources */,
-				73A18B481872884C004B87E2 /* SettingViewController.m in Sources */,
 				73AE2E8118910AC30010D0F1 /* HistoryModel.m in Sources */,
 				73F55DFB188914A500A13054 /* MainViewController.m in Sources */,
 				7386DA8C184067D40037A8A3 /* main.m in Sources */,

@@ -393,36 +393,6 @@
     }
 }
 
-//-(CPTPlotRange *)plotSpace:(CPTPlotSpace *)space willChangePlotRangeTo:(CPTPlotRange *)newRange forCoordinate:(CPTCoordinate)coordinate{
-//    if(coordinate == CPTCoordinateY){
-//        return yRange;
-//    }else if(coordinate == CPTCoordinateX){
-//        int rateOfMagnification =  [self rateOfMagnification:newRange];
-//        if(rateOfMagnification<1){
-//            return ((CPTXYPlotSpace *)space).xRange;
-//        }
-//    }
-//    return newRange;
-//}
-
-//-(void)plotSpace:(CPTPlotSpace *)space didChangePlotRangeForCoordinate:(CPTCoordinate)coordinate{
-////    CPTPlotRange * xRange =((CPTXYPlotSpace *)space).xRange;
-////    float mag=  [[NSDecimalNumber decimalNumberWithDecimal:xRange.length] intValue]/DisplayXRange;
-////    rateOfMagnification =  (int)mag;
-////    NSLog(@"realMag:%f intMag:%d ",mag,rateOfMagnification );
-//    
-//    CPTXYAxisSet *axisSet = (CPTXYAxisSet *) self.hostView.hostedGraph.axisSet;
-//    // 3 - Configure x-axis
-//    CPTAxis *x = axisSet.xAxis;
-//    //per 5s
-//    NSInteger currentMag = [self rateOfMagnification];
-//    if(prevMag !=currentMag){
-//        x.majorIntervalLength = CPTDecimalFromFloat(30.0f * [self rateOfMagnification]);
-//        [[self.hostView hostedGraph]reloadData];
-//    }
-//    prevMag = currentMag;
-//    
-//}
 -(int)rateOfMagnification :(CPTPlotRange*)range{
     float mag=  [[NSDecimalNumber decimalNumberWithDecimal:range.length] intValue]/DisplayXRange;
     
@@ -530,7 +500,6 @@
     }
     
     [self updatePlotSpace: self.displayType];
-    
     
     [[self.hostView hostedGraph] reloadData];
     

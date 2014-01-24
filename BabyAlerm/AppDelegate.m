@@ -19,12 +19,7 @@ NSString *const kServiceType = @"tz-babyalerm";
 NSString *const RelationDataSavingCompleteNotifiction = @"tz.babyalerm:RelationDataSavingCompleteNotifiction";
 NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationDataSavingStartNotifiction";
 
-@interface AppDelegate()<MCSessionDelegate>
-
-@property (nonatomic,strong) MCAdvertiserAssistant *advertiserAssistant;
-@property (nonatomic,strong) NSData *deviceToken;
-@property (nonatomic,strong,readwrite) NSString *installationId;
-
+@interface AppDelegate()
 
 @end
 
@@ -34,18 +29,6 @@ NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationData
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
-
--(NSString *)installationId{
-    if(!_installationId){
-        PFInstallation *currentInstallation =[PFInstallation currentInstallation];
-        
-        NSMutableString *channel = [NSMutableString stringWithString:@""];
-        [channel appendString:[[currentInstallation.installationId stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]]stringByReplacingOccurrencesOfString:@" " withString:@""]];
-        _installationId = [channel description];
-    }
-    return _installationId;
-}
-
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -65,60 +48,12 @@ NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationData
     
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeBadge|UIRemoteNotificationTypeSound];
     
-    NSString *peerName = [[UIDevice currentDevice]name];
-    self.peerId = [[MCPeerID alloc]initWithDisplayName:peerName];
-    self.session = [[MCSession alloc]initWithPeer:self.peerId securityIdentity:nil encryptionPreference:MCEncryptionNone];
-    self.session.delegate = self;
-    self.advertiserAssistant = [[MCAdvertiserAssistant alloc]initWithServiceType:kServiceType discoveryInfo:@{@"displayName":[[UIDevice currentDevice] name],@"installationId":self.installationId} session:self.session];
-    [self.advertiserAssistant start];
-    self.peerDiscoveryInfo = [NSMutableDictionary new];
-    self.contacts = [NSMutableArray new];
-    self.histData = [NSMutableArray new];
     
     NSUserDefaults *defaults =[NSUserDefaults standardUserDefaults];
     NSDictionary *settingDefaultDictionary = @{SettingKeyThreshold: @-10};
     
     [defaults registerDefaults:settingDefaultDictionary];
     
-    // Test listing all FailedBankInfos from the store
-//    NSError *error;
-//    
-//    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-//    NSEntityDescription *entity = [NSEntityDescription entityForName:@"HistoryModel"
-//                                              inManagedObjectContext:self.managedObjectContext];
-//    
-//    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
-//                              initWithKey:@"startTime" ascending:NO];
-//    
-//    [fetchRequest setEntity:entity];
-//    [fetchRequest setSortDescriptors:@[sort]];
-//    NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-//    for (HistoryModel *history in fetchedObjects) {
-//        NSLog(@"Time: %@", history.startTime);
-//        NSOrderedSet *volumeSet = history.volumes;
-//        NSLog(@"1");
-//        NSLog(@"Volumes count: %d", volumeSet.count);
-//        [volumeSet enumerateObjectsUsingBlock:^(VolumeModel *obj, NSUInteger idx, BOOL *stop) {
-//            NSLog(@"volume:time:%@ peak:%f, ave:%f",obj.time,[obj.peak floatValue],[obj.average floatValue]);
-//        }];
-//        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-//        NSEntityDescription *entity = [NSEntityDescription
-//                                       entityForName:@"VolumeModel" inManagedObjectContext:self.managedObjectContext];
-//        [fetchRequest setEntity:entity];
-//        
-//        
-//        NSSortDescriptor *sort = [[NSSortDescriptor alloc]
-//                                  initWithKey:@"time" ascending:NO];
-//        [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
-//        NSPredicate *predicate =[NSPredicate predicateWithFormat:@"history == %@", history];
-//        [fetchRequest setPredicate:predicate];
-//        NSArray *volumeFetched = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-//        NSLog(@"2");
-//        NSLog(@"Volumescount:%d",volumeFetched.count);
-//        [volumeFetched enumerateObjectsUsingBlock:^(VolumeModel *obj, NSUInteger idx, BOOL *stop) {
-//            NSLog(@"volume:time:%@ peak:%f, ave:%f",obj.time,[obj.peak floatValue],[obj.average floatValue]);
-//        }];
-//    }
     
     return YES;
 }
@@ -153,29 +88,6 @@ NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationData
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
--(void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
-    self.deviceToken = deviceToken;
-    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    [currentInstallation setDeviceTokenFromData:deviceToken];
-    [currentInstallation setObject:[[UIDevice currentDevice] name] forKey:@"deviceName"];
-    [currentInstallation saveInBackground];
-}
-
--(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-    if (application.applicationState == UIApplicationStateInactive) {
-        [PFAnalytics trackAppOpenedWithRemoteNotificationPayload:userInfo];
-    }
-    [PFPush handlePush:userInfo];
-    
-}
-
--(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
-    [PFPush handlePush:userInfo];
-    if(application.applicationState == UIApplicationStateInactive){
-        [PFAnalytics trackAppOpenedWithRemoteNotificationPayload:userInfo];
-    }
-}
-
 - (void)saveContext
 {
     NSError *error = nil;
@@ -189,115 +101,6 @@ NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationData
         }
     }
 }
-
--(void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID{
-//    id unarchived  =[NSKeyedUnarchiver unarchiveObjectWithData:data];
-//    if ([unarchived isKindOfClass:[Device class]]) {
-//        // 登録を行っていますの画面を出す。
-//        
-//        Device *device = (Device *)unarchived;
-//        NSLog(@" received  id : %@, name: %@",[device installationIdentifier],[device deviceName]);
-//        
-//        PFQuery *query = [PFQuery queryWithClassName:@"Relation"];
-//        [query whereKey:@"senderId" equalTo:device.installationIdentifier];
-//        [query whereKey:@"receiverId" equalTo:self.installationId];
-//        
-//        if([query countObjects] == 0){
-//            PFObject *obj = [[PFObject alloc]initWithClassName:@"Relation"];
-//            obj[@"senderId"] = device.installationIdentifier;
-//            obj[@"senderDeviceName"] =device.deviceName;
-//            obj[@"receiverId"] = self.installationId;
-//            obj[@"receiverDeviceName"] = [[UIDevice currentDevice]name];
-//            [obj saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-//                // localnotificationで、完了を表示。receiverに受け取りを伝える。
-//            }];
-//        }
-//    }else if([unarchived isKindOfClass:[Result class]]){
-//        Result *result = (Result *)unarchived;
-//        if(result.result){
-//            
-//        }else{
-//            
-//        }
-//    }else{
-//        
-//    }
-}
-
--(void)session:(MCSession *)session didReceiveStream:(NSInputStream *)stream withName:(NSString *)streamName fromPeer:(MCPeerID *)peerID{
-    
-}
--(void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress{
-    
-}
--(void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state{
-    if(state == MCSessionStateConnected){
-        NSLog(@" state connected %@",peerID.displayName);
-    }else if(state == MCSessionStateConnecting){
-        NSLog(@" state connecting %@",peerID.displayName);
-    }else if(state == MCSessionStateNotConnected){
-        NSLog(@" state not connected %@",peerID.displayName);
-    }else{
-        NSLog(@" state else");
-    }
-    
-    
-}
--(void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error{
-    
-}
-
--(BOOL)sendDeviceTokenToPeer{
-    NSLog(@"try to regsiter");
-    NSMutableArray *pfObjectArray = [NSMutableArray new];
-    [self.session.connectedPeers enumerateObjectsUsingBlock:^(MCPeerID* peerID, NSUInteger idx, BOOL *stop) {
-        NSDictionary *discoveryInfo = self.peerDiscoveryInfo[peerID];
-        NSLog(@"saving relation data. sender id:%@ name:%@ / receiver id:%@ name:%@",self.installationId,[[UIDevice currentDevice]name],discoveryInfo[@"installationId"],discoveryInfo[@"displayName"]);
-        
-        PFQuery *query = [PFQuery queryWithClassName:@"Relation"];
-        [query whereKey:@"senderId" equalTo:self.installationId];
-        [query whereKey:@"receiverId" equalTo:discoveryInfo[@"installationId"]];
-        
-        if([query countObjects] == 0){
-            PFObject *obj = [[PFObject alloc]initWithClassName:@"Relation"];
-            obj[@"senderId"] = self.installationId;
-            obj[@"senderDeviceName"] =[[UIDevice currentDevice]name];
-            obj[@"receiverId"] = discoveryInfo[@"installationId"];
-            obj[@"receiverDeviceName"] = discoveryInfo[@"displayName"];
-            [pfObjectArray addObject:obj];
-        }
-
-    }];
-    // 画面にロード中を表示する。
-    //　アプリを消されたときに、ゴミデータが残る。どれかゴミかを検知したい。
-    
-    [PFObject saveAllInBackground:pfObjectArray block:^(BOOL succeeded, NSError *error) {
-        if(!error){
-            //Local Notificationで完了通知。テーブルを再描画！
-            [[NSNotificationCenter defaultCenter]postNotificationName:RelationDataSavingCompleteNotifiction object:nil userInfo:@{@"peers":pfObjectArray}];
-            NSLog(@"save data completed ");
-        }else{
-            NSLog(@"Error: %@ %@", error, [error userInfo]);
-        }
-        
-    }];
-    
-    return YES;
-//    if([self.session.connectedPeers count] > 0){
-//        NSError *error;
-//        Device *device = [[Device alloc]init];
-//        device.deviceName = [[UIDevice currentDevice] name];
-//        device.installationIdentifier = self.installationId;
-//        
-//        NSData *data =[NSKeyedArchiver archivedDataWithRootObject:device];
-//        
-//        [self.session sendData:data toPeers:self.session.connectedPeers withMode:MCSessionSendDataReliable error:&error];
-//        return YES;
-//    }else{
-//        return NO;
-//    }
-}
-
 
 #pragma mark - Core Data stack
 

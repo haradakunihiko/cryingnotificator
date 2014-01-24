@@ -197,7 +197,6 @@
 
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-    NSLog(@"%d",buttonIndex);
     switch (buttonIndex) {
         case 0:
         {

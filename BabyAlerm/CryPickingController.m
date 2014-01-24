@@ -8,7 +8,6 @@
 
 #import "AppDelegate.h"
 #import "CryPickingController.h"
-#import "Person.h"
 #import <Parse/Parse.h>
 #import "HistoryModel.h"
 #import "VolumeModel.h"
@@ -161,12 +160,7 @@ static void AudioInputCallback(  void* inUserData,
     AppDelegate *delegate =(AppDelegate *)[[UIApplication sharedApplication] delegate];
     
     NSManagedObjectContext *context = delegate.managedObjectContext;
-//    NSError *error;
-//    if (![context save:&error]) {
-//        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
-//    }
-//    
-    
+
     NSFetchRequest *fetch = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription
                                    entityForName:@"NotificateTargetModel" inManagedObjectContext:context];
@@ -183,7 +177,6 @@ static void AudioInputCallback(  void* inUserData,
     }];
     
     [PFCloud callFunctionInBackground:@"sendMail" withParameters:@{@"addresses":addresses} block:^(id object, NSError *error) {
-
         NSLog(@"%@",[notice description]);
     }];
 }

@@ -57,18 +57,7 @@
 //    self.graphViewController.historyModel = _pickingController.historyModel;
     
     [NSFetchedResultsController deleteCacheWithName:nil];
-//    NSPredicate *predicate =[NSPredicate predicateWithFormat:@"history == %@", [self historyModel]];
-//    NSLog(@"history:%@",[self historyModel].startTime);
-//    [self.fetchedResultsController.fetchRequest setPredicate:predicate];
-//
-//    self.graphViewController.displayType =BAGraphDisplayTypeShowRecentInViewAndGlobal;
-//    
-//    NSError *error;
-//	if (![[self fetchedResultsController] performFetch:&error]) {
-//		// Update to handle the error appropriately.
-//		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-//		exit(-1);  // Fail
-//	}
+
     
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stop:)] animated:YES];
 }

@@ -8,7 +8,6 @@
 
 #import "HistoryViewController.h"
 #import "AppDelegate.h"
-#import "HistoryDetailViewController.h"
 #import "GraphViewController.h"
 #import "HistoryGraphViewController.h"
 
@@ -66,7 +65,6 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSLog(@"numrow %d", section);
     if(self.convinedViewController.executing && section == 0){
         return 1;
     }else{
@@ -110,7 +108,6 @@
 
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
     
-    NSLog(@"title %d", section);
     if (!self.convinedViewController.executing  || section == 1) {
         return @"history";
     }else{
@@ -120,7 +117,6 @@
 
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSLog(@"select row %@",indexPath);
     if(self.convinedViewController.executing && indexPath.section == 0){
         [self.convinedViewController switchGraphView:NO];
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -175,37 +171,6 @@
 
 #pragma mark - Navigation
 
-// In a story board-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if([segue.identifier isEqualToString:@"ToHistoryDetail"]){
-        HistoryDetailViewController *toVC = segue.destinationViewController;
-        toVC.historyModel = [self.fetchedResultsController objectAtIndexPath:[self indexPathOfData: [self.tableView indexPathForSelectedRow]]];
-    }else if([segue.identifier isEqualToString:@"ToHistoryGraph"]){
-        HistoryGraphViewController *historyGraphViewController = segue.destinationViewController;
-        historyGraphViewController.historyModel =[self.fetchedResultsController objectAtIndexPath:[self indexPathOfData: [self.tableView indexPathForSelectedRow]]];
-        
-//        toVC.showHistory = YES;
-//        toVC.displayType = BAGraphDisplayTypeShowAllInView;
-//        toVC.completionBlock = ^(){
-//            toVC.showHistory = NO;
-//            toVC.historyModel = nil;
-//            toVC.fetchedResultsController = nil;
-//            [self dismissViewControllerAnimated:YES completion:nil];
-//        };
-    }
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-
-
--(NSMutableArray *)historyData{
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-    return appDelegate.histData;
-}
-
-
-
 - (NSFetchedResultsController *)fetchedResultsController {
     
     if (_fetchedResultsController != nil) {
@@ -255,7 +220,6 @@
 }
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-    NSLog(@"%d",buttonIndex);
     switch (buttonIndex) {
         case 0:
         {
