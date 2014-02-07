@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13B42" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="HistoryModel" representedClassName="HistoryModel" syncable="YES">
+        <attribute name="compressed" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="endTime" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="startTime" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="volumes" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="VolumeModel" inverseName="history" inverseEntity="VolumeModel" syncable="YES"/>
@@ -13,14 +14,22 @@
     </entity>
     <entity name="VolumeModel" representedClassName="VolumeModel" syncable="YES">
         <attribute name="average" optional="YES" attributeType="Float" defaultValueString="-100" syncable="YES"/>
+        <attribute name="enabled" optional="YES" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="isOverThreashold" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="peak" optional="YES" attributeType="Float" defaultValueString="-100" syncable="YES"/>
         <attribute name="time" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="history" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HistoryModel" inverseName="volumes" inverseEntity="HistoryModel" syncable="YES"/>
     </entity>
+    <configuration name="History">
+        <memberEntity name="HistoryModel"/>
+        <memberEntity name="VolumeModel"/>
+    </configuration>
+    <configuration name="Other">
+        <memberEntity name="NotificateTargetModel"/>
+    </configuration>
     <elements>
-        <element name="HistoryModel" positionX="9457" positionY="-6732" width="128" height="88"/>
-        <element name="VolumeModel" positionX="9702" positionY="-6696" width="128" height="118"/>
-        <element name="NotificateTargetModel" positionX="9459" positionY="-6514" width="128" height="103"/>
+        <element name="HistoryModel" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="NotificateTargetModel" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="VolumeModel" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

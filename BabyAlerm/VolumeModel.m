@@ -2,7 +2,7 @@
 //  VolumeModel.m
 //  BabyAlerm
 //
-//  Created by harada on 2014/01/23.
+//  Created by harada on 2014/01/28.
 //  Copyright (c) 2014年 harada. All rights reserved.
 //
 
@@ -13,6 +13,7 @@
 @implementation VolumeModel
 
 @dynamic average;
+@dynamic enabled;
 @dynamic isOverThreashold;
 @dynamic peak;
 @dynamic time;

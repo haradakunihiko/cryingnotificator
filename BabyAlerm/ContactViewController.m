@@ -227,10 +227,6 @@
 
 -(IBAction)addPressed:(id)sender{
     _acthionSheet = [[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Contacts",@"Input",nil];
-//    [_acthionSheet addButtonWithTitle:@"select from contact list"];
-//    [_acthionSheet addButtonWithTitle:@"input manually"];
-//    [_acthionSheet showFromTabBar:self.tabBarController.tabBar];
-//    [_acthionSheet showInView:self.view];
     [_acthionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
 }
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{

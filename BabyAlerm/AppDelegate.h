@@ -21,4 +21,5 @@
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 
+-(void)truncateDatabase:(NSString *)configuration;
 @end

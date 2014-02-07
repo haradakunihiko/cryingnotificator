@@ -10,19 +10,34 @@
 
 @interface BAConstant : NSObject
 
+extern NSString * const CONFIGURATION_OTHER;
+extern NSString * const CONFIGURATION_HISTORY;
+
 
 extern NSString * const TickerSymbolPeak;
 extern NSString * const TickerSymbolAverage;
+extern NSString * const TickerSymbolThreashold;
 
 
 extern float const DisplayXRange;
 extern float const DisplayXRightMergin;
+extern float const DisplayXLeftMergin;
+extern float const PlotXRange;
+
 extern float const GlobalXRange;
 
 extern float const DisplayYLocation;
 extern float const DisplayYRange;
 
+extern int const PlotClusterCount;
+
 
 extern NSString * const SettingKeyThreshold;
+
+extern NSString * const ASES_ACCESS_KEY;
+extern NSString * const ASES_SECRET_KEY;
+
+extern NSString * const FROM_ADDRESS;
+
 
 @end

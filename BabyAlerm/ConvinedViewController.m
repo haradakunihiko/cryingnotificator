@@ -11,6 +11,7 @@
 #import "GraphViewController.h"
 #import "HistoryViewController.h"
 #import "AppDelegate.h"
+#import "Reachability.h"
 
 @interface ConvinedViewController ()<UIActionSheetDelegate,UIAlertViewDelegate>
 @property (weak, nonatomic) IBOutlet UIView *graphContainer;
@@ -29,6 +30,9 @@
     
     BOOL _hiddenStatusBar;
     CryPickingController *_pickingController;
+    UIAlertView *_noAddressAlertView;
+    UIAlertView *_noConnectionAlertView;
+    BOOL _isStopedFocely;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -53,6 +57,17 @@
     
     
     self.historyViewController.graphViewController = self.historyGraphViewController;
+    
+    _noAddressAlertView =[[UIAlertView alloc]initWithTitle:nil message:@"No address to notify has been set. Are you sure to proceed?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+    _noAddressAlertView.delegate = self;
+    
+    _noConnectionAlertView = [[UIAlertView alloc]initWithTitle:Nil message:@"No internet connection is available. Are you sure to proceed?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+    
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    
+    
 //    [self setNeedsStatusBarAppearanceUpdate];
 	// Do any additional setup after loading the view.
 }
@@ -141,11 +156,14 @@
     }else{
         
         if(![self hasMoreThanZeroAddress]){
-            UIAlertView *alertView =[[UIAlertView alloc]initWithTitle:nil message:@"No address to notify has been set. Are you sure to continue?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
-            alertView.delegate = self;
-            [alertView show];
+
+            [_noAddressAlertView show];
         }else{
-            [self startListening];
+            if ([self isNetworkAvailable]) {
+                [self startListening];
+            }else{
+                [_noConnectionAlertView show];
+            }
         }
     }
 }
@@ -153,17 +171,28 @@
 -(void) startListening{
     
     self.executing = YES;
-    if(!_pickingController ){
-        _pickingController = [CryPickingController new];
-    }
-    _graphViewController.datasource = _pickingController;
+
+    _pickingController = [CryPickingController new];
+
+    
+    self.graphViewController.datasource = _pickingController;
     _pickingController.graphVC = _graphViewController;
+    
     [self.graphViewController initializeWithDisplaytype:BAGraphDisplayTypeShowRecentInViewAndGlobal];
     
-    [_pickingController startListening];
-    
     [NSFetchedResultsController deleteCacheWithName:nil];
+    
+    //ここで、viewの更新をするため、historyModel = nilの状態でfetchedresult..が作られる。
+    [self.graphViewController clearView];
+    
     [self switchGraphView:NO];
+    
+    [self.graphViewController resetXAxes];
+    
+    //ここで、viewの更新をするため、historyModel = nilの状態でfetchedresult..が作られる。
+    [self.graphViewController updatePlotSpace];
+    
+    [_pickingController startListening];
     
     [self.historyViewController.tableView beginUpdates];
     
@@ -204,36 +233,29 @@
             [self.historyViewController numberOfHistory];
             
             AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-            NSManagedObjectContext *context = delegate.managedObjectContext;
-            
-            NSFetchRequest *fetch = [[NSFetchRequest alloc] init];
-            NSEntityDescription *entity = [NSEntityDescription
-                                           entityForName:@"HistoryModel" inManagedObjectContext:context];
-            [fetch setEntity:entity];
-            
-            
-            NSSortDescriptor *sort = [[NSSortDescriptor alloc]
-                                      initWithKey:@"startTime" ascending:NO];
-            [fetch setSortDescriptors:[NSArray arrayWithObject:sort]];
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"self != %@",[self ongoingHistoryModel]];
-            
-            [fetch setPredicate:predicate];
-            
+            [delegate truncateDatabase:CONFIGURATION_HISTORY];
+//            NSManagedObjectContext *context = delegate.managedObjectContext;
+//            
+//            NSFetchRequest *fetch = [[NSFetchRequest alloc] init];
+//            NSEntityDescription *entity = [NSEntityDescription
+//                                           entityForName:@"HistoryModel" inManagedObjectContext:context];
+//            [fetch setEntity:entity];
 //            
 //            
-//            NSFetchRequest * fetch = [[NSFetchRequest alloc] init];
+//            NSSortDescriptor *sort = [[NSSortDescriptor alloc]
+//                                      initWithKey:@"startTime" ascending:NO];
+//            [fetch setSortDescriptors:[NSArray arrayWithObject:sort]];
+//            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"self != %@",[self ongoingHistoryModel]];
 //            
+//            [fetch setPredicate:predicate];
+//            NSArray * result = [context executeFetchRequest:fetch error:nil];
+//            for (id history in result)
+//                [context deleteObject:history];
 //            
-//            [fetch setEntity:[NSEntityDescription entityForName:@"HistoryModel" inManagedObjectContext:context]];
-//            
-            NSArray * result = [context executeFetchRequest:fetch error:nil];
-            for (id history in result)
-                [context deleteObject:history];
-            
-            NSError *error;
-            if (![context save:&error]) {
-                NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
-            }
+//            NSError *error;
+//            if (![context save:&error]) {
+//                NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
+//            }
         }
             break;
         default:
@@ -241,17 +263,37 @@
     }
 }
 
+-(BOOL) isNetworkAvailable{
+    Reachability *networkReachability = [Reachability reachabilityForInternetConnection];
+    NetworkStatus networkStatus = [networkReachability currentReachabilityStatus];
+    return networkStatus != NotReachable;
+}
+
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
     [self.historyViewController refreshTable];
 }
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    switch (buttonIndex) {
-        case 1:
-            [self startListening];
-            break;
-        default:
-            break;
+    if (alertView == _noAddressAlertView) {
+        switch (buttonIndex) {
+            case 1:
+                if ([self isNetworkAvailable]) {
+                    [self startListening];
+                }else{
+                    [_noConnectionAlertView show];
+                }
+                break;
+            default:
+                break;
+        }
+    }else if(alertView == _noConnectionAlertView){
+        switch (buttonIndex) {
+            case 1:
+                [self startListening];
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -269,6 +311,42 @@
     }else{
         return count > 0;
     }
+}
+
+
+-(void)applicationDidEnterBackground :(NSNotification *) notification{
+    if(_executing){
+        
+        _isStopedFocely = YES;
+        [self start:nil];
+    }
+
+}
+
+
+
+-(void)applicationWillEnterForeground:(NSNotification * )notification{
+    if( _isStopedFocely){
+        [[[UIAlertView alloc]initWithTitle:nil message:@"Crying notification has been suspended." delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
+    }
+    _isStopedFocely = NO;
+}
+
+-(void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
+    if(_hiddenStatusBar){
+//        _hiddenStatusBar = !_hiddenStatusBar;
+        [[UIApplication sharedApplication]setStatusBarHidden:NO];
+    }
+    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    
+}
+
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
+    if (_hiddenStatusBar) {
+//        _hiddenStatusBar = !_hiddenStatusBar;
+//        [[UIApplication sharedApplication]setStatusBarHidden:YES];
+    }
+    [super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
 }
 
 

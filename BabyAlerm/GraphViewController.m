@@ -25,6 +25,9 @@
 @property (strong, nonatomic) IBOutlet CPTGraphHostingView *hostView;
 @property (strong, nonatomic) IBOutlet UIToolbar *toolBar;
 
+@property (strong,nonatomic) CPTMutableLineStyle *lineStyleClear;
+@property (strong,nonatomic)     CPTMutableTextStyle *textStyleClear;
+
 @property NSArray *listeningConstraints;
 @property NSArray *historyConstraints;
 
@@ -33,10 +36,10 @@
 @implementation GraphViewController{
     
     IBOutlet UISwitch *scrollSwitch;
-    BOOL playing;
     CPTPlotRange *yRange;
     NSInteger prevMag;
     CPTLineStyle *_defaultXAxisStyle;
+
 }
 -(void)viewDidLoad{
     [super viewDidLoad];
@@ -56,7 +59,7 @@
         // this method should be called for history init;
         //    [self updatePlotspaceToShowAll];
         [self resetXAxes];
-        [self updatePlotSpace:self.displayType];
+        [self updatePlotSpace];
         [[self.hostView hostedGraph] reloadData];
     }
     
@@ -76,7 +79,7 @@
         // this method should be called for history init;
         //    [self updatePlotspaceToShowAll];
         [self resetXAxes];
-        [self updatePlotSpace:self.displayType];
+        [self updatePlotSpace];
         [[self.hostView hostedGraph] reloadData];
     }
 }
@@ -155,6 +158,14 @@
     CPTColor *averageColor = [CPTColor greenColor];
     [graph addPlot:averagePlot toPlotSpace:plotSpace];
     
+    CPTScatterPlot *threasholdPlot = [[CPTScatterPlot alloc] init];
+    threasholdPlot.dataSource = self;
+    threasholdPlot.identifier = TickerSymbolThreashold;
+    CPTColor *threasholdColor = [CPTColor whiteColor];
+    [graph addPlot:threasholdPlot toPlotSpace:plotSpace];
+    
+    
+    
     
 
     // 4 - Create styles and symbols
@@ -171,69 +182,35 @@
     averagePlot.dataLineStyle = averageLineStyle;
     CPTMutableLineStyle *averageSymbolLineStyle = [CPTMutableLineStyle lineStyle];
     averageSymbolLineStyle.lineColor = averageColor;
+    
+    
+    CPTMutableLineStyle *threasholdLineStyle = [threasholdPlot.dataLineStyle mutableCopy];
+    threasholdLineStyle.lineWidth = 0.5;
+    threasholdLineStyle.lineColor = threasholdColor;
+    threasholdPlot.dataLineStyle = threasholdLineStyle;
+//    CPTMutableLineStyle *threasholdSymbolLineStyle = [CPTMutableLineStyle lineStyle];
+//    averageSymbolLineStyle.lineColor = averageColor;
 
 }
 -(void)configureAxes{
     
-    // 1 - Create styles
-//    CPTMutableTextStyle *axisTitleStyle = [CPTMutableTextStyle textStyle];
-//    axisTitleStyle.color = [CPTColor whiteColor];
-//    axisTitleStyle.fontName = @"Helvetica-Bold";
-//    axisTitleStyle.fontSize = 12.0f;
-//    CPTMutableLineStyle *axisLineStyle = [CPTMutableLineStyle lineStyle];
-//    axisLineStyle.lineWidth = 2.0f;
-//    axisLineStyle.lineColor = [CPTColor whiteColor];
-    
-    CPTMutableLineStyle *lineStyleClear = [CPTMutableLineStyle lineStyle];
-    lineStyleClear.lineWidth = 0.0f;
-    lineStyleClear.lineColor = [CPTColor clearColor];
-    
-    
-//    CPTMutableTextStyle *axisTextStyle = [[CPTMutableTextStyle alloc] init];
-//    axisTextStyle.color = [CPTColor whiteColor];
-//    axisTextStyle.fontName = @"Helvetica-Bold";
-//    axisTextStyle.fontSize = 11.0f;
-    
-    CPTMutableTextStyle *textStyleClear = [[CPTMutableTextStyle alloc] init];
-    textStyleClear.color = [CPTColor clearColor];
-    textStyleClear.fontName = @"Helvetica-Bold";
-    textStyleClear.fontSize = 11.0f;
-    
-    
-    
-//    CPTMutableLineStyle *tickLineStyle = [CPTMutableLineStyle lineStyle];
-//    tickLineStyle.lineColor = [CPTColor whiteColor];
-//    tickLineStyle.lineWidth = 2.0f;
-
-//    CPTMutableLineStyle *gridLineStyle = [CPTMutableLineStyle lineStyle];
-//    tickLineStyle.lineColor = [CPTColor blackColor];
-//    tickLineStyle.lineWidth = 1.0f;
-    // 2 - Get axis set
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *) self.hostView.hostedGraph.axisSet;
     // 3 - Configure x-axis
     CPTXYAxis *x = axisSet.xAxis;
 //    CPTXYAxis
     _defaultXAxisStyle = x.axisLineStyle;
-    x.axisLineStyle = lineStyleClear;
-    
-//    x.axisLineStyle = axisLineStyle;
-    x.labelingPolicy = CPTAxisLabelingPolicyNone;
-//    x.labelTextStyle = axisTextStyle;
-//    x.majorTickLineStyle = axisLineStyle;
+    [self clearXAxis];
     x.tickDirection = CPTSignPositive;
-    
     x.orthogonalCoordinateDecimal = [[NSNumber numberWithFloat:DisplayYLocation] decimalValue];
     
     // 4 - Configure y-axis
     CPTXYAxis *y = axisSet.yAxis;
 
-//    y.orthogonalCoordinateDecimal = [[NSNumber numberWithFloat:-30.0f] decimalValue];
-    y.axisLineStyle = lineStyleClear;
-//    y.majorGridLineStyle = gridLineStyle;
+    y.axisLineStyle = self.lineStyleClear;
     y.labelingPolicy = CPTAxisLabelingPolicyAutomatic;
-    y.labelTextStyle = textStyleClear;
+    y.labelTextStyle = self.textStyleClear;
     y.labelOffset = 10.0f;
-    y.majorTickLineStyle = lineStyleClear;
+    y.majorTickLineStyle = self.lineStyleClear;
     y.majorTickLength = 4.0f;
     y.minorTickLength = 2.0f;
     y.tickDirection = CPTSignPositive;
@@ -247,6 +224,19 @@
     y.minorTickLocations = yMinorLocations;
 }
 
+-(void) clearXAxis{
+    CPTXYAxisSet *axisSet = (CPTXYAxisSet *) self.hostView.hostedGraph.axisSet;
+    // 3 - Configure x-axis
+    CPTXYAxis *x = axisSet.xAxis;
+    x.axisLineStyle = self.lineStyleClear;
+    x.labelingPolicy = CPTAxisLabelingPolicyNone;
+}
+
+-(void)clearView{
+    [self clearXAxis];
+    [[self.hostView hostedGraph] reloadData];
+}
+
 -(void) resetXAxes{
     // 2 - Get axis set
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *) self.hostView.hostedGraph.axisSet;
@@ -254,7 +244,6 @@
     CPTAxis *x = axisSet.xAxis;
     
     x.axisLineStyle = _defaultXAxisStyle;
-    
     x.labelingPolicy = CPTAxisLabelingPolicyFixedInterval;
     // Graph data prepare
 	NSDate *refDate = [self baseTime];
@@ -273,8 +262,8 @@
 
 
 
--(void)updatePlotSpace : (BAGraphDisplayType) showType{
-    switch (showType) {
+-(void)updatePlotSpace{
+    switch (self.displayType) {
         case BAGraphDisplayTypeShowAllInView:
             [self updatePlotspaceToShowAll];
             break;
@@ -302,7 +291,7 @@
             
             // 5 - Set up plot space
             CGFloat xLocation = [[self lastTime] timeIntervalSinceDate:[self baseTime]] - (DisplayXRange -DisplayXRightMergin);
-            xLocation = MAX(xLocation, -8.0f);
+            xLocation = MAX(xLocation, -DisplayXLeftMergin);
             plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(xLocation) length:CPTDecimalFromFloat(DisplayXRange)];
             
             // global x range
@@ -334,82 +323,95 @@
 }
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)idx{
-    NSInteger valueCount =[self volumeCount];
-    int rateOfMagnification = [self rateOfMagnification];
-    NSInteger theIndex;
-    NSInteger lastIndex;
-    if(self.displayType ==BAGraphDisplayTypeShowRecentInViewAndGlobal){
-        NSInteger offset =  MAX(valueCount - 60,0);
-        theIndex = idx + offset;
-        lastIndex = theIndex;
-    }else{
-        theIndex = idx * rateOfMagnification;
-        lastIndex = MAX(0, (idx + 1) * rateOfMagnification -1) ;
+    if(!self.historyModel){
+        return 0;
     }
-    
-    float maxAverage = -100.0f;
-    float maxPeak = -100.0f;
+
+    NSInteger valueCount =[self volumeCount];
+    NSInteger theIndex;
+    if(self.displayType ==BAGraphDisplayTypeShowRecentInViewAndGlobal){
+        NSInteger offset =  MAX(valueCount - PlotXRange,0);
+        theIndex = idx + offset;
+    }else{
+        theIndex = idx;
+    }
+
     switch (fieldEnum) {
         case CPTScatterPlotFieldX:
-            if (theIndex < valueCount) {
-                NSDate *baseTime = [self baseTime];
-                VolumeModel *theVolume = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:theIndex inSection:0]];
-                NSDate *time = theVolume.time;
-                return [NSNumber numberWithDouble:[time timeIntervalSinceDate:baseTime]];
+            if([plot.identifier isEqual:TickerSymbolThreashold]){
+                
+                CPTGraph *graph = [self.hostView hostedGraph];
+                CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *) graph.defaultPlotSpace;
+                if (idx == 0) {
+                    return [NSDecimalNumber decimalNumberWithDecimal:plotSpace.xRange.location ];
+                }else{
+                    return  [[NSDecimalNumber decimalNumberWithDecimal:plotSpace.xRange.location ]decimalNumberByAdding:[NSDecimalNumber decimalNumberWithDecimal:plotSpace.xRange.length] ];
+                //                    return plotSpace.xRange.location + plotSpace.xRange.length;
+                }
+
+            }else{
+                if (theIndex < valueCount) {
+                    NSDate *baseTime = [self baseTime];
+                    VolumeModel *theVolume = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:theIndex inSection:0]];
+                    NSDate *time = theVolume.time;
+                    return [NSNumber numberWithDouble:[time timeIntervalSinceDate:baseTime]];
+                }
             }
             break;
         case CPTScatterPlotFieldY:
-            for (NSInteger i = theIndex; i <= lastIndex && i < valueCount; i++) {
-                VolumeModel *theVolume = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-                maxAverage = MAX(maxAverage, [theVolume.average floatValue]);
-                maxPeak = MAX(maxPeak,[theVolume.peak floatValue]);
+        {
+            if([plot.identifier isEqual:TickerSymbolThreashold]){
+                return [NSNumber numberWithFloat: [[NSUserDefaults standardUserDefaults] floatForKey:SettingKeyThreshold]];
+            }else{
+                
+                if (theIndex < valueCount) {
+                    VolumeModel *theVolume = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:theIndex inSection:0]];
+                    if ([plot.identifier isEqual:TickerSymbolAverage] == YES) {
+                        return theVolume.average;
+                    } else if ([plot.identifier isEqual:TickerSymbolPeak] == YES) {
+                        return theVolume.peak;
+                    }
+                }
             }
-            
-            
-            if ([plot.identifier isEqual:TickerSymbolAverage] == YES) {
-                return [NSNumber numberWithFloat: maxAverage];
-            } else if ([plot.identifier isEqual:TickerSymbolPeak] == YES) {
-                return [NSNumber numberWithFloat: maxPeak];
-            }
+        }
             break;
     }
     return[NSDecimalNumber zero];
 }
 
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot{
+    if(!self.historyModel){
+        return 0;
+    }
+    
+    if([plot.identifier isEqual:TickerSymbolThreashold]){
+        return 2;
+    }
     if(self.displayType == BAGraphDisplayTypeShowRecentInViewAndGlobal){
-        return MIN([self volumeCount], 60);
+        return MIN([self volumeCount], PlotXRange);
     }else{
-        return [self volumeCount]/[self rateOfMagnification];
+        return [self volumeCount];
     }
 }
 
 -(NSDate *)baseTime{
-    if([self volumeCount] >0){
-        VolumeModel *volume = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-        return volume.time;
+    if(self.historyModel){
+        return self.historyModel.startTime;
     }else{
         return [NSDate date];
     }
 }
 
--(int)rateOfMagnification :(CPTPlotRange*)range{
-    float mag=  [[NSDecimalNumber decimalNumberWithDecimal:range.length] intValue]/DisplayXRange;
-    
-    return (int )mag;
-}
-
--(int)rateOfMagnification{
-    CPTGraph *graph = [self.hostView hostedGraph];
-    CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *) graph.defaultPlotSpace;
-    return [self rateOfMagnification:plotSpace.xRange];
-}
 
 - (NSFetchedResultsController *)fetchedResultsController {
     
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
     }
+    if(!self.historyModel){
+        return nil;
+    }
+    
     AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     NSManagedObjectContext *context = delegate.managedObjectContext;
     
@@ -422,15 +424,28 @@
     NSSortDescriptor *sort = [[NSSortDescriptor alloc]
                               initWithKey:@"time" ascending:YES];
     [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
-    NSPredicate *predicate =[NSPredicate predicateWithFormat:@"history == %@", [self historyModel]];
+    
+    NSPredicate *predicate;
+//    if(self.displayType == BAGraphDisplayTypeShowAllInView){
+//        predicate =[NSPredicate predicateWithFormat:@"history == %@ and enabled == 1 ", [self historyModel]];
+//    }else{
+//        predicate =[NSPredicate predicateWithFormat:@"history == %@ ", [self historyModel]];
+//    }
+        predicate =[NSPredicate predicateWithFormat:@"history == %@ and enabled == 1 ", [self historyModel]];
+    
     [fetchRequest setPredicate:predicate];
-    [fetchRequest setFetchBatchSize:20];
+    if(self.displayType == BAGraphDisplayTypeShowRecentInViewAndGlobal){
+        [fetchRequest setFetchBatchSize:60];
+    }else{
+        [fetchRequest setFetchBatchSize:60];
+    }
+
     
     NSFetchedResultsController *theFetchedResultsController =
     [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                         managedObjectContext:context sectionNameKeyPath:nil
                                                    cacheName:nil];
-    self.fetchedResultsController = theFetchedResultsController;
+    _fetchedResultsController = theFetchedResultsController;
     _fetchedResultsController.delegate = self;
     
     return _fetchedResultsController;
@@ -438,15 +453,21 @@
 }
 
 -(NSInteger) volumeCount{
+    if(!self.historyModel){
+        return 0;
+    }
     id  sectionInfo =
-    [[_fetchedResultsController sections] objectAtIndex:0];
+    [[self.fetchedResultsController sections] objectAtIndex:0];
     return [sectionInfo numberOfObjects];
 }
 
 -(NSDate *)lastTime{
+    if(!self.historyModel){
+        return nil;
+    }
     NSInteger count = [self volumeCount];
     if(count > 0){
-        VolumeModel *volume =[_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:count -1 inSection:0]];
+        VolumeModel *volume =[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:count -1 inSection:0]];
         return volume.time;
     }else{
         return nil;
@@ -473,7 +494,7 @@
     x.labelFormatter = timeFormatter;
     
     double interval =([[self lastTime] timeIntervalSince1970] - [[self baseTime] timeIntervalSince1970]);
-    interval = MAX(DisplayXRange - DisplayXRightMergin * 2, interval);
+    interval = MAX(PlotXRange, interval);
     
     x.majorIntervalLength = CPTDecimalFromFloat(interval / 3);
     
@@ -486,29 +507,74 @@
 
 -(void)updateView : (VolumeModel*)volume{
     NSString *meterText =[ NSString stringWithFormat: @"peak:%d average:%d",(int)roundf([volume.peak intValue]),(int)roundf([volume.average intValue])];
-    
-    //    [NSFetchedResultsController deleteCacheWithName:nil];
-    
-    NSError *error;
-	if (![[self fetchedResultsController] performFetch:&error]) {
-		// Update to handle the error appropriately.
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-		exit(-1);  // Fail
-	}
-    if([self volumeCount] == 1){
-        [self resetXAxes];
-    }
-    
-    [self updatePlotSpace: self.displayType];
-    
-    [[self.hostView hostedGraph] reloadData];
-    
     self.meterLavel.text =meterText;
 }
+
+
+-(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath{
+    switch(type) {
+        case NSFetchedResultsChangeInsert:
+            if (self.autoUpdate) {
+                [[self.hostView hostedGraph]reloadData];
+                [self updatePlotSpace];
+            }
+//            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+//            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            //            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            //            [tableView deleteRowsAtIndexPaths:[NSArray
+            //                                               arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            //            [tableView insertRowsAtIndexPaths:[NSArray
+            //                                               arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
 
 -(void)initializeWithDisplaytype:(BAGraphDisplayType)displayType{
     self.fetchedResultsController = nil;
     self.displayType = displayType;
+    if (displayType == BAGraphDisplayTypeShowRecentInViewAndGlobal) {
+        self.autoUpdate = YES;
+    }else{
+        self.autoUpdate = NO;
+    }
+}
+
+-(CPTMutableLineStyle *)lineStyleClear{
+    if(!_lineStyleClear){
+        _lineStyleClear= [CPTMutableLineStyle lineStyle];
+        _lineStyleClear.lineWidth = 0.0f;
+        _lineStyleClear.lineColor = [CPTColor clearColor];
+    }
+    return _lineStyleClear;
+}
+
+-(CPTMutableTextStyle *)textStyleClear{
+    if (!_textStyleClear) {
+        _textStyleClear.color = [CPTColor clearColor];
+        _textStyleClear.fontName = @"Helvetica-Bold";
+        _textStyleClear.fontSize = 11.0f;
+    }
+    return _textStyleClear;
+}
+
+-(void)performFetch{
+    NSError *error;
+    // does not need at the main view
+    if (![[self fetchedResultsController] performFetch:&error]) {
+        // Update to handle the error appropriately.
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        exit(-1);  // Fail
+    }
 }
 
 @end

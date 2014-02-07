@@ -32,12 +32,11 @@ BAGraphDisplayType;
 @interface GraphViewController : UIViewController
 
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
-//@property(nonatomic,strong) HistoryModel *historyModel;
 
 @property (nonatomic) BOOL showHistory;
 @property (nonatomic,assign) id<GraphViewControllerDataSource> datasource;
 
-
+@property (nonatomic) BOOL autoUpdate;
 
 @property (nonatomic,strong) HistoryModel *historyModel;
 @property (nonatomic) BAGraphDisplayType displayType;
@@ -48,5 +47,12 @@ BAGraphDisplayType;
 -(void) initializeWithDisplaytype : (BAGraphDisplayType) displayType;
 
 -(void) redraw;
+
+-(void) clearView;
+-(void) resetXAxes;
+
+
+-(void)updatePlotSpace;
+-(void)performFetch;
 
 @end
