@@ -32,11 +32,18 @@ float const DisplayYRange = 90.0f;
 
 int const PlotClusterCount = 30;
 
+#pragma mark - user default key.
 NSString  * const SettingKeyThreshold = @"Threshold";
+NSString  * const SettingKeyUUID = @"UUID";
+NSString  * const SettingKeyDetectionInterval = @"DetectionInterval";
+
+#pragma mark - peer to peer connection, discoveryInfo Key;
+NSString * const DiscoveryKeyAdvertiserInstallationId =@"advertiserInstallationId";
+NSString * const DiscoveryKeyAdvertiserUUID = @"advertiserUUID";
+NSString * const DiscoveryKeyDisplayName = @"displayName";
 
 NSString * const ASES_ACCESS_KEY = @"AKIAJN6FRH24YQCCXWOA";
 NSString * const ASES_SECRET_KEY = @"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";
-
 
 NSString * const FROM_ADDRESS = @"cryingnotificationnoreply@ses.tzap.asia";
 //NSString * const FROM_ADDRESS = @"sthsoulful@gmail.com";

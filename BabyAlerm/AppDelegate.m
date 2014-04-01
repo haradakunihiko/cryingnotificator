@@ -15,15 +15,25 @@
 #import "VolumeModel.h"
 
 
-NSString *const kServiceType = @"tz-babyalerm";
+NSString *const kServiceType = @"tz-cryingNotif";
 NSString *const RelationDataSavingCompleteNotifiction = @"tz.babyalerm:RelationDataSavingCompleteNotifiction";
 NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationDataSavingStartNotifiction";
+NSString *const PeerConnectionAcceptedNotification = @"asia.tzap.apps.BabyAlerm:PeerConnectionAcceptedNotification";
+NSString *const CryingDetectedNotification = @"asia.tzap.apps.BabyAlerm:CryingDetectedNotification";
+NSString *const CryingDataDownloadedNotification = @"asia.tzap.apps.BabyAlerm:CryingDataDownloadedNotification";
 
-@interface AppDelegate()
+@interface AppDelegate()<MCSessionDelegate>{
+    NSMutableDictionary *_discoveryInfos;
+}
+
+@property (strong,nonatomic) MCAdvertiserAssistant *advertiserAssistant;
 
 @end
 
-@implementation AppDelegate
+@implementation AppDelegate{
+    
+}
+
 
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -32,11 +42,13 @@ NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationData
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSLog(@"didFinishLauchingWithOptions:launchOptions:%@",[launchOptions description]);
+    _discoveryInfos = [NSMutableDictionary new];
     // Override point for customization after application launch.
     
     [Parse setApplicationId:@"UI2h2OGPsIMVTCW5aFFbijTVz5mXwcX9EMXv0Epg" clientKey:@"owF17Q7RBKMqX2WodUFDSwiYI0ZSTRrfNJSa3YHa"];
     
-    if(!application.applicationState != UIApplicationStateBackground){
+    if(application.applicationState != UIApplicationStateBackground){
         BOOL preBackgroundPush = ![application respondsToSelector:@selector(backgroundRefreshStatus)];
         BOOL oldPushHandlerOnly = ![self respondsToSelector:@selector(application:didReceiveRemoteNotification:fetchCompletionHandler:)];
         BOOL noPushPayload = ![launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
@@ -45,16 +57,28 @@ NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationData
         }
     }
     
-    
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeBadge|UIRemoteNotificationTypeSound];
     
-    
     NSUserDefaults *defaults =[NSUserDefaults standardUserDefaults];
-    NSDictionary *settingDefaultDictionary = @{SettingKeyThreshold: @-10};
+    NSDictionary *settingDefaultDictionary = @{SettingKeyThreshold: @-10,SettingKeyUUID:[[NSUUID UUID] UUIDString],SettingKeyDetectionInterval:@10};
     
     [defaults registerDefaults:settingDefaultDictionary];
+    self.peerId = [[MCPeerID alloc]initWithDisplayName:[[UIDevice currentDevice]name]];
+    self.session = [[MCSession alloc]initWithPeer:self.peerId securityIdentity:nil encryptionPreference:MCEncryptionNone];
+    self.session.delegate = self;
     
+    // 初回はまだDBに無い可能性もあるが、installationIdさえ分かれば良いのでここで取得する。
+    NSString *installationId =[PFInstallation currentInstallation].installationId;
+    self.advertiserAssistant = [[MCAdvertiserAssistant alloc]initWithServiceType:kServiceType discoveryInfo:@{DiscoveryKeyAdvertiserInstallationId: installationId,DiscoveryKeyAdvertiserUUID:[defaults stringForKey:SettingKeyUUID]} session:self.session];
+    [self.advertiserAssistant start];
     
+    [self loadUndownloadedDataInBackground:installationId];
+    return YES;
+}
+
+
+-(BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
+    NSLog(@"willFinishLaunchingWithOptions:launchOptions:%@",[launchOptions description]);
     return YES;
 }
 
@@ -89,6 +113,7 @@ NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationData
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+#pragma mark - Core Data help methods
 - (void)saveContext
 {
     NSError *error = nil;
@@ -102,6 +127,21 @@ NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationData
         }
     }
 }
+
+
+-(void) truncateDatabase : (NSString *) configuration{
+    
+    
+    NSURL *storeURL =[[self applicationDocumentsDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite",configuration]];
+    NSPersistentStore
+    * store = [self.persistentStoreCoordinator persistentStoreForURL:storeURL];
+    
+    [self.persistentStoreCoordinator removePersistentStore:store error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:storeURL.path error:nil];
+    
+    [self.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:configuration URL:storeURL options:nil error:nil];
+}
+
 
 #pragma mark - Core Data stack
 
@@ -197,17 +237,148 @@ NSString *const RelationDataSavingStartNotifiction = @"tz.babyalerm:RelationData
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
--(void) truncateDatabase : (NSString *) configuration{
+#pragma mark - Remote Notification
+-(void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
+    PFInstallation *installation = [PFInstallation currentInstallation];
+    NSLog(@"installation id:%@",installation.installationId);
+    [installation setDeviceTokenFromData:deviceToken];
+    [installation saveInBackground];
+}
+
+-(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
+    NSLog(@"didReceive:userInfo:%@",[userInfo description]);
+//    [PFPush handlePush:userInfo];
+}
+
+-(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
+    
+    NSLog(@"didReceive:userInfo:%@,fetch:",[userInfo description]);
+    NSString *objectId = userInfo[@"objectId"];
+    if(objectId != nil){
+        [self downloadCryingData:objectId];
+        completionHandler(UIBackgroundFetchResultNewData);
+    }else{
+        completionHandler(UIBackgroundFetchResultNoData);
+    }
+
+}
+
+-(void) downloadCryingData:(NSString *)objectId{
+    PFObject *object = [PFObject objectWithoutDataWithClassName:@"CryingData" objectId:objectId];
+    [object fetch];
+    
+    [self decodeDownloadedData:object];
+}
+
+-(HistoryModel *)fetchHistoryModelWithStartTime:(NSDate *) startTime{
+    
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSManagedObjectContext *context = delegate.managedObjectContext;
+    
+    NSFetchRequest *fetch = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"HistoryModel" inManagedObjectContext:context];
+    [fetch setEntity:entity];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"startTime = %@ ",startTime];
+    [fetch setPredicate:predicate];
+    
+    NSArray *results = [context executeFetchRequest:fetch error:nil];
+    return results.firstObject;
+}
+
+-(void)decodeDownloadedData:(PFObject *) object{
+    PFFile *file = object[@"data"];
+    NSData *data = [file getData];
+    
+    NSDictionary *dataDictionary = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    NSArray *volumeArray = dataDictionary[@"volume"];
+    NSString *deviceName = dataDictionary[@"deviceName"];
+    NSDate *startTime = dataDictionary[@"startTime"];
+    NSDate *cryTime = dataDictionary[@"cryTime"];
+    NSNumber *cryTimes = dataDictionary[@"cryTimes"];
     
     
-    NSURL *storeURL =[[self applicationDocumentsDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite",configuration]];
-    NSPersistentStore
-     * store = [self.persistentStoreCoordinator persistentStoreForURL:storeURL];
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSManagedObjectContext *context = delegate.managedObjectContext;
     
-    [self.persistentStoreCoordinator removePersistentStore:store error:nil];
-    [[NSFileManager defaultManager] removeItemAtPath:storeURL.path error:nil];
+    HistoryModel *historyModel = [self fetchHistoryModelWithStartTime:startTime];
+    if(historyModel != nil){
+        [historyModel.volumes enumerateObjectsUsingBlock:^(VolumeModel *volume, NSUInteger idx, BOOL *stop) {
+            [context deleteObject:volume];
+        }];
+//
+//        
+//
+        historyModel.lastCryTime = cryTime;
+        historyModel.cryTimes = cryTimes;
+        historyModel.isViewed = NO;
+    }else{
+//    }
+        historyModel = [NSEntityDescription insertNewObjectForEntityForName:@"HistoryModel" inManagedObjectContext:context];
+        historyModel.isSelfData = NO;
+        historyModel.deviceName = deviceName;
+        historyModel.startTime = startTime;
+        historyModel.lastCryTime = cryTime;
+        historyModel.cryTimes = cryTimes;
+        historyModel.type = @2;
+    }
     
-    [self.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:configuration URL:storeURL options:nil error:nil];
+    [volumeArray enumerateObjectsUsingBlock:^(NSDictionary *volumeData, NSUInteger idx, BOOL *stop) {
+        
+        VolumeModel *volumeModel = [NSEntityDescription insertNewObjectForEntityForName:@"VolumeModel" inManagedObjectContext:context];
+        [volumeData enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSObject *obj, BOOL *stop) {
+            [volumeModel setValue:obj forKey:key];
+        }];
+        volumeModel.history = historyModel;
+
+        if(idx == [volumeArray count] -1){
+            historyModel.endTime = volumeModel.time;
+        }
+    }];
+    
+    NSError *error;
+    if (![context save:&error]) {
+        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
+    }else{
+        // finally
+        [object deleteInBackground];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:CryingDataDownloadedNotification object:nil userInfo:nil];
+    }
+}
+
+
+
+#pragma mark - peer to peer session
+-(void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state{
+    switch (state) {
+        case MCSessionStateConnected:
+            [[NSNotificationCenter defaultCenter] postNotificationName:PeerConnectionAcceptedNotification object:nil userInfo:@{@"peer":peerID,@"accept":@YES}];
+            break;
+        case MCSessionStateConnecting:
+            break;
+        case MCSessionStateNotConnected:
+            if(![session.connectedPeers containsObject:peerID]){
+                [[NSNotificationCenter defaultCenter] postNotificationName:PeerConnectionAcceptedNotification object:nil userInfo:@{@"peer":peerID,@"accept":@NO}];
+            }
+            break;
+        default:
+            break;
+    }
+    
+//    NSLog(@"session didChangeState peerID:%@, state:%ld",peerID,state);
+}
+
+-(void) loadUndownloadedDataInBackground :(NSString *)installationId{
+
+    PFQuery *undownloadedQuery = [PFQuery queryWithClassName:@"CryingData"];
+    
+    [undownloadedQuery whereKey:@"sendToDeviceInstallationId" equalTo:installationId];
+    [undownloadedQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        [objects enumerateObjectsUsingBlock:^(PFObject *obj, NSUInteger idx, BOOL *stop) {
+            [self decodeDownloadedData:obj];
+        }];
+    }];
 }
 
 @end

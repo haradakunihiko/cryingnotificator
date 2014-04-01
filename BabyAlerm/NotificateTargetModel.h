@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import "ContactViewController.h"
 
 
-@interface NotificateTargetModel : NSManagedObject
+@interface NotificateTargetModel : NSManagedObject<ContactViewControllerViewDelegate>
 
 @property (nonatomic, retain) NSString * firstname;
 @property (nonatomic, retain) NSString * lastname;

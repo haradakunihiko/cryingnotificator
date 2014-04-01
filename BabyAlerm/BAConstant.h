@@ -31,8 +31,19 @@ extern float const DisplayYRange;
 
 extern int const PlotClusterCount;
 
-
+#pragma mark - user default key.
 extern NSString * const SettingKeyThreshold;
+extern NSString * const SettingKeyUUID;
+extern NSString * const SettingKeyDetectionInterval;
+
+
+
+
+#pragma mark - peer to peer connection, discoveryInfo Key;
+extern NSString * const DiscoveryKeyAdvertiserInstallationId;
+extern NSString * const DiscoveryKeyAdvertiserUUID;
+extern NSString * const DiscoveryKeyDisplayName;
+
 
 extern NSString * const ASES_ACCESS_KEY;
 extern NSString * const ASES_SECRET_KEY;

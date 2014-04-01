@@ -22,7 +22,7 @@
 
 @property(nonatomic,strong) HistoryModel *historyModel;
 
-@property (nonatomic,strong) HistoryModel *history;
+//@property (nonatomic,strong) HistoryModel *history;
 //@property (nonatomic,strong )GraphViewController *graphViewController;
 //@property  (nonatomic,strong) GraphViewController *graphViewController;
 

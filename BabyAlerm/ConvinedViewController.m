@@ -185,7 +185,8 @@
     //ここで、viewの更新をするため、historyModel = nilの状態でfetchedresult..が作られる。
     [self.graphViewController clearView];
     
-    [self switchGraphView:NO];
+//    [self switchGraphView:NO];
+    self.showHistory = NO;
     
     [self.graphViewController resetXAxes];
     
@@ -203,13 +204,18 @@
 }
 
 
--(void)switchGraphView:(BOOL)showHistory{
+-(void)setShowHistory:(BOOL)showHistory{
+    _showHistory = showHistory;
     self.historyGraphContainer.alpha = showHistory ? 1 : 0;
     self.graphContainer.alpha = showHistory ? 0 : 1;
     [self.view setNeedsDisplay];
-    if(!showHistory){
-        [self.historyViewController.tableView deselectRowAtIndexPath:[self.historyViewController.tableView indexPathForSelectedRow] animated:YES];
-    }
+}
+
+-(void)switchGraphView:(BOOL)showHistory{
+    
+//    if(!showHistory){
+//        [self.historyViewController.tableView deselectRowAtIndexPath:[self.historyViewController.tableView indexPathForSelectedRow] animated:YES];
+//    }
 //    [self.historyViewController.tableView reloadData];
 
 }
@@ -347,6 +353,8 @@
 //        [[UIApplication sharedApplication]setStatusBarHidden:YES];
     }
     [super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
+}
+- (IBAction)infoButtonTapped:(UIButton *)sender {
 }
 
 

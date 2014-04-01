@@ -14,16 +14,21 @@
 #import <Parse/Parse.h>
 #import "NotificateTargetModel.h"
 #import "AppDelegate.h"
+#import "NotificateTargetDeviceModel.h"
+#import "NearbyDeviceBrowserTableViewController.h"
 
-@interface ContactViewController ()<ABPeoplePickerNavigationControllerDelegate,UIActionSheetDelegate,UIAlertViewDelegate,NSFetchedResultsControllerDelegate>{
+#import <MultipeerConnectivity/MultipeerConnectivity.h>
 
+@interface ContactViewController ()<ABPeoplePickerNavigationControllerDelegate,UIActionSheetDelegate,UIAlertViewDelegate,NSFetchedResultsControllerDelegate,MCBrowserViewControllerDelegate>{
 }
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic,retain) NSFetchedResultsController *fetchedResultsControllerForDevice;
 
 @end
 
 @implementation ContactViewController{
     UIActionSheet *_acthionSheet;
+    NSMutableDictionary *_discoveryInfos;
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -41,13 +46,17 @@
     
     NSError *error;
 	if (![[self fetchedResultsController] performFetch:&error]) {
-		// Update to handle the error appropriately.
 		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 		exit(-1);  // Fail
 	}
-//    _contacts = [NSMutableArray new];
-
     
+    if (![[self fetchedResultsControllerForDevice] performFetch:&error]) {
+        
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		exit(-1);  // Fail
+    }
+
+    _discoveryInfos = [NSMutableDictionary new];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
@@ -72,13 +81,12 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    id sectionInfo = [[self.fetchedResultsController sections]objectAtIndex:0];
-    return [sectionInfo numberOfObjects];
+    return [self numberOfDataWithType:section];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -86,12 +94,9 @@
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
  
-   NotificateTargetModel *target = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0]];
+   id<ContactViewControllerViewDelegate> target = [[self fetchedResultsController:indexPath.section] objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0]];
     
-//    cell.textLabel.text = ((Person *)[self contact][indexPath.row]).email;
-//    cell.detailTextLabel.text = ((Person *)[self contact][indexPath.row]).fullname;
-    cell.textLabel.text = target.email;
-    cell.detailTextLabel.text = target.fullname;
+    [target setupCell:cell];
     
     return cell;
 }
@@ -113,7 +118,8 @@
         AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
         NSManagedObjectContext *context = delegate.managedObjectContext;
         // Delete the row from the data source
-        NotificateTargetModel *target = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        NSIndexPath *modifiedIndexPath =[ NSIndexPath indexPathForRow:indexPath.row inSection:0];
+        NotificateTargetModel *target = [[self fetchedResultsController:indexPath.section] objectAtIndexPath:modifiedIndexPath];
         [context deleteObject:target];
         
         NSError *error;
@@ -124,6 +130,20 @@
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
+}
+
+-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+    switch (section) {
+        case CNNotificateTargetModelEmail:
+            return [NSString stringWithFormat:@"email"];
+            break;
+        case CNNotificateTargetModelDevice:
+            return [NSString stringWithFormat:@"device"];
+            break;
+        default:
+            break;
+    }
+    return @"";
 }
 
 /*
@@ -213,22 +233,26 @@
     
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
-- (void) showMessage:(NSString *)message
-{
-    [[[UIAlertView alloc] initWithTitle:@""
-                                message:message
-                               delegate:nil
-                      cancelButtonTitle:@"OK"
-                      otherButtonTitles:nil]
-     show];
+-(void) saveNewDevice:(NSString *)deviceName installationId:(NSString *)installationId{
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSManagedObjectContext *context = delegate.managedObjectContext;
+    NotificateTargetDeviceModel  *target = [NSEntityDescription insertNewObjectForEntityForName:@"NotificateTargetDeviceModel" inManagedObjectContext:context];
+    target.name = deviceName;
+    target.installationId = installationId;
+    
+    NSError *error;
+    if(![context save:&error]){
+        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
+    }
 }
 
 
 -(IBAction)addPressed:(id)sender{
-    _acthionSheet = [[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Contacts",@"Input",nil];
+    _acthionSheet = [[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Contacts",@"Input",@"Search Nearby Device",nil];
     [_acthionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
 }
+
+#pragma mark - ActionSheet Delegate
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     switch (buttonIndex) {
         case 0:
@@ -243,6 +267,17 @@
             
         }
             break;
+        case 2:
+        {
+            [self performSegueWithIdentifier:@"ShowNearbyDevices" sender:self];
+//            AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
+//            MCBrowserViewController *browserViewController = [[MCBrowserViewController alloc]initWithServiceType:kServiceType session:delegate.session];
+//            browserViewController.delegate = self;
+//
+//            [self presentViewController:browserViewController animated:YES completion:nil];
+            
+        }
+            break;
         default:
             break;
     }
@@ -251,6 +286,8 @@
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
     _acthionSheet = nil;
 }
+
+#pragma mark - AlertView Delegate
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     switch (buttonIndex) {
@@ -267,6 +304,83 @@
 
 -(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
     [self.tableView reloadData];
+}
+
+//+(CNNotificateTargetModelType) cNNotificateTargetModelTypeWithInt: (NSInteger) type{
+//    switch (type) {
+//        case 0:
+//            return CNNotificateTargetModelEmail;
+//            break;
+//        case 1:
+//            return CNNotificateTargetModelDevice;
+//        default:
+//            break;
+//    }
+//}
+
+
+//-(NSFetchedResultsController *)fetchedResultsControllerWithInt : (NSInteger)type{
+//    return [self fetchedResultsController:type];
+//}
+
+
+-(NSInteger) numberOfDataWithType:(NSInteger) type{
+    id sectionInfo = [[[self fetchedResultsController:type] sections]objectAtIndex:0];
+    return [sectionInfo numberOfObjects];
+}
+
+-(NSFetchedResultsController *)fetchedResultsController : (CNNotificateTargetModelType)type{
+    NSFetchedResultsController *result;
+    switch (type) {
+        case CNNotificateTargetModelEmail:
+            result = self.fetchedResultsController;
+            break;
+        case CNNotificateTargetModelDevice:
+            result = self.fetchedResultsControllerForDevice;
+            break;
+        default:
+            break;
+    }
+    return result;
+}
+
+-(CNNotificateTargetModelType)modelTypeForFetchedResultsController : (NSFetchedResultsController *)controller{
+    if(controller == nil){
+        return CNNotificateTargetModelUnknown;
+    }
+    if([controller isEqual:self.fetchedResultsController]){
+        return CNNotificateTargetModelEmail;
+    }else if([controller isEqual:self.fetchedResultsControllerForDevice]){
+        return CNNotificateTargetModelDevice;
+    }
+    return CNNotificateTargetModelUnknown;
+}
+
+-(NSFetchedResultsController *)fetchedResultsControllerForDevice{
+    
+    if (_fetchedResultsControllerForDevice != nil) {
+        return _fetchedResultsControllerForDevice;
+    }
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    NSManagedObjectContext *context = delegate.managedObjectContext;
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"NotificateTargetDeviceModel" inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
+                              initWithKey:@"prcdate" ascending:YES];
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSFetchedResultsController *theFetchedResultsController =
+    [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                        managedObjectContext:context sectionNameKeyPath:nil
+                                                   cacheName:nil];
+    self.fetchedResultsControllerForDevice = theFetchedResultsController;
+    _fetchedResultsControllerForDevice.delegate = self;
+    return _fetchedResultsControllerForDevice;
 }
 
 - (NSFetchedResultsController *)fetchedResultsController {
@@ -297,6 +411,8 @@
     
 }
 
+
+#pragma mark - NSFetchedResultsController Delegate
 -(void)controllerWillChangeContent:(NSFetchedResultsController *)controller{
     [self.tableView beginUpdates];
 }
@@ -304,13 +420,16 @@
 -(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath{
     
     UITableView *tableView = self.tableView;
+    NSIndexPath *modifiedIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:[self modelTypeForFetchedResultsController:controller]];
+    NSIndexPath *modifiedNewIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row inSection:[self modelTypeForFetchedResultsController:controller]];
+    
     switch(type) {
         case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:modifiedNewIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:modifiedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeUpdate:
@@ -328,6 +447,65 @@
 
 -(void)controllerDidChangeContent:(NSFetchedResultsController *)controller{
     [self.tableView endUpdates];
+}
+
+#pragma mark - BrowserViewController Delegate
+
+-(BOOL)browserViewController:(MCBrowserViewController *)browserViewController shouldPresentNearbyPeer:(MCPeerID *)peerID withDiscoveryInfo:(NSDictionary *)info{
+    [self storeDiscoveryInfo:info withPeerId:peerID];
+    return YES;
+}
+
+-(void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController{
+    
+
+    [browserViewController dismissViewControllerAnimated:YES completion:^{
+
+        NSArray *deviceInfos = [self retrieveDeviceInfosFromSession:browserViewController.session];
+        
+        [deviceInfos enumerateObjectsUsingBlock:^(NSDictionary *deviceInfo, NSUInteger idx, BOOL *stop) {
+            [self saveNewDevice:[deviceInfo objectForKey:DiscoveryKeyDisplayName] installationId:[deviceInfo objectForKey:DiscoveryKeyAdvertiserInstallationId]];
+        }];
+        
+        [_discoveryInfos removeAllObjects];
+        
+        [browserViewController.session disconnect];
+    }];
+}
+
+
+-(NSArray *)retrieveDeviceInfosFromSession: (MCSession *)session{
+    NSMutableArray *deviceInfos = [NSMutableArray new];
+    [session.connectedPeers enumerateObjectsUsingBlock:^(MCPeerID *peerId, NSUInteger idx, BOOL *stop) {
+        NSDictionary *discoveryInfo = _discoveryInfos[peerId];
+        NSLog(@"found discovery Info :%@ for peerId:%@",[discoveryInfo description],peerId.displayName);
+        
+        NSMutableDictionary *deviceInfo = [discoveryInfo mutableCopy];
+        
+        [deviceInfo setObject:peerId.displayName forKey:DiscoveryKeyDisplayName];
+        [deviceInfos addObject:deviceInfo];
+    }];
+    return deviceInfos;
+}
+
+-(void)storeDiscoveryInfo:(NSDictionary  *)discoveryInfo withPeerId: (MCPeerID *)peerId{
+    _discoveryInfos[peerId] = discoveryInfo;
+}
+
+-(void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController{
+    [browserViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    if([segue.identifier isEqualToString:@"ShowNearbyDevices"]){
+        NearbyDeviceBrowserTableViewController *viewController = (NearbyDeviceBrowserTableViewController *)segue.destinationViewController;
+        NSArray *devices =[self.fetchedResultsControllerForDevice fetchedObjects];
+        NSMutableSet *installationIds = [NSMutableSet new];
+        [devices enumerateObjectsUsingBlock:^(NotificateTargetDeviceModel *target, NSUInteger idx, BOOL *stop) {
+            [installationIds addObject:target.installationId];
+        }];
+        viewController.registerdDeviceInstallationIds = installationIds;
+    }
 }
 
 

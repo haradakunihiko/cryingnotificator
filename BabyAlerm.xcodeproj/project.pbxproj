@@ -53,6 +53,7 @@
 		7322BDA31899458000915B12 /* iTunesArtwork@2x in Resources */ = {isa = PBXBuildFile; fileRef = 7322BD8A1899458000915B12 /* iTunesArtwork@2x */; };
 		7322BDA61899480000915B12 /* CryingNotificater768-1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 7322BDA41899480000915B12 /* CryingNotificater768-1024.png */; };
 		7322BDA71899480000915B12 /* CryingNotificater1536-2048.png in Resources */ = {isa = PBXBuildFile; fileRef = 7322BDA51899480000915B12 /* CryingNotificater1536-2048.png */; };
+		7323D7B518E9247900C04B93 /* HistoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7323D7B418E9247900C04B93 /* HistoryModel.m */; };
 		7340B217189F8E7100470DBE /* AWSRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7340B215189F8E7100470DBE /* AWSRuntime.framework */; };
 		7340B218189F8E7100470DBE /* AWSSES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7340B216189F8E7100470DBE /* AWSSES.framework */; };
 		735D166218439CF300DC27EE /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D166118439CF300DC27EE /* Parse.framework */; };
@@ -82,7 +83,8 @@
 		7386DAAB184067D40037A8A3 /* BabyAlermTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386DAAA184067D40037A8A3 /* BabyAlermTests.m */; };
 		7386DAB61840704E0037A8A3 /* CryPickingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386DAB51840704E0037A8A3 /* CryPickingController.m */; };
 		73968A791892914100F059F6 /* NotificateTargetModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73968A781892914100F059F6 /* NotificateTargetModel.m */; };
-		73AB59A8189694BB0019C466 /* HistoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AB59A7189694BB0019C466 /* HistoryModel.m */; };
+		73A8810E18E163C400B7C4AD /* TDBadgedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A8810D18E163C400B7C4AD /* TDBadgedCell.m */; };
+		73A965B018AA5DAC00C903F5 /* NearbyDeviceBrowserTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A965AF18AA5DAC00C903F5 /* NearbyDeviceBrowserTableViewController.m */; };
 		73ABFD6E188EC26D00BD48C6 /* MyTabBarControllerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ABFD6D188EC26D00BD48C6 /* MyTabBarControllerViewController.m */; };
 		73AC4110188F6B6C00A5EAD2 /* ConvinedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AC410F188F6B6C00A5EAD2 /* ConvinedViewController.m */; };
 		73ADDE2A1897EB5600FCDA7F /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADDE291897EB5600FCDA7F /* Reachability.m */; };
@@ -92,6 +94,7 @@
 		73B2F26C185C9B0800655748 /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F26B185C9B0800655748 /* HistoryViewController.m */; };
 		73B2F277185F33A600655748 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73B2F276185F33A600655748 /* CoreData.framework */; };
 		73B2F27A185F340E00655748 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F278185F340E00655748 /* Model.xcdatamodeld */; };
+		73B9F45118AA00CB008606DA /* NotificateTargetDeviceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B9F45018AA00CB008606DA /* NotificateTargetDeviceModel.m */; };
 		73BD137D188D234300A78A3A /* HistoryGraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BD137C188D234300A78A3A /* HistoryGraphViewController.m */; };
 		73D10246189790EA0031F5C9 /* VolumeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D10245189790EA0031F5C9 /* VolumeModel.m */; };
 		73D102481897A2A20031F5C9 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 73D102471897A2A20031F5C9 /* Settings.bundle */; };
@@ -156,6 +159,8 @@
 		7322BD8A1899458000915B12 /* iTunesArtwork@2x */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iTunesArtwork@2x"; sourceTree = "<group>"; };
 		7322BDA41899480000915B12 /* CryingNotificater768-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CryingNotificater768-1024.png"; sourceTree = "<group>"; };
 		7322BDA51899480000915B12 /* CryingNotificater1536-2048.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CryingNotificater1536-2048.png"; sourceTree = "<group>"; };
+		7323D7B318E9247900C04B93 /* HistoryModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryModel.h; sourceTree = "<group>"; };
+		7323D7B418E9247900C04B93 /* HistoryModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryModel.m; sourceTree = "<group>"; };
 		7340B215189F8E7100470DBE /* AWSRuntime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSRuntime.framework; sourceTree = "<group>"; };
 		7340B216189F8E7100470DBE /* AWSSES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSES.framework; sourceTree = "<group>"; };
 		735D166118439CF300DC27EE /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
@@ -193,8 +198,10 @@
 		7386DAB51840704E0037A8A3 /* CryPickingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CryPickingController.m; sourceTree = "<group>"; };
 		73968A771892914100F059F6 /* NotificateTargetModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificateTargetModel.h; sourceTree = "<group>"; };
 		73968A781892914100F059F6 /* NotificateTargetModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificateTargetModel.m; sourceTree = "<group>"; };
-		73AB59A6189694BB0019C466 /* HistoryModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryModel.h; sourceTree = "<group>"; };
-		73AB59A7189694BB0019C466 /* HistoryModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryModel.m; sourceTree = "<group>"; };
+		73A8810C18E163C400B7C4AD /* TDBadgedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDBadgedCell.h; sourceTree = "<group>"; };
+		73A8810D18E163C400B7C4AD /* TDBadgedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDBadgedCell.m; sourceTree = "<group>"; };
+		73A965AE18AA5DAC00C903F5 /* NearbyDeviceBrowserTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NearbyDeviceBrowserTableViewController.h; sourceTree = "<group>"; };
+		73A965AF18AA5DAC00C903F5 /* NearbyDeviceBrowserTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NearbyDeviceBrowserTableViewController.m; sourceTree = "<group>"; };
 		73ABFD6C188EC26D00BD48C6 /* MyTabBarControllerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyTabBarControllerViewController.h; sourceTree = "<group>"; };
 		73ABFD6D188EC26D00BD48C6 /* MyTabBarControllerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyTabBarControllerViewController.m; sourceTree = "<group>"; };
 		73AC410E188F6B6C00A5EAD2 /* ConvinedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvinedViewController.h; sourceTree = "<group>"; };
@@ -288,6 +295,8 @@
 		73B2F26B185C9B0800655748 /* HistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
 		73B2F276185F33A600655748 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		73B2F279185F340E00655748 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		73B9F44F18AA00CB008606DA /* NotificateTargetDeviceModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificateTargetDeviceModel.h; sourceTree = "<group>"; };
+		73B9F45018AA00CB008606DA /* NotificateTargetDeviceModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificateTargetDeviceModel.m; sourceTree = "<group>"; };
 		73BD137B188D234300A78A3A /* HistoryGraphViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryGraphViewController.h; sourceTree = "<group>"; };
 		73BD137C188D234300A78A3A /* HistoryGraphViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryGraphViewController.m; sourceTree = "<group>"; };
 		73D10244189790EA0031F5C9 /* VolumeModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VolumeModel.h; sourceTree = "<group>"; };
@@ -399,8 +408,10 @@
 			children = (
 				73968A771892914100F059F6 /* NotificateTargetModel.h */,
 				73968A781892914100F059F6 /* NotificateTargetModel.m */,
-				73AB59A6189694BB0019C466 /* HistoryModel.h */,
-				73AB59A7189694BB0019C466 /* HistoryModel.m */,
+				73B9F44F18AA00CB008606DA /* NotificateTargetDeviceModel.h */,
+				73B9F45018AA00CB008606DA /* NotificateTargetDeviceModel.m */,
+				7323D7B318E9247900C04B93 /* HistoryModel.h */,
+				7323D7B418E9247900C04B93 /* HistoryModel.m */,
 				73B2F278185F340E00655748 /* Model.xcdatamodeld */,
 				73D10244189790EA0031F5C9 /* VolumeModel.h */,
 				73D10245189790EA0031F5C9 /* VolumeModel.m */,
@@ -411,6 +422,7 @@
 		7386DA73184067D40037A8A3 = {
 			isa = PBXGroup;
 			children = (
+				73A8810B18E1639500B7C4AD /* TdBadgedCell */,
 				73B2F1701853648700655748 /* CorePlotHeaders */,
 				73B2F1BF1853648700655748 /* libCorePlot-CocoaTouch.a */,
 				7386DA85184067D40037A8A3 /* BabyAlerm */,
@@ -484,6 +496,8 @@
 				73BD137C188D234300A78A3A /* HistoryGraphViewController.m */,
 				73ABFD6C188EC26D00BD48C6 /* MyTabBarControllerViewController.h */,
 				73ABFD6D188EC26D00BD48C6 /* MyTabBarControllerViewController.m */,
+				73A965AE18AA5DAC00C903F5 /* NearbyDeviceBrowserTableViewController.h */,
+				73A965AF18AA5DAC00C903F5 /* NearbyDeviceBrowserTableViewController.m */,
 				7322BD6E1899458000915B12 /* ios 2 */,
 				7322BD42189937CD00915B12 /* CryingNotificater-29.png */,
 				7322BD43189937CE00915B12 /* CryingNotificater-29@2x.png */,
@@ -538,6 +552,15 @@
 				7386DAA7184067D40037A8A3 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		73A8810B18E1639500B7C4AD /* TdBadgedCell */ = {
+			isa = PBXGroup;
+			children = (
+				73A8810C18E163C400B7C4AD /* TDBadgedCell.h */,
+				73A8810D18E163C400B7C4AD /* TDBadgedCell.m */,
+			);
+			name = TdBadgedCell;
 			sourceTree = "<group>";
 		};
 		73AC410D188F6B3900A5EAD2 /* Singleview */ = {
@@ -835,15 +858,18 @@
 				7386DA96184067D40037A8A3 /* ViewController.m in Sources */,
 				73968A791892914100F059F6 /* NotificateTargetModel.m in Sources */,
 				73B2F27A185F340E00655748 /* Model.xcdatamodeld in Sources */,
+				73A965B018AA5DAC00C903F5 /* NearbyDeviceBrowserTableViewController.m in Sources */,
 				735D16771844554A00DC27EE /* GraphViewController.m in Sources */,
 				73BD137D188D234300A78A3A /* HistoryGraphViewController.m in Sources */,
+				73A8810E18E163C400B7C4AD /* TDBadgedCell.m in Sources */,
 				73B2F26C185C9B0800655748 /* HistoryViewController.m in Sources */,
 				73AC4110188F6B6C00A5EAD2 /* ConvinedViewController.m in Sources */,
 				73B2F2691855F88700655748 /* BAConstant.m in Sources */,
+				73B9F45118AA00CB008606DA /* NotificateTargetDeviceModel.m in Sources */,
 				7386DA90184067D40037A8A3 /* AppDelegate.m in Sources */,
 				73B2F16C18503EA800655748 /* ContactViewController.m in Sources */,
-				73AB59A8189694BB0019C466 /* HistoryModel.m in Sources */,
 				73F55DFB188914A500A13054 /* MainViewController.m in Sources */,
+				7323D7B518E9247900C04B93 /* HistoryModel.m in Sources */,
 				7386DA8C184067D40037A8A3 /* main.m in Sources */,
 				73ABFD6E188EC26D00BD48C6 /* MyTabBarControllerViewController.m in Sources */,
 				73ADDE2A1897EB5600FCDA7F /* Reachability.m in Sources */,
@@ -929,7 +955,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "6EEB7B2B-239A-45EE-8C5B-0B2E3E41D2A2";
 				SDKROOT = iphoneos;
@@ -964,7 +990,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "armv7 armv7s arm64";

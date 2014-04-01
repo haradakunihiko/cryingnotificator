@@ -2,7 +2,7 @@
 //  HistoryModel.h
 //  BabyAlerm
 //
-//  Created by harada on 2014/01/27.
+//  Created by harada on 2014/03/31.
 //  Copyright (c) 2014年 harada. All rights reserved.
 //
 
@@ -13,9 +13,15 @@
 
 @interface HistoryModel : NSManagedObject
 
-@property (nonatomic, retain) NSDate * endTime;
-@property (nonatomic, retain) NSDate * startTime;
 @property (nonatomic, retain) NSNumber * compressed;
+@property (nonatomic, retain) NSNumber * cryTimes;
+@property (nonatomic, retain) NSString * deviceName;
+@property (nonatomic, retain) NSDate * endTime;
+@property (nonatomic, retain) NSNumber * isSelfData;
+@property (nonatomic, retain) NSNumber * isViewed;
+@property (nonatomic, retain) NSDate * lastCryTime;
+@property (nonatomic, retain) NSDate * startTime;
+@property (nonatomic, retain) NSNumber * type;
 @property (nonatomic, retain) NSOrderedSet *volumes;
 @end
 

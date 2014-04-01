@@ -19,4 +19,16 @@
 @dynamic time;
 @dynamic history;
 
+-(NSDictionary *)toDictionary{
+    NSMutableDictionary *dict = [NSMutableDictionary new];
+    NSArray *array =[[[self entity] attributesByName] allKeys];
+    [array enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL *stop) {
+        NSObject *value =[self valueForKey:key];
+        if(value != nil && ([value isKindOfClass:[NSNumber class]] || [value isKindOfClass:[NSDate class]])){
+            [dict setObject:value forKey:key];
+        }
+    }];
+    return dict;
+}
+
 @end

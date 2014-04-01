@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13B42" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5063" systemVersion="13C64" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="HistoryModel" representedClassName="HistoryModel" syncable="YES">
         <attribute name="compressed" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="cryTimes" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="deviceName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="endTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="isSelfData" optional="YES" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="isViewed" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="lastCryTime" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="startTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="type" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="volumes" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="VolumeModel" inverseName="history" inverseEntity="VolumeModel" syncable="YES"/>
+    </entity>
+    <entity name="NotificateTargetDeviceModel" representedClassName="NotificateTargetDeviceModel" syncable="YES">
+        <attribute name="installationId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="prcdate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="udid" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="NotificateTargetModel" representedClassName="NotificateTargetModel" syncable="YES">
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
@@ -26,10 +38,12 @@
     </configuration>
     <configuration name="Other">
         <memberEntity name="NotificateTargetModel"/>
+        <memberEntity name="NotificateTargetDeviceModel"/>
     </configuration>
     <elements>
-        <element name="HistoryModel" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="NotificateTargetModel" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="VolumeModel" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="HistoryModel" positionX="-101" positionY="-72" width="128" height="193"/>
+        <element name="NotificateTargetDeviceModel" positionX="-0" positionY="207" width="128" height="103"/>
+        <element name="NotificateTargetModel" positionX="-261" positionY="207" width="128" height="103"/>
+        <element name="VolumeModel" positionX="-263" positionY="36" width="128" height="135"/>
     </elements>
 </model>

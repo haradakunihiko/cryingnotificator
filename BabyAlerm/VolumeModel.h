@@ -20,6 +20,7 @@
 @property (nonatomic, retain) NSDate * time;
 @property (nonatomic, retain) HistoryModel *history;
 
-@property (nonatomic) long count;
+
+-(NSDictionary *) toDictionary;
 
 @end

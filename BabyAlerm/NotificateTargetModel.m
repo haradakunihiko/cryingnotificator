@@ -25,4 +25,9 @@
     return [NSString stringWithFormat:@"%@ %@",self.lastname ?: @"", self.firstname ?: @""];
 }
 
+-(void)setupCell:(UITableViewCell *)cell{
+    cell.textLabel.text = self.email;
+    cell.detailTextLabel.text = self.fullname;
+}
+
 @end

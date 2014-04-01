@@ -13,6 +13,7 @@
 
 @property (nonatomic) BOOL executing;
 @property (readonly) HistoryModel *ongoingHistoryModel;
+@property (nonatomic) BOOL showHistory;
 
 -(void) switchGraphView :(BOOL) showHistory;
 

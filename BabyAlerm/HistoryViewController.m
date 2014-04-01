@@ -10,6 +10,8 @@
 #import "AppDelegate.h"
 #import "GraphViewController.h"
 #import "HistoryGraphViewController.h"
+#import "TDBadgedCell.h"
+
 
 @interface HistoryViewController ()<NSFetchedResultsControllerDelegate,UIActionSheetDelegate,GraphViewControllerDataSource>
 
@@ -39,6 +41,8 @@
     
     self.refreshControl = refreshControl;
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateExecutingCell:) name:CryingDetectedNotification object:nil];
+    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
@@ -52,15 +56,49 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - NSFetchedResultsController delegate
+
+//-(void)controllerWillChangeContent:(NSFetchedResultsController *)controller{
+//    [self.tableView beginUpdates];
+//}
+//
+//-(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath{
+////    UITableView *tableView = self.tableView;
+//    NSLog(@"%@ old:%@ new:%@", [anObject description],[indexPath description] , [newIndexPath description]);
+//    HistoryModel *theObject = (HistoryModel *)anObject;
+//    switch(type) {
+//        case NSFetchedResultsChangeInsert:
+////            if ([theObject.type isEqualToNumber:@2]) {
+////                [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+////                [self.tableView insertRowsAtIndexPaths:@[] withRowAnimation:UITableViewRowAnimationFade];
+////                
+////                
+////            }
+////            [tableView insertRowsAtIndexPaths:@[[self indexPathOfTable:newIndexPath]] withRowAnimation:UITableViewRowAnimationFade];
+//            break;
+//            
+//        case NSFetchedResultsChangeDelete:
+////            [tableView deleteRowsAtIndexPaths:@[[self indexPathOfTable:indexPath]] withRowAnimation:UITableViewRowAnimationFade];
+//            break;
+//            
+//        case NSFetchedResultsChangeUpdate:
+////            [tableView reloadRowsAtIndexPaths:@[[self indexPathOfTable:indexPath]] withRowAnimation:UITableViewRowAnimationAutomatic];
+//            break;
+//            
+//        case NSFetchedResultsChangeMove:
+//            break;
+//    }
+//}
+//
+//-(void)controllerDidChangeContent:(NSFetchedResultsController *)controller{
+//    [self.tableView endUpdates];
+//}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    if(self.convinedViewController.executing){
-        return 2;
-    }else{
-        return 1;
-    }
+   return [self sectionForHistory] + 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -75,35 +113,66 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    UITableViewCell *cell;
+    HistoryModel *historyModel;
     if(self.convinedViewController.executing && indexPath.section == 0){
         static NSString *CellIdentifier = @"ExecutingCell";
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-        HistoryModel *historyModel = self.convinedViewController.ongoingHistoryModel;
+        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+        historyModel = self.convinedViewController.ongoingHistoryModel;
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"YYYY/MM/dd HH:mm:ss"];
         [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"JST"]];
         NSString *timeString =[dateFormatter stringFromDate:[historyModel startTime]];
         cell.textLabel.text = timeString;
-        return cell;
     }else{
-        static NSString *CellIdentifier = @"Cell";
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-       
-        HistoryModel *historyModel = [self.fetchedResultsController objectAtIndexPath:[self indexPathOfData:indexPath]];
+        
+        historyModel = [self.fetchedResultsController objectAtIndexPath:[self indexPathOfData:indexPath]];
+        
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"YYYY/MM/dd HH:mm:ss"];
         [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"JST"]];
-        NSString *timeString =[dateFormatter stringFromDate:[historyModel startTime]];
-        cell.textLabel.text = timeString;
-
-        NSTimeInterval interval = [historyModel.endTime timeIntervalSinceDate:historyModel.startTime];
-
-                fmod(interval, 300);
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"%dh%dm%ds" , (int)interval / 3600,(int)interval / 60 , (int)fmod(interval, 60)];
         
-        // Configure the cell...
-        return cell;
+        if ([[historyModel valueForKey:@"isSelfData"] boolValue]) {
+            
+            static NSString *CellIdentifier = @"Cell";
+            cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+            
+            
+            NSTimeInterval interval = [historyModel.endTime timeIntervalSinceDate:historyModel.startTime];
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%dh%dm%ds" , (int)interval / 3600,(int)interval / 60 , (int)fmod(interval, 60)];
+
+            cell.textLabel.text = [dateFormatter stringFromDate:[historyModel startTime]];
+            if([historyModel.cryTimes intValue] == 0){
+                ((TDBadgedCell *)cell).badgeString = nil;
+            }else{
+                ((TDBadgedCell *)cell).badgeString = [historyModel.cryTimes stringValue];
+            }
+            ((TDBadgedCell *)cell).badgeTextColor = [UIColor whiteColor];
+        }else{
+            static NSString *CellIdentifier = @"OtherDataCell";
+            cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+            cell.textLabel.text = [dateFormatter stringFromDate:[historyModel endTime]];
+            cell.detailTextLabel.text = historyModel.deviceName;
+            
+        }
+        
     }
+    
+    if([historyModel.cryTimes intValue] == 0){
+        ((TDBadgedCell *)cell).badgeString = nil;
+    }else{
+        ((TDBadgedCell *)cell).badgeString = [historyModel.cryTimes stringValue];
+    }
+    ((TDBadgedCell *)cell).badgeTextColor = [UIColor whiteColor];
+    
+    NSLog(@"isviewd:%@",historyModel.isViewed);
+    
+    if([[historyModel valueForKey:@"isViewed"] boolValue]){
+        ((TDBadgedCell *)cell).badgeColor = [UIColor blueColor];
+    }else{
+        ((TDBadgedCell *)cell).badgeColor = [UIColor redColor];
+    }
+    return cell;
 }
 
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
@@ -118,16 +187,34 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if(self.convinedViewController.executing && indexPath.section == 0){
-        [self.convinedViewController switchGraphView:NO];
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        self.convinedViewController.ongoingHistoryModel.isViewed = [NSNumber numberWithBool: YES];
+//        [self.convinedViewController switchGraphView:NO];
+        self.convinedViewController.showHistory = NO;
+//        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+
     }else{
         self.graphViewController.datasource = self;
+        [self graphViewControllerDataSource].isViewed = [NSNumber numberWithBool:YES];
         [self.graphViewController initializeWithDisplaytype:BAGraphDisplayTypeShowAllInView];
         //    [self.graphViewController.view setNeedsDisplay];
         [self.graphViewController redraw];
-        [self.convinedViewController switchGraphView:YES];
+//        [self.convinedViewController switchGraphView:YES];
+        self.convinedViewController.showHistory = YES;
     }
+    AppDelegate *delegate = [[UIApplication sharedApplication]delegate];
+    [delegate saveContext];
+    
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    ((TDBadgedCell *)cell).badgeColor = [UIColor blueColor];
+    
 }
+
+-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
+//    [[self.tableView cellForRowAtIndexPath:indexPath] reloadInputViews];
+//    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:NO];
+}
+
+
 
 
 /*
@@ -188,7 +275,7 @@
     NSSortDescriptor *sort = [[NSSortDescriptor alloc]
                               initWithKey:@"startTime" ascending:NO];
     [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"endTime != null"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"type = 0 or type = 2 "];
     
     [fetchRequest setPredicate:predicate];
     [fetchRequest setFetchBatchSize:20];
@@ -198,6 +285,7 @@
                                         managedObjectContext:context sectionNameKeyPath:nil
                                                    cacheName:nil];
     self.fetchedResultsController = theFetchedResultsController;
+    
     _fetchedResultsController.delegate = self;
     return _fetchedResultsController;
     
@@ -268,10 +356,32 @@
     return [NSIndexPath indexPathForRow:indexPath.row inSection:0];
 }
 
+-(NSIndexPath *)indexPathOfTable: (NSIndexPath *) indexPath{
+    return [NSIndexPath indexPathForRow:indexPath.row inSection:[self sectionForHistory]];
+}
+
+-(int) sectionForHistory{
+    if(self.convinedViewController.executing){
+        return 1;
+    }else{
+        return 0;
+    }
+}
+
 -(NSInteger)numberOfHistory{
-    
     id sectionInfo = [[self.fetchedResultsController sections]objectAtIndex:0];
     return [sectionInfo numberOfObjects];
+}
+
+-(void)updateExecutingCell: (NSNotification *)notification{
+    NSLog(@"updateExecutingCell");
+
+    if(self.convinedViewController.executing){
+        if(!self.convinedViewController.showHistory){
+            self.convinedViewController.ongoingHistoryModel.isViewed = [NSNumber numberWithBool:YES];
+        }
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:NO];
+    }
 }
 
 
