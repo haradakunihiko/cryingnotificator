@@ -321,7 +321,6 @@ NSString *const CryingDataDownloadedNotification = @"asia.tzap.apps.BabyAlerm:Cr
         historyModel.startTime = startTime;
         historyModel.lastCryTime = cryTime;
         historyModel.cryTimes = cryTimes;
-        historyModel.type = @2;
     }
     
     [volumeArray enumerateObjectsUsingBlock:^(NSDictionary *volumeData, NSUInteger idx, BOOL *stop) {

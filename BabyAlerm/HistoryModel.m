@@ -2,7 +2,7 @@
 //  HistoryModel.m
 //  BabyAlerm
 //
-//  Created by harada on 2014/03/31.
+//  Created by harada on 2014/04/01.
 //  Copyright (c) 2014年 harada. All rights reserved.
 //
 
@@ -20,7 +20,7 @@
 @dynamic isViewed;
 @dynamic lastCryTime;
 @dynamic startTime;
-@dynamic type;
+@dynamic isExecuting;
 @dynamic volumes;
 
 @end

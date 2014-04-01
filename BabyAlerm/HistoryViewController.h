@@ -19,4 +19,7 @@
 -(void) reloadData;
 -(NSInteger) numberOfHistory;
 
+-(void) showExecutingCell;
+-(void) hideExecutingCell;
+
 @end

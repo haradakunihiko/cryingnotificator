@@ -53,7 +53,7 @@
 		7322BDA31899458000915B12 /* iTunesArtwork@2x in Resources */ = {isa = PBXBuildFile; fileRef = 7322BD8A1899458000915B12 /* iTunesArtwork@2x */; };
 		7322BDA61899480000915B12 /* CryingNotificater768-1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 7322BDA41899480000915B12 /* CryingNotificater768-1024.png */; };
 		7322BDA71899480000915B12 /* CryingNotificater1536-2048.png in Resources */ = {isa = PBXBuildFile; fileRef = 7322BDA51899480000915B12 /* CryingNotificater1536-2048.png */; };
-		7323D7B518E9247900C04B93 /* HistoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7323D7B418E9247900C04B93 /* HistoryModel.m */; };
+		7323D7B818EAE80F00C04B93 /* HistoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7323D7B718EAE80F00C04B93 /* HistoryModel.m */; };
 		7340B217189F8E7100470DBE /* AWSRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7340B215189F8E7100470DBE /* AWSRuntime.framework */; };
 		7340B218189F8E7100470DBE /* AWSSES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7340B216189F8E7100470DBE /* AWSSES.framework */; };
 		735D166218439CF300DC27EE /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D166118439CF300DC27EE /* Parse.framework */; };
@@ -159,8 +159,8 @@
 		7322BD8A1899458000915B12 /* iTunesArtwork@2x */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iTunesArtwork@2x"; sourceTree = "<group>"; };
 		7322BDA41899480000915B12 /* CryingNotificater768-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CryingNotificater768-1024.png"; sourceTree = "<group>"; };
 		7322BDA51899480000915B12 /* CryingNotificater1536-2048.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CryingNotificater1536-2048.png"; sourceTree = "<group>"; };
-		7323D7B318E9247900C04B93 /* HistoryModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryModel.h; sourceTree = "<group>"; };
-		7323D7B418E9247900C04B93 /* HistoryModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryModel.m; sourceTree = "<group>"; };
+		7323D7B618EAE80F00C04B93 /* HistoryModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryModel.h; sourceTree = "<group>"; };
+		7323D7B718EAE80F00C04B93 /* HistoryModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryModel.m; sourceTree = "<group>"; };
 		7340B215189F8E7100470DBE /* AWSRuntime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSRuntime.framework; sourceTree = "<group>"; };
 		7340B216189F8E7100470DBE /* AWSSES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSES.framework; sourceTree = "<group>"; };
 		735D166118439CF300DC27EE /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
@@ -410,9 +410,9 @@
 				73968A781892914100F059F6 /* NotificateTargetModel.m */,
 				73B9F44F18AA00CB008606DA /* NotificateTargetDeviceModel.h */,
 				73B9F45018AA00CB008606DA /* NotificateTargetDeviceModel.m */,
-				7323D7B318E9247900C04B93 /* HistoryModel.h */,
-				7323D7B418E9247900C04B93 /* HistoryModel.m */,
 				73B2F278185F340E00655748 /* Model.xcdatamodeld */,
+				7323D7B618EAE80F00C04B93 /* HistoryModel.h */,
+				7323D7B718EAE80F00C04B93 /* HistoryModel.m */,
 				73D10244189790EA0031F5C9 /* VolumeModel.h */,
 				73D10245189790EA0031F5C9 /* VolumeModel.m */,
 			);
@@ -869,7 +869,7 @@
 				7386DA90184067D40037A8A3 /* AppDelegate.m in Sources */,
 				73B2F16C18503EA800655748 /* ContactViewController.m in Sources */,
 				73F55DFB188914A500A13054 /* MainViewController.m in Sources */,
-				7323D7B518E9247900C04B93 /* HistoryModel.m in Sources */,
+				7323D7B818EAE80F00C04B93 /* HistoryModel.m in Sources */,
 				7386DA8C184067D40037A8A3 /* main.m in Sources */,
 				73ABFD6E188EC26D00BD48C6 /* MyTabBarControllerViewController.m in Sources */,
 				73ADDE2A1897EB5600FCDA7F /* Reachability.m in Sources */,

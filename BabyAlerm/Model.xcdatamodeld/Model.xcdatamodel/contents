@@ -5,11 +5,11 @@
         <attribute name="cryTimes" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="deviceName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="endTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="isExecuting" attributeType="Boolean" defaultValueString="0" syncable="YES"/>
         <attribute name="isSelfData" optional="YES" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="isViewed" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="lastCryTime" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="startTime" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="type" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="volumes" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="VolumeModel" inverseName="history" inverseEntity="VolumeModel" syncable="YES"/>
     </entity>
     <entity name="NotificateTargetDeviceModel" representedClassName="NotificateTargetDeviceModel" syncable="YES">

@@ -141,17 +141,20 @@
     
     if(self.executing){
         self.executing = NO;
+        
+        [self.historyViewController hideExecutingCell];
+        
         [_pickingController stopListening];
         [self.startButton setTitle:@"start" forState:UIControlStateNormal];
         
-        [self.historyViewController.tableView beginUpdates];
+//        [self.historyViewController.tableView beginUpdates];
+//        
+//        [self.historyViewController.tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
         
-        [self.historyViewController.tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+//        [self.historyViewController.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+//        [self.historyViewController reloadData];
         
-        [self.historyViewController.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-        [self.historyViewController reloadData];
-        
-        [self.historyViewController.tableView endUpdates];
+//        [self.historyViewController.tableView endUpdates];
         
     }else{
         
@@ -195,11 +198,8 @@
     
     [_pickingController startListening];
     
-    [self.historyViewController.tableView beginUpdates];
+    [self.historyViewController showExecutingCell];
     
-    [self.historyViewController.tableView insertSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-    
-    [self.historyViewController.tableView endUpdates];
     [self.startButton setTitle:@"stop" forState:UIControlStateNormal];
 }
 

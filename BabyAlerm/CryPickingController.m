@@ -92,7 +92,7 @@ static void AudioInputCallback(  void* inUserData,
     NSManagedObjectContext *context = delegate.managedObjectContext;
     self.historyModel = [NSEntityDescription insertNewObjectForEntityForName:@"HistoryModel" inManagedObjectContext:context];
     self.historyModel.startTime = [NSDate date];
-    self.historyModel.type = @2;
+    self.historyModel.isExecuting = [NSNumber numberWithBool:YES];
     
     notifying = NO;
     _times =0;
@@ -136,7 +136,7 @@ static void AudioInputCallback(  void* inUserData,
     }];
     
     self.historyModel.endTime = [NSDate date];
-    self.historyModel.type = @0;
+    self.historyModel.isExecuting = [NSNumber numberWithBool:NO];
     
     AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSManagedObjectContext *context = delegate.managedObjectContext;

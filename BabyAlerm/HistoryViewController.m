@@ -19,7 +19,9 @@
 
 @end
 
-@implementation HistoryViewController
+@implementation HistoryViewController{
+    BOOL _showsExecuting;
+}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -58,41 +60,45 @@
 
 #pragma mark - NSFetchedResultsController delegate
 
-//-(void)controllerWillChangeContent:(NSFetchedResultsController *)controller{
-//    [self.tableView beginUpdates];
-//}
+-(void)controllerWillChangeContent:(NSFetchedResultsController *)controller{
+    [self.tableView beginUpdates];
+}
+
+-(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath{
+//    UITableView *tableView = self.tableView;
+    NSLog(@"%@ type:%lu old:%@ new:%@", [anObject description],(unsigned long)type,[indexPath description] , [newIndexPath description]);
+    HistoryModel *theObject = (HistoryModel *)anObject;
+    switch(type) {
+        case NSFetchedResultsChangeInsert:
+            [self.tableView insertRowsAtIndexPaths:@[[self indexPathOfTable:newIndexPath]] withRowAnimation:UITableViewRowAnimationFade];
 //
-//-(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath{
-////    UITableView *tableView = self.tableView;
-//    NSLog(@"%@ old:%@ new:%@", [anObject description],[indexPath description] , [newIndexPath description]);
-//    HistoryModel *theObject = (HistoryModel *)anObject;
-//    switch(type) {
-//        case NSFetchedResultsChangeInsert:
-////            if ([theObject.type isEqualToNumber:@2]) {
-////                [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-////                [self.tableView insertRowsAtIndexPaths:@[] withRowAnimation:UITableViewRowAnimationFade];
-////                
-////                
-////            }
-////            [tableView insertRowsAtIndexPaths:@[[self indexPathOfTable:newIndexPath]] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//            
-//        case NSFetchedResultsChangeDelete:
-////            [tableView deleteRowsAtIndexPaths:@[[self indexPathOfTable:indexPath]] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//            
-//        case NSFetchedResultsChangeUpdate:
-////            [tableView reloadRowsAtIndexPaths:@[[self indexPathOfTable:indexPath]] withRowAnimation:UITableViewRowAnimationAutomatic];
-//            break;
-//            
-//        case NSFetchedResultsChangeMove:
-//            break;
-//    }
-//}
-//
-//-(void)controllerDidChangeContent:(NSFetchedResultsController *)controller{
-//    [self.tableView endUpdates];
-//}
+            //        [self.historyViewController reloadData];
+            
+//            if ([theObject.type isEqualToNumber:@2]) {
+//                [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+//                [self.tableView insertRowsAtIndexPaths:@[] withRowAnimation:UITableViewRowAnimationFade];
+//                
+//                
+//            }
+//            [tableView insertRowsAtIndexPaths:@[[self indexPathOfTable:newIndexPath]] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+//            [tableView deleteRowsAtIndexPaths:@[[self indexPathOfTable:indexPath]] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+//            [tableView reloadRowsAtIndexPaths:@[[self indexPathOfTable:indexPath]] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            break;
+    }
+}
+
+-(void)controllerDidChangeContent:(NSFetchedResultsController *)controller{
+    [self.tableView endUpdates];
+}
 
 #pragma mark - Table view data source
 
@@ -103,7 +109,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if(self.convinedViewController.executing && section == 0){
+    if(_showsExecuting && section == 0){
         return 1;
     }else{
         return [self numberOfHistory];
@@ -115,7 +121,7 @@
 {
     UITableViewCell *cell;
     HistoryModel *historyModel;
-    if(self.convinedViewController.executing && indexPath.section == 0){
+    if(_showsExecuting && indexPath.section == 0){
         static NSString *CellIdentifier = @"ExecutingCell";
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
         historyModel = self.convinedViewController.ongoingHistoryModel;
@@ -177,7 +183,7 @@
 
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
     
-    if (!self.convinedViewController.executing  || section == 1) {
+    if (!_showsExecuting  || section == 1) {
         return @"history";
     }else{
         return nil;
@@ -186,7 +192,7 @@
 
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if(self.convinedViewController.executing && indexPath.section == 0){
+    if(_showsExecuting && indexPath.section == 0){
         self.convinedViewController.ongoingHistoryModel.isViewed = [NSNumber numberWithBool: YES];
 //        [self.convinedViewController switchGraphView:NO];
         self.convinedViewController.showHistory = NO;
@@ -272,10 +278,11 @@
     [fetchRequest setEntity:entity];
     
     
-    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
+    NSSortDescriptor *sortByStartTime = [[NSSortDescriptor alloc]
                               initWithKey:@"startTime" ascending:NO];
-    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"type = 0 or type = 2 "];
+//    NSSortDescriptor *sortByExecuting = [[NSSortDescriptor alloc] initWithKey:@"isExecuting" ascending:NO];
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortByStartTime, nil]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@" isSelfData = 1 and isExecuting = 0 "];
     
     [fetchRequest setPredicate:predicate];
     [fetchRequest setFetchBatchSize:20];
@@ -361,7 +368,7 @@
 }
 
 -(int) sectionForHistory{
-    if(self.convinedViewController.executing){
+    if(_showsExecuting){
         return 1;
     }else{
         return 0;
@@ -383,6 +390,27 @@
         [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:NO];
     }
 }
+
+-(void)showExecutingCell{
+    _showsExecuting = YES;
+    [self.tableView beginUpdates];
+    //
+    [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+    //
+    [self.tableView endUpdates];
+}
+
+-(void)hideExecutingCell{
+    if (_showsExecuting) {
+        _showsExecuting = NO;
+        [self.tableView beginUpdates];
+        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
+    }
+
+}
+
+
 
 
 @end
