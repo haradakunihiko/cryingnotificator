@@ -28,6 +28,8 @@ extern NSString *const kServiceType;
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
+- (void) saveBackground :(NSManagedObjectContext *) temporaryMOC;
+- (void) mergeToMainMOC :(NSManagedObjectContext *) temporaryMOC;
 
 -(void)truncateDatabase:(NSString *)configuration;
 

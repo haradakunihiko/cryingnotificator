@@ -145,7 +145,7 @@
         [self.historyViewController hideExecutingCell];
         
         [_pickingController stopListening];
-        [self.startButton setTitle:@"start" forState:UIControlStateNormal];
+        [self.startButton setTitle:@"Start" forState:UIControlStateNormal];
         
 //        [self.historyViewController.tableView beginUpdates];
 //        
@@ -200,7 +200,7 @@
     
     [self.historyViewController showExecutingCell];
     
-    [self.startButton setTitle:@"stop" forState:UIControlStateNormal];
+    [self.startButton setTitle:@"Stop" forState:UIControlStateNormal];
 }
 
 

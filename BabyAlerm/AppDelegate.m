@@ -10,7 +10,6 @@
 #import <Parse/Parse.h>
 #import "Device.h"
 #import "Result.h"
-#import <MBProgressHUD/MBProgressHUD.h>
 #import "HistoryModel.h"
 #import "VolumeModel.h"
 
@@ -116,16 +115,41 @@ NSString *const CryingDataDownloadedNotification = @"asia.tzap.apps.BabyAlerm:Cr
 #pragma mark - Core Data help methods
 - (void)saveContext
 {
-    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     if (managedObjectContext != nil) {
-        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                        NSError *error;
+        if ([managedObjectContext hasChanges]&&![managedObjectContext save:&error] ) {
+                    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        }
+    }
+}
+
+- (void) mergeToMainMOC :(NSManagedObjectContext *) temporaryMOC{
+    [temporaryMOC performBlock:^{
+        NSError *error;
+        if(![temporaryMOC save:&error]){
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
-    }
+    }];
+}
+
+- (void) saveBackground :(NSManagedObjectContext *) temporaryMOC{
+    [temporaryMOC performBlock:^{
+        NSError *error;
+        if(![temporaryMOC save:&error]){
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        [self.managedObjectContext performBlock:^{
+            NSError *error;
+            if(![self.managedObjectContext save:&error]){
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            };
+        }];
+        
+    }];
 }
 
 
@@ -155,10 +179,31 @@ NSString *const CryingDataDownloadedNotification = @"asia.tzap.apps.BabyAlerm:Cr
     
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil) {
-        _managedObjectContext = [[NSManagedObjectContext alloc] init];
+        _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         [_managedObjectContext setPersistentStoreCoordinator:coordinator];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didMOCChanged:) name:
+         NSManagedObjectContextObjectsDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didMOCSaved:) name:
+         NSManagedObjectContextDidSaveNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willMOCSaved:) name:
+         NSManagedObjectContextWillSaveNotification object:nil];
+        
+        
+        
     }
     return _managedObjectContext;
+}
+
+-(void)didMOCChanged:(NSNotification *)notification{
+//      NSLog(@"MOC changed %@",notification);
+}
+
+-(void)didMOCSaved:(NSNotification *)notification{
+//    NSLog(@"MOC saved %@",notification);
+}
+
+-(void)willMOCSaved:(NSNotification *)notification{
+//    NSLog(@"MOC willsaved %@",notification);
 }
 
 // Returns the managed object model for the application.
@@ -312,11 +357,11 @@ NSString *const CryingDataDownloadedNotification = @"asia.tzap.apps.BabyAlerm:Cr
 //
         historyModel.lastCryTime = cryTime;
         historyModel.cryTimes = cryTimes;
-        historyModel.isViewed = NO;
+        historyModel.isViewed = [NSNumber numberWithBool:NO] ;
     }else{
 //    }
         historyModel = [NSEntityDescription insertNewObjectForEntityForName:@"HistoryModel" inManagedObjectContext:context];
-        historyModel.isSelfData = NO;
+        historyModel.isSelfData = [NSNumber numberWithBool:NO];
         historyModel.deviceName = deviceName;
         historyModel.startTime = startTime;
         historyModel.lastCryTime = cryTime;
@@ -367,6 +412,18 @@ NSString *const CryingDataDownloadedNotification = @"asia.tzap.apps.BabyAlerm:Cr
     
 //    NSLog(@"session didChangeState peerID:%@, state:%ld",peerID,state);
 }
+
+-(void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID{
+}
+
+-(void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress{
+}
+-(void)session:(MCSession *)session didReceiveStream:(NSInputStream *)stream withName:(NSString *)streamName fromPeer:(MCPeerID *)peerID{
+}
+-(void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error{
+}
+
+#pragma mark - other
 
 -(void) loadUndownloadedDataInBackground :(NSString *)installationId{
 

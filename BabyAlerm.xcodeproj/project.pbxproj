@@ -76,13 +76,14 @@
 		7386DA93184067D40037A8A3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7386DA91184067D40037A8A3 /* Main.storyboard */; };
 		7386DA96184067D40037A8A3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386DA95184067D40037A8A3 /* ViewController.m */; };
 		7386DA98184067D40037A8A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7386DA97184067D40037A8A3 /* Images.xcassets */; };
-		7386DA9F184067D40037A8A3 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7386DA9E184067D40037A8A3 /* XCTest.framework */; };
 		7386DAA0184067D40037A8A3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7386DA7F184067D40037A8A3 /* Foundation.framework */; };
 		7386DAA1184067D40037A8A3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7386DA83184067D40037A8A3 /* UIKit.framework */; };
 		7386DAA9184067D40037A8A3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7386DAA7184067D40037A8A3 /* InfoPlist.strings */; };
 		7386DAAB184067D40037A8A3 /* BabyAlermTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386DAAA184067D40037A8A3 /* BabyAlermTests.m */; };
 		7386DAB61840704E0037A8A3 /* CryPickingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386DAB51840704E0037A8A3 /* CryPickingController.m */; };
 		73968A791892914100F059F6 /* NotificateTargetModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73968A781892914100F059F6 /* NotificateTargetModel.m */; };
+		73A2481D19E65F1A0013E99B /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73A2481C19E65F1A0013E99B /* ParseFacebookUtils.framework */; };
+		73A2481F19E65F460013E99B /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73A2481E19E65F460013E99B /* Bolts.framework */; };
 		73A8810E18E163C400B7C4AD /* TDBadgedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A8810D18E163C400B7C4AD /* TDBadgedCell.m */; };
 		73A965B018AA5DAC00C903F5 /* NearbyDeviceBrowserTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A965AF18AA5DAC00C903F5 /* NearbyDeviceBrowserTableViewController.m */; };
 		73ABFD6E188EC26D00BD48C6 /* MyTabBarControllerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ABFD6D188EC26D00BD48C6 /* MyTabBarControllerViewController.m */; };
@@ -99,7 +100,6 @@
 		73D10246189790EA0031F5C9 /* VolumeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D10245189790EA0031F5C9 /* VolumeModel.m */; };
 		73D102481897A2A20031F5C9 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 73D102471897A2A20031F5C9 /* Settings.bundle */; };
 		73F55DFB188914A500A13054 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F55DFA188914A500A13054 /* MainViewController.m */; };
-		CB94C5F385CF451E81F84D2E /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 952DEAEA20EF485FA0C9880E /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -190,7 +190,6 @@
 		7386DA95184067D40037A8A3 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		7386DA97184067D40037A8A3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		7386DA9D184067D40037A8A3 /* BabyAlermTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BabyAlermTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		7386DA9E184067D40037A8A3 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		7386DAA6184067D40037A8A3 /* BabyAlermTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BabyAlermTests-Info.plist"; sourceTree = "<group>"; };
 		7386DAA8184067D40037A8A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7386DAAA184067D40037A8A3 /* BabyAlermTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BabyAlermTests.m; sourceTree = "<group>"; };
@@ -198,6 +197,8 @@
 		7386DAB51840704E0037A8A3 /* CryPickingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CryPickingController.m; sourceTree = "<group>"; };
 		73968A771892914100F059F6 /* NotificateTargetModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificateTargetModel.h; sourceTree = "<group>"; };
 		73968A781892914100F059F6 /* NotificateTargetModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificateTargetModel.m; sourceTree = "<group>"; };
+		73A2481C19E65F1A0013E99B /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
+		73A2481E19E65F460013E99B /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		73A8810C18E163C400B7C4AD /* TDBadgedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDBadgedCell.h; sourceTree = "<group>"; };
 		73A8810D18E163C400B7C4AD /* TDBadgedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDBadgedCell.m; sourceTree = "<group>"; };
 		73A965AE18AA5DAC00C903F5 /* NearbyDeviceBrowserTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NearbyDeviceBrowserTableViewController.h; sourceTree = "<group>"; };
@@ -304,8 +305,6 @@
 		73D102471897A2A20031F5C9 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		73F55DF9188914A500A13054 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		73F55DFA188914A500A13054 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
-		8C5C44959992410FBF6877AC /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
-		952DEAEA20EF485FA0C9880E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -314,7 +313,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				73B2F277185F33A600655748 /* CoreData.framework in Frameworks */,
+				73A2481F19E65F460013E99B /* Bolts.framework in Frameworks */,
 				735D167418439DD400DC27EE /* SystemConfiguration.framework in Frameworks */,
+				73A2481D19E65F1A0013E99B /* ParseFacebookUtils.framework in Frameworks */,
 				735D167218439DC900DC27EE /* StoreKit.framework in Frameworks */,
 				735D167018439DC400DC27EE /* Security.framework in Frameworks */,
 				735D166E18439DBA00DC27EE /* QuartzCore.framework in Frameworks */,
@@ -328,7 +329,6 @@
 				735D166218439CF300DC27EE /* Parse.framework in Frameworks */,
 				7386DA80184067D40037A8A3 /* Foundation.framework in Frameworks */,
 				7340B218189F8E7100470DBE /* AWSSES.framework in Frameworks */,
-				CB94C5F385CF451E81F84D2E /* libPods.a in Frameworks */,
 				73B2F1C01853648700655748 /* libCorePlot-CocoaTouch.a in Frameworks */,
 				7340B217189F8E7100470DBE /* AWSRuntime.framework in Frameworks */,
 			);
@@ -338,7 +338,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7386DA9F184067D40037A8A3 /* XCTest.framework in Frameworks */,
 				7386DAA1184067D40037A8A3 /* UIKit.framework in Frameworks */,
 				7386DAA0184067D40037A8A3 /* Foundation.framework in Frameworks */,
 			);
@@ -429,7 +428,6 @@
 				7386DAA4184067D40037A8A3 /* BabyAlermTests */,
 				7386DA7E184067D40037A8A3 /* Frameworks */,
 				7386DA7D184067D40037A8A3 /* Products */,
-				8C5C44959992410FBF6877AC /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -445,6 +443,8 @@
 		7386DA7E184067D40037A8A3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				73A2481E19E65F460013E99B /* Bolts.framework */,
+				73A2481C19E65F1A0013E99B /* ParseFacebookUtils.framework */,
 				7340B215189F8E7100470DBE /* AWSRuntime.framework */,
 				7340B216189F8E7100470DBE /* AWSSES.framework */,
 				73B2F276185F33A600655748 /* CoreData.framework */,
@@ -461,8 +461,6 @@
 				7386DA7F184067D40037A8A3 /* Foundation.framework */,
 				7386DA81184067D40037A8A3 /* CoreGraphics.framework */,
 				7386DA83184067D40037A8A3 /* UIKit.framework */,
-				7386DA9E184067D40037A8A3 /* XCTest.framework */,
-				952DEAEA20EF485FA0C9880E /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -673,11 +671,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7386DAAE184067D40037A8A3 /* Build configuration list for PBXNativeTarget "BabyAlerm" */;
 			buildPhases = (
-				35EFA6B8423843D18E9F42EB /* Check Pods Manifest.lock */,
 				7386DA78184067D40037A8A3 /* Sources */,
 				7386DA79184067D40037A8A3 /* Frameworks */,
 				7386DA7A184067D40037A8A3 /* Resources */,
-				184C6B0F23554B9A9F758D9B /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -712,7 +708,7 @@
 		7386DA74184067D40037A8A3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = harada;
 				TargetAttributes = {
 					7386DA7B184067D40037A8A3 = {
@@ -815,39 +811,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		184C6B0F23554B9A9F758D9B /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		35EFA6B8423843D18E9F42EB /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		7386DA78184067D40037A8A3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -926,7 +889,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -957,9 +919,13 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-force_load",
+					"$(SRCROOT)/libCorePlot-CocoaTouch.a",
+				);
 				PROVISIONING_PROFILE = "6EEB7B2B-239A-45EE-8C5B-0B2E3E41D2A2";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7 armv7s arm64";
+				VALID_ARCHS = "armv7s arm64 armv7";
 			};
 			name = Debug;
 		};
@@ -967,7 +933,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -991,15 +956,18 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				OTHER_LDFLAGS = (
+					"-force_load",
+					"$(BUILT_PRODUCTS_DIR)/libCorePlot-CocoaTouch.a",
+				);
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv7 armv7s arm64";
+				VALID_ARCHS = "armv7s arm64 armv7";
 			};
 			name = Release;
 		};
 		7386DAAF184067D40037A8A3 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8C5C44959992410FBF6877AC /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1009,6 +977,7 @@
 					"$(inherited)",
 					/Users/Harada/Documents/iphonedev/BabyAlerm,
 					"/Users/Harada/dev/ios/library/aws-ios-sdk-1.7.1",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BabyAlerm/BabyAlerm-Prefix.pch";
@@ -1025,7 +994,6 @@
 		};
 		7386DAB0184067D40037A8A3 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8C5C44959992410FBF6877AC /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1035,6 +1003,7 @@
 					"$(inherited)",
 					/Users/Harada/Documents/iphonedev/BabyAlerm,
 					"/Users/Harada/dev/ios/library/aws-ios-sdk-1.7.1",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BabyAlerm/BabyAlerm-Prefix.pch";
@@ -1052,7 +1021,6 @@
 		7386DAB2184067D40037A8A3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/BabyAlerm.app/BabyAlerm";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -1075,7 +1043,6 @@
 		7386DAB3184067D40037A8A3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/BabyAlerm.app/BabyAlerm";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",

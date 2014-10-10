@@ -94,7 +94,7 @@
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
  
-   id<ContactViewControllerViewDelegate> target = [[self fetchedResultsController:indexPath.section] objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0]];
+   id<ContactViewControllerViewDelegate> target = [[self fetchedResultsController:(CNNotificateTargetModelType)indexPath.section] objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0]];
     
     [target setupCell:cell];
     
@@ -119,7 +119,7 @@
         NSManagedObjectContext *context = delegate.managedObjectContext;
         // Delete the row from the data source
         NSIndexPath *modifiedIndexPath =[ NSIndexPath indexPathForRow:indexPath.row inSection:0];
-        NotificateTargetModel *target = [[self fetchedResultsController:indexPath.section] objectAtIndexPath:modifiedIndexPath];
+        NotificateTargetModel *target = [[self fetchedResultsController:(CNNotificateTargetModelType)indexPath.section] objectAtIndexPath:modifiedIndexPath];
         [context deleteObject:target];
         
         NSError *error;
@@ -131,6 +131,7 @@
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
 }
+
 
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
     switch (section) {
@@ -184,7 +185,7 @@
 
 -(BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person{
     ABMultiValueRef addresses = ABRecordCopyValue(person, kABPersonEmailProperty);
-    int addressCount = ABMultiValueGetCount(addresses);
+    int addressCount = (int)ABMultiValueGetCount(addresses);
     if(addressCount > 1){
         [peoplePicker setDisplayedProperties:[NSArray arrayWithObject:[NSNumber numberWithInteger:kABPersonEmailProperty]]];
         return YES;
@@ -325,7 +326,9 @@
 
 
 -(NSInteger) numberOfDataWithType:(NSInteger) type{
-    id sectionInfo = [[[self fetchedResultsController:type] sections]objectAtIndex:0];
+
+    
+    id sectionInfo = [[[self fetchedResultsController:(CNNotificateTargetModelType)type] sections]objectAtIndex:0];
     return [sectionInfo numberOfObjects];
 }
 

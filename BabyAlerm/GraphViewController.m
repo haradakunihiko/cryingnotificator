@@ -106,7 +106,10 @@
     // 1 - Create the graph
     CPTGraph *graph = [[CPTXYGraph alloc] initWithFrame:self.hostView.bounds];
     [graph applyTheme:[CPTTheme themeNamed:kCPTPlainBlackTheme]];
-    self.hostView.hostedGraph = graph;
+//    self.hostView.hostedGraph = nil;
+    CPTGraphHostingView *hosting = self.hostView;
+    
+    hosting.hostedGraph = graph;
     CPTMutableTextStyle *titleStyle = [CPTMutableTextStyle textStyle];
     titleStyle.color = [CPTColor whiteColor];
     titleStyle.fontName = @"Helvetica-Bold";
@@ -431,6 +434,7 @@
 //    }else{
 //        predicate =[NSPredicate predicateWithFormat:@"history == %@ ", [self historyModel]];
 //    }
+
         predicate =[NSPredicate predicateWithFormat:@"history == %@ and enabled == 1 ", [self historyModel]];
     
     [fetchRequest setPredicate:predicate];
@@ -511,12 +515,16 @@
 }
 
 
+
 -(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath{
     switch(type) {
         case NSFetchedResultsChangeInsert:
             if (self.autoUpdate) {
                 [[self.hostView hostedGraph]reloadData];
                 [self updatePlotSpace];
+                
+//                AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+//                [delegate saveContext];
             }
 //            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;

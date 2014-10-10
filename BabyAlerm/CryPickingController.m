@@ -30,6 +30,7 @@
     BOOL notifying;
     
     long _count;
+    NSManagedObjectContext *_temporaryMOC;
     
     //    NSMutableSet *_recentSet;
     NSMutableArray *_summarizeArray;
@@ -55,6 +56,17 @@ static void AudioInputCallback(  void* inUserData,
         
     }
     return self;
+}
+
+-(NSManagedObjectContext *) temporaryMOC{
+    if (_temporaryMOC != nil) {
+        return _temporaryMOC;
+    }
+    
+    _temporaryMOC = [[NSManagedObjectContext alloc]initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [_temporaryMOC setParentContext:delegate.managedObjectContext];
+    return _temporaryMOC;
 }
 
 -(void)preparePicking{
@@ -88,15 +100,20 @@ static void AudioInputCallback(  void* inUserData,
         [timer invalidate];
     }
     AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+
+    // これはこのタイミングで保存したいため、メインスレッドで実行する
+    HistoryModel * historyModel = [NSEntityDescription insertNewObjectForEntityForName:@"HistoryModel" inManagedObjectContext:delegate.managedObjectContext];
+    historyModel.startTime = [NSDate date];
+    historyModel.isExecuting = [NSNumber numberWithBool:YES];
+
+    [delegate saveContext];
     
-    NSManagedObjectContext *context = delegate.managedObjectContext;
-    self.historyModel = [NSEntityDescription insertNewObjectForEntityForName:@"HistoryModel" inManagedObjectContext:context];
-    self.historyModel.startTime = [NSDate date];
-    self.historyModel.isExecuting = [NSNumber numberWithBool:YES];
+    // temporaryMOCから再取得
+    self.historyModel = (HistoryModel *)[self.temporaryMOC objectWithID:[historyModel objectID]];
     
     notifying = NO;
     _times =0;
-        
+    
     [self.graphVC performFetch];
     
     timer = [NSTimer scheduledTimerWithTimeInterval:1
@@ -114,7 +131,7 @@ static void AudioInputCallback(  void* inUserData,
     self.graphVC.autoUpdate = NO;
     for (int i = MAX(0, [self.historyModel.volumes count] - PlotXRange); i < [self.historyModel.volumes count]; i++) {
         VolumeModel *volume = [self.historyModel.volumes objectAtIndex:i];
-        volume.enabled = NO;
+        volume.enabled = [NSNumber numberWithBool:NO];
     }
     
     __block VolumeModel *max ;
@@ -139,11 +156,8 @@ static void AudioInputCallback(  void* inUserData,
     self.historyModel.isExecuting = [NSNumber numberWithBool:NO];
     
     AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    NSManagedObjectContext *context = delegate.managedObjectContext;
-    NSError *error;
-    if (![context save:&error]) {
-        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
-    }
+    [delegate saveBackground:[self temporaryMOC]];
+    
     self.historyModel = nil;
 }
 
@@ -157,19 +171,16 @@ static void AudioInputCallback(  void* inUserData,
     
     // save to DB
     AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    NSManagedObjectContext *context = delegate.managedObjectContext;
-    VolumeModel *volumeModel = [NSEntityDescription insertNewObjectForEntityForName:@"VolumeModel" inManagedObjectContext:context];
+
+    VolumeModel *volumeModel = [NSEntityDescription insertNewObjectForEntityForName:@"VolumeModel" inManagedObjectContext:[self temporaryMOC]];
     volumeModel.peak =[NSNumber numberWithFloat:roundf(levelMeter.mPeakPower)] ;
     volumeModel.average =[NSNumber numberWithFloat:(float)roundf(levelMeter.mAveragePower)];
     volumeModel.time = [NSDate date];
     volumeModel.history = self.historyModel;
-    //    volumeModel.count = _count++;
-    
-//    NSError *error;
-//    if (![context save:&error]) {
-//        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
-//    }
-    
+    volumeModel.enabled = [NSNumber numberWithBool:YES];
+
+//    [self.historyModel addVolumesObject:volumeModel];
+
     
     return volumeModel;
 }
@@ -179,8 +190,13 @@ static void AudioInputCallback(  void* inUserData,
         BOOL existsNext = ([_summarizeArray count] >=idx + 2);
         
         if(([innerArray count] >= (2 * PlotXRange)) && !existsNext) {
+            
             [_summarizeArray addObject:[NSMutableArray new]];
             existsNext = YES;
+            
+//            AppDelegate *delegate =(AppDelegate *)[[UIApplication sharedApplication] delegate];
+//            [delegate saveBackground:[self temporaryMOC]];
+            
         }
         if (existsNext) {
             // exists next.
@@ -229,6 +245,10 @@ static void AudioInputCallback(  void* inUserData,
         volume.enabled = [NSNumber numberWithBool:NO];
     }
     
+    AppDelegate *delegate =(AppDelegate *)[[UIApplication sharedApplication] delegate];
+    
+    [delegate saveBackground:[self temporaryMOC]];
+    
     [[_summarizeArray firstObject]addObject:volumeModel];
     [self adjustSummarizeArray];
     
@@ -259,10 +279,9 @@ static void AudioInputCallback(  void* inUserData,
     
     AppDelegate *delegate =(AppDelegate *)[[UIApplication sharedApplication] delegate];
     self.historyModel.cryTimes = [NSNumber numberWithInt:[self.historyModel.cryTimes intValue] +1] ;
-    self.historyModel.isViewed = NO;
+    self.historyModel.isViewed =  [NSNumber numberWithBool:NO];
     
     NSManagedObjectContext *context = delegate.managedObjectContext;
-    
     NSFetchRequest *fetch = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription
                                    entityForName:@"NotificateTargetModel" inManagedObjectContext:context];
@@ -279,7 +298,7 @@ static void AudioInputCallback(  void* inUserData,
     }];
     
     NSLog(@"%@",[notice description]);
-    //    [self sendWithAmazonSES:addresses withTime:volumeModel.time];
+        [self sendWithAmazonSES:addresses withTime:volumeModel.time];
     
     [self sendPushNotification:volumeModel];
     

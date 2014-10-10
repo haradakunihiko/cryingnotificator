@@ -66,8 +66,6 @@
 
 -(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath{
 //    UITableView *tableView = self.tableView;
-    NSLog(@"%@ type:%lu old:%@ new:%@", [anObject description],(unsigned long)type,[indexPath description] , [newIndexPath description]);
-    HistoryModel *theObject = (HistoryModel *)anObject;
     switch(type) {
         case NSFetchedResultsChangeInsert:
             [self.tableView insertRowsAtIndexPaths:@[[self indexPathOfTable:newIndexPath]] withRowAnimation:UITableViewRowAnimationFade];
@@ -171,7 +169,6 @@
     }
     ((TDBadgedCell *)cell).badgeTextColor = [UIColor whiteColor];
     
-    NSLog(@"isviewd:%@",historyModel.isViewed);
     
     if([[historyModel valueForKey:@"isViewed"] boolValue]){
         ((TDBadgedCell *)cell).badgeColor = [UIColor blueColor];
