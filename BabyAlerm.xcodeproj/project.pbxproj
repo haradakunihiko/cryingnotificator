@@ -81,7 +81,6 @@
 		7386DAA9184067D40037A8A3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7386DAA7184067D40037A8A3 /* InfoPlist.strings */; };
 		7386DAAB184067D40037A8A3 /* BabyAlermTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386DAAA184067D40037A8A3 /* BabyAlermTests.m */; };
 		7386DAB61840704E0037A8A3 /* CryPickingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386DAB51840704E0037A8A3 /* CryPickingController.m */; };
-		73968A791892914100F059F6 /* NotificateTargetModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73968A781892914100F059F6 /* NotificateTargetModel.m */; };
 		73A2481D19E65F1A0013E99B /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73A2481C19E65F1A0013E99B /* ParseFacebookUtils.framework */; };
 		73A2481F19E65F460013E99B /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73A2481E19E65F460013E99B /* Bolts.framework */; };
 		73A8810E18E163C400B7C4AD /* TDBadgedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A8810D18E163C400B7C4AD /* TDBadgedCell.m */; };
@@ -95,6 +94,7 @@
 		73B2F26C185C9B0800655748 /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F26B185C9B0800655748 /* HistoryViewController.m */; };
 		73B2F277185F33A600655748 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73B2F276185F33A600655748 /* CoreData.framework */; };
 		73B2F27A185F340E00655748 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 73B2F278185F340E00655748 /* Model.xcdatamodeld */; };
+		73B5879C19E7B3DD005319CF /* NotificateTargetModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B5879B19E7B3DD005319CF /* NotificateTargetModel.m */; };
 		73B9F45118AA00CB008606DA /* NotificateTargetDeviceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B9F45018AA00CB008606DA /* NotificateTargetDeviceModel.m */; };
 		73BD137D188D234300A78A3A /* HistoryGraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BD137C188D234300A78A3A /* HistoryGraphViewController.m */; };
 		73D10246189790EA0031F5C9 /* VolumeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D10245189790EA0031F5C9 /* VolumeModel.m */; };
@@ -195,8 +195,6 @@
 		7386DAAA184067D40037A8A3 /* BabyAlermTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BabyAlermTests.m; sourceTree = "<group>"; };
 		7386DAB41840704E0037A8A3 /* CryPickingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CryPickingController.h; sourceTree = "<group>"; };
 		7386DAB51840704E0037A8A3 /* CryPickingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CryPickingController.m; sourceTree = "<group>"; };
-		73968A771892914100F059F6 /* NotificateTargetModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificateTargetModel.h; sourceTree = "<group>"; };
-		73968A781892914100F059F6 /* NotificateTargetModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificateTargetModel.m; sourceTree = "<group>"; };
 		73A2481C19E65F1A0013E99B /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
 		73A2481E19E65F460013E99B /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		73A8810C18E163C400B7C4AD /* TDBadgedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDBadgedCell.h; sourceTree = "<group>"; };
@@ -296,6 +294,8 @@
 		73B2F26B185C9B0800655748 /* HistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
 		73B2F276185F33A600655748 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		73B2F279185F340E00655748 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		73B5879A19E7B3DD005319CF /* NotificateTargetModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NotificateTargetModel.h; path = ../NotificateTargetModel.h; sourceTree = "<group>"; };
+		73B5879B19E7B3DD005319CF /* NotificateTargetModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NotificateTargetModel.m; path = ../NotificateTargetModel.m; sourceTree = "<group>"; };
 		73B9F44F18AA00CB008606DA /* NotificateTargetDeviceModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificateTargetDeviceModel.h; sourceTree = "<group>"; };
 		73B9F45018AA00CB008606DA /* NotificateTargetDeviceModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificateTargetDeviceModel.m; sourceTree = "<group>"; };
 		73BD137B188D234300A78A3A /* HistoryGraphViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryGraphViewController.h; sourceTree = "<group>"; };
@@ -405,8 +405,8 @@
 		735D167D1845C40800DC27EE /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				73968A771892914100F059F6 /* NotificateTargetModel.h */,
-				73968A781892914100F059F6 /* NotificateTargetModel.m */,
+				73B5879A19E7B3DD005319CF /* NotificateTargetModel.h */,
+				73B5879B19E7B3DD005319CF /* NotificateTargetModel.m */,
 				73B9F44F18AA00CB008606DA /* NotificateTargetDeviceModel.h */,
 				73B9F45018AA00CB008606DA /* NotificateTargetDeviceModel.m */,
 				73B2F278185F340E00655748 /* Model.xcdatamodeld */,
@@ -819,7 +819,6 @@
 				7386DAB61840704E0037A8A3 /* CryPickingController.m in Sources */,
 				73D10246189790EA0031F5C9 /* VolumeModel.m in Sources */,
 				7386DA96184067D40037A8A3 /* ViewController.m in Sources */,
-				73968A791892914100F059F6 /* NotificateTargetModel.m in Sources */,
 				73B2F27A185F340E00655748 /* Model.xcdatamodeld in Sources */,
 				73A965B018AA5DAC00C903F5 /* NearbyDeviceBrowserTableViewController.m in Sources */,
 				735D16771844554A00DC27EE /* GraphViewController.m in Sources */,
@@ -836,6 +835,7 @@
 				7386DA8C184067D40037A8A3 /* main.m in Sources */,
 				73ABFD6E188EC26D00BD48C6 /* MyTabBarControllerViewController.m in Sources */,
 				73ADDE2A1897EB5600FCDA7F /* Reachability.m in Sources */,
+				73B5879C19E7B3DD005319CF /* NotificateTargetModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

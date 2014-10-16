@@ -84,7 +84,7 @@
                                 <action selector="start:" destination="FHt-W7-ya9" eventType="touchUpInside" id="RuJ-on-TZc"/>
                             </connections>
                         </button>
-                        <barButtonItem key="rightBarButtonItem" title="Address" id="7pQ-Ze-WP2">
+                        <barButtonItem key="rightBarButtonItem" title="Settings" id="7pQ-Ze-WP2">
                             <connections>
                                 <segue destination="1WO-Fq-fFw" kind="push" identifier="ShowAddresses" id="iUu-Gl-lh5"/>
                             </connections>
@@ -217,7 +217,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KLc-Xd-HPk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1394" y="610"/>
+            <point key="canvasLocation" x="854" y="872"/>
         </scene>
         <!--Nearby Device Browser Table View Controller-->
         <scene sceneID="EsQ-zn-bHV">

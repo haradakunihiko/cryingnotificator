@@ -82,11 +82,11 @@
             break;
             
         case NSFetchedResultsChangeDelete:
-//            [tableView deleteRowsAtIndexPaths:@[[self indexPathOfTable:indexPath]] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView deleteRowsAtIndexPaths:@[[self indexPathOfTable:indexPath]] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeUpdate:
-//            [tableView reloadRowsAtIndexPaths:@[[self indexPathOfTable:indexPath]] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView reloadRowsAtIndexPaths:@[[self indexPathOfTable:indexPath]] withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
             
         case NSFetchedResultsChangeMove:
@@ -279,7 +279,8 @@
                               initWithKey:@"startTime" ascending:NO];
 //    NSSortDescriptor *sortByExecuting = [[NSSortDescriptor alloc] initWithKey:@"isExecuting" ascending:NO];
     [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortByStartTime, nil]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@" isSelfData = 1 and isExecuting = 0 "];
+//    NSPredicate *predicate = [NSPredicate predicateWithFormat:@" isSelfData = 1 and isExecuting = 0 "];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@" isExecuting = 0 "];
     
     [fetchRequest setPredicate:predicate];
     [fetchRequest setFetchBatchSize:20];
@@ -392,7 +393,7 @@
     _showsExecuting = YES;
     [self.tableView beginUpdates];
     //
-    [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
     //
     [self.tableView endUpdates];
 }
@@ -401,7 +402,7 @@
     if (_showsExecuting) {
         _showsExecuting = NO;
         [self.tableView beginUpdates];
-        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
         [self.tableView endUpdates];
     }
 

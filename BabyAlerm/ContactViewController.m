@@ -193,7 +193,7 @@
         NSString *emailAddress = (__bridge NSString *)(ABMultiValueCopyValueAtIndex(addresses, 0));
         NSString *firstName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonFirstNameProperty));
         NSString *lastName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonLastNameProperty));
-        [self saveNewPerson:emailAddress firstName:firstName lastName:lastName];
+        [self saveNewPerson:emailAddress firstName:firstName lastName:lastName manually:NO];
 
         [self dismissViewControllerAnimated:YES completion:nil];
         return NO;
@@ -213,11 +213,15 @@
     NSString *email = (__bridge NSString *)(ABMultiValueCopyValueAtIndex(multiValue, index));
     NSString *firstName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonFirstNameProperty));
     NSString *lastName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonLastNameProperty));
-    [self saveNewPerson:email firstName:firstName lastName:lastName];
+    [self saveNewPerson:email firstName:firstName lastName:lastName manually:NO];
     return NO;
 }
 
--(void) saveNewPerson:(NSString *)email firstName:(NSString *)firstName lastName:(NSString *)lastName{
+- (void)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker didSelectPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier {
+    [self peoplePickerNavigationController:peoplePicker shouldContinueAfterSelectingPerson:person property:property identifier:identifier];
+}
+
+-(void) saveNewPerson:(NSString *)email firstName:(NSString *)firstName lastName:(NSString *)lastName manually:(BOOL) manually{
     
     AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
@@ -226,6 +230,7 @@
     target.firstname = firstName;
     target.lastname = lastName;
     target.email = email;
+    target.manually = [NSNumber numberWithBool:manually];
     
     NSError *error;
     if (![context save:&error]) {
@@ -295,7 +300,7 @@
         case 1:
         {
             NSString *text = [[alertView textFieldAtIndex:0] text];
-            [self saveNewPerson:text firstName:nil lastName:nil];
+            [self saveNewPerson:text firstName:nil lastName:nil manually:YES];
         }
             break;
         default:

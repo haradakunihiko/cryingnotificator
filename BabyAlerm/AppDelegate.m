@@ -21,7 +21,7 @@ NSString *const PeerConnectionAcceptedNotification = @"asia.tzap.apps.BabyAlerm:
 NSString *const CryingDetectedNotification = @"asia.tzap.apps.BabyAlerm:CryingDetectedNotification";
 NSString *const CryingDataDownloadedNotification = @"asia.tzap.apps.BabyAlerm:CryingDataDownloadedNotification";
 
-@interface AppDelegate()<MCSessionDelegate>{
+@interface AppDelegate()<MCSessionDelegate,MCAdvertiserAssistantDelegate>{
     NSMutableDictionary *_discoveryInfos;
 }
 
@@ -56,7 +56,23 @@ NSString *const CryingDataDownloadedNotification = @"asia.tzap.apps.BabyAlerm:Cr
         }
     }
     
-    [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeBadge|UIRemoteNotificationTypeSound];
+
+    // http://stackoverflow.com/questions/24454033/registerforremotenotificationtypes-is-not-supported-in-ios-8-0-and-later
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        // use registerUserNotificationSettings
+        UIUserNotificationSettings *setting = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
+        [application registerUserNotificationSettings:setting];
+        [application registerForRemoteNotifications];
+    } else {
+        // use registerForRemoteNotifications
+        [application registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    }
+#else
+    // use registerForRemoteNotifications
+    [application registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+#endif
+    
     
     NSUserDefaults *defaults =[NSUserDefaults standardUserDefaults];
     NSDictionary *settingDefaultDictionary = @{SettingKeyThreshold: @-10,SettingKeyUUID:[[NSUUID UUID] UUIDString],SettingKeyDetectionInterval:@10};
@@ -69,6 +85,7 @@ NSString *const CryingDataDownloadedNotification = @"asia.tzap.apps.BabyAlerm:Cr
     // 初回はまだDBに無い可能性もあるが、installationIdさえ分かれば良いのでここで取得する。
     NSString *installationId =[PFInstallation currentInstallation].installationId;
     self.advertiserAssistant = [[MCAdvertiserAssistant alloc]initWithServiceType:kServiceType discoveryInfo:@{DiscoveryKeyAdvertiserInstallationId: installationId,DiscoveryKeyAdvertiserUUID:[defaults stringForKey:SettingKeyUUID]} session:self.session];
+    self.advertiserAssistant.delegate = self;
     [self.advertiserAssistant start];
     
     [self loadUndownloadedDataInBackground:installationId];
@@ -240,7 +257,7 @@ NSString *const CryingDataDownloadedNotification = @"asia.tzap.apps.BabyAlerm:Cr
         NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent: [NSString stringWithFormat:@"%@.sqlite", configuration]];
         
         NSError *error = nil;
-        if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:configuration URL:storeURL options:nil error:&error]) {
+        if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:configuration URL:storeURL options:@{ NSSQLitePragmasOption : @{@"journal_mode" : @"DELETE"} } error:&error]) {
             /*
              Replace this implementation with code to handle the error appropriately.
              
@@ -349,16 +366,18 @@ NSString *const CryingDataDownloadedNotification = @"asia.tzap.apps.BabyAlerm:Cr
     
     HistoryModel *historyModel = [self fetchHistoryModelWithStartTime:startTime];
     if(historyModel != nil){
-        [historyModel.volumes enumerateObjectsUsingBlock:^(VolumeModel *volume, NSUInteger idx, BOOL *stop) {
-            [context deleteObject:volume];
-        }];
+        [context deleteObject:historyModel];
+//        [historyModel.volumes enumerateObjectsUsingBlock:^(VolumeModel *volume, NSUInteger idx, BOOL *stop) {
+//            [context deleteObject:volume];
+//        }];
 //
 //        
 //
-        historyModel.lastCryTime = cryTime;
-        historyModel.cryTimes = cryTimes;
-        historyModel.isViewed = [NSNumber numberWithBool:NO] ;
-    }else{
+//        historyModel.lastCryTime = cryTime;
+//        historyModel.cryTimes = cryTimes;
+//        historyModel.isViewed = [NSNumber numberWithBool:NO] ;
+    }
+//    else{
 //    }
         historyModel = [NSEntityDescription insertNewObjectForEntityForName:@"HistoryModel" inManagedObjectContext:context];
         historyModel.isSelfData = [NSNumber numberWithBool:NO];
@@ -366,7 +385,7 @@ NSString *const CryingDataDownloadedNotification = @"asia.tzap.apps.BabyAlerm:Cr
         historyModel.startTime = startTime;
         historyModel.lastCryTime = cryTime;
         historyModel.cryTimes = cryTimes;
-    }
+//    }
     
     [volumeArray enumerateObjectsUsingBlock:^(NSDictionary *volumeData, NSUInteger idx, BOOL *stop) {
         
@@ -414,13 +433,17 @@ NSString *const CryingDataDownloadedNotification = @"asia.tzap.apps.BabyAlerm:Cr
 }
 
 -(void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID{
+    NSLog(@"didrecieve");
 }
 
 -(void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress{
+    NSLog(@"didrecing");
 }
 -(void)session:(MCSession *)session didReceiveStream:(NSInputStream *)stream withName:(NSString *)streamName fromPeer:(MCPeerID *)peerID{
+        NSLog(@"didreceivestream");
 }
 -(void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error{
+            NSLog(@"didFinishreceiving");
 }
 
 #pragma mark - other
@@ -436,5 +459,17 @@ NSString *const CryingDataDownloadedNotification = @"asia.tzap.apps.BabyAlerm:Cr
         }];
     }];
 }
+
+#pragma mark - advertiser
+-(void)advertiserAssistantDidDismissInvitation:(MCAdvertiserAssistant *)advertiserAssistant{
+    NSLog(@"willdismiss");
+}
+
+-(void)advertiserAssistantWillPresentInvitation:(MCAdvertiserAssistant *)advertiserAssistant{
+    NSLog(@"willpresent");
+}
+
+
+
 
 @end

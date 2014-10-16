@@ -276,6 +276,8 @@ static void AudioInputCallback(  void* inUserData,
 
 -(void)notify :(VolumeModel *)volumeModel{
     NSLog(@"fire!");
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
     
     AppDelegate *delegate =(AppDelegate *)[[UIApplication sharedApplication] delegate];
     self.historyModel.cryTimes = [NSNumber numberWithInt:[self.historyModel.cryTimes intValue] +1] ;
@@ -305,6 +307,8 @@ static void AudioInputCallback(  void* inUserData,
     //    [self sendWithParse:addresses withTime:volumeModel.time withDescription:[notice description]];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:CryingDetectedNotification object:nil userInfo:nil];
+        
+    });
 }
 
 -(void) sendPushNotification:(VolumeModel *)volumeModel{
@@ -316,7 +320,7 @@ static void AudioInputCallback(  void* inUserData,
         [volumeArray addObject:[volume toDictionary]];
     }
     dataDictionary[@"volume"] = volumeArray;
-    dataDictionary[@"startTime"] = self.historyModel.startTime;
+    dataDictionary[@"startTime"] = [[volumeArray firstObject] time];
     dataDictionary[@"deviceName"] = [[UIDevice currentDevice]name];
     dataDictionary[@"cryTime"] = volumeModel.time;
     dataDictionary[@"cryTimes"] = self.historyModel.cryTimes;
