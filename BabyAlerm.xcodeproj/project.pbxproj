@@ -54,6 +54,7 @@
 		7322BDA61899480000915B12 /* CryingNotificater768-1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 7322BDA41899480000915B12 /* CryingNotificater768-1024.png */; };
 		7322BDA71899480000915B12 /* CryingNotificater1536-2048.png in Resources */ = {isa = PBXBuildFile; fileRef = 7322BDA51899480000915B12 /* CryingNotificater1536-2048.png */; };
 		7323D7B818EAE80F00C04B93 /* HistoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7323D7B718EAE80F00C04B93 /* HistoryModel.m */; };
+		733A079D19EFA34900558243 /* VolumeArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733A079C19EFA34900558243 /* VolumeArray.swift */; };
 		7340B217189F8E7100470DBE /* AWSRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7340B215189F8E7100470DBE /* AWSRuntime.framework */; };
 		7340B218189F8E7100470DBE /* AWSSES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7340B216189F8E7100470DBE /* AWSSES.framework */; };
 		735D166218439CF300DC27EE /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 735D166118439CF300DC27EE /* Parse.framework */; };
@@ -161,6 +162,8 @@
 		7322BDA51899480000915B12 /* CryingNotificater1536-2048.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CryingNotificater1536-2048.png"; sourceTree = "<group>"; };
 		7323D7B618EAE80F00C04B93 /* HistoryModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryModel.h; sourceTree = "<group>"; };
 		7323D7B718EAE80F00C04B93 /* HistoryModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryModel.m; sourceTree = "<group>"; };
+		733A079B19EFA34800558243 /* BabyAlerm-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BabyAlerm-Bridging-Header.h"; sourceTree = "<group>"; };
+		733A079C19EFA34900558243 /* VolumeArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VolumeArray.swift; sourceTree = "<group>"; };
 		7340B215189F8E7100470DBE /* AWSRuntime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSRuntime.framework; sourceTree = "<group>"; };
 		7340B216189F8E7100470DBE /* AWSSES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSES.framework; sourceTree = "<group>"; };
 		735D166118439CF300DC27EE /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
@@ -519,6 +522,8 @@
 				7322BD671899401500915B12 /* CryingNotificater640-1136.png */,
 				7322BD51189937CE00915B12 /* CryingNotificater.svg */,
 				73D102471897A2A20031F5C9 /* Settings.bundle */,
+				733A079C19EFA34900558243 /* VolumeArray.swift */,
+				733A079B19EFA34800558243 /* BabyAlerm-Bridging-Header.h */,
 			);
 			path = BabyAlerm;
 			sourceTree = "<group>";
@@ -816,6 +821,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				733A079D19EFA34900558243 /* VolumeArray.swift in Sources */,
 				7386DAB61840704E0037A8A3 /* CryPickingController.m in Sources */,
 				73D10246189790EA0031F5C9 /* VolumeModel.m in Sources */,
 				7386DA96184067D40037A8A3 /* ViewController.m in Sources */,
@@ -971,6 +977,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -982,12 +989,15 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BabyAlerm/BabyAlerm-Prefix.pch";
 				INFOPLIST_FILE = "BabyAlerm/BabyAlerm-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/Harada/Documents/iphonedev/BabyAlerm,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "BabyAlerm/BabyAlerm-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -997,6 +1007,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1008,12 +1019,14 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BabyAlerm/BabyAlerm-Prefix.pch";
 				INFOPLIST_FILE = "BabyAlerm/BabyAlerm-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/Harada/Documents/iphonedev/BabyAlerm,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "BabyAlerm/BabyAlerm-Bridging-Header.h";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

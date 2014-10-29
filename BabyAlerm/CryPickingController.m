@@ -320,7 +320,7 @@ static void AudioInputCallback(  void* inUserData,
         [volumeArray addObject:[volume toDictionary]];
     }
     dataDictionary[@"volume"] = volumeArray;
-    dataDictionary[@"startTime"] = [[volumeArray firstObject] time];
+    dataDictionary[@"startTime"] = self.historyModel.startTime;
     dataDictionary[@"deviceName"] = [[UIDevice currentDevice]name];
     dataDictionary[@"cryTime"] = volumeModel.time;
     dataDictionary[@"cryTimes"] = self.historyModel.cryTimes;

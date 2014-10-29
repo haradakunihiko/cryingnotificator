@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "-[GraphViewController configureGraph]:GraphViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "hosting">
+            </PersistentString>
+            <PersistentString
+               value = "self.hostView.hostedGraph">
+            </PersistentString>
+            <PersistentString
+               value = "self.hostView">
+            </PersistentString>
+            <PersistentString
+               value = "self.hostView setHostedGraph">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
